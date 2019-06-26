@@ -9,13 +9,14 @@
   <title>用 Bash 脚本监控 Linux 上的内存使用情况 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，">
+<meta name="keywords" content="Linux,运维">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用 Bash 脚本监控 Linux 上的内存使用情况">
 <meta property="og:url" content="http://yoursite.com/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/index.html">
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-26T09:42:36.687Z">
+<meta property="og:updated_time" content="2019-06-26T10:04:45.675Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用 Bash 脚本监控 Linux 上的内存使用情况">
 <meta name="twitter:description" content="目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，">
@@ -173,7 +174,7 @@
 
         
         <a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" class="archive-article-date">
-  	<time datetime="2019-06-26T09:42:52.921Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
+  	<time datetime="2019-06-26T06:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
 </a>
         
       </header>
@@ -181,6 +182,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。<br>如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。<br>在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，它将给特定电子邮件地址发邮件。</p>
+<a id="more"></a>
 <h2 id="方法-1：用-Linux-Bash-脚本监视内存利用率并发送电子邮件"><a href="#方法-1：用-Linux-Bash-脚本监视内存利用率并发送电子邮件" class="headerlink" title="方法-1：用 Linux Bash 脚本监视内存利用率并发送电子邮件"></a>方法-1：用 Linux Bash 脚本监视内存利用率并发送电子邮件</h2><p>如果只想在系统达到给定阈值时通过邮件获取当前内存利用率百分比，请使用以下脚本。<br>这是个非常简单直接的单行脚本。在大多数情况下，我更喜欢使用这种方法。<br>当你的系统达到内存利用率的 80％ 时，它将触发一封电子邮件。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/5 * * * * /usr/bin/free | awk <span class="string">'/Mem/&#123;printf("RAM Usage: %.2f%\n"), $3/$2*100&#125;'</span> |  awk <span class="string">'&#123;print $3&#125;'</span> | awk <span class="string">'&#123; if($1 &gt; 80) print $0;&#125;'</span> | mail -s <span class="string">"High Memory Alert"</span> 2daygeek@gmail.com</span><br></pre></td></tr></table></figure>
 
@@ -230,6 +232,21 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">运维</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -295,7 +312,7 @@
 <nav id="article-nav">
   
   
-    <a href="/2019/06/26/samba-config/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2019/06/20/samba-config/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">Samba 配置</div>
       <i class="icon-circle-right"></i>
     </a>
@@ -420,6 +437,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>

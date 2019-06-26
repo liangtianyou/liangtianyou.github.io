@@ -171,7 +171,7 @@
 
         
         <a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" class="archive-article-date">
-  	<time datetime="2019-06-26T09:42:52.921Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
+  	<time datetime="2019-06-26T06:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
 </a>
         
       </header>
@@ -179,22 +179,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。<br>如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。<br>在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，它将给特定电子邮件地址发邮件。</p>
-<h2 id="方法-1：用-Linux-Bash-脚本监视内存利用率并发送电子邮件"><a href="#方法-1：用-Linux-Bash-脚本监视内存利用率并发送电子邮件" class="headerlink" title="方法-1：用 Linux Bash 脚本监视内存利用率并发送电子邮件"></a>方法-1：用 Linux Bash 脚本监视内存利用率并发送电子邮件</h2><p>如果只想在系统达到给定阈值时通过邮件获取当前内存利用率百分比，请使用以下脚本。<br>这是个非常简单直接的单行脚本。在大多数情况下，我更喜欢使用这种方法。<br>当你的系统达到内存利用率的 80％ 时，它将触发一封电子邮件。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/5 * * * * /usr/bin/free | awk <span class="string">'/Mem/&#123;printf("RAM Usage: %.2f%\n"), $3/$2*100&#125;'</span> |  awk <span class="string">'&#123;print $3&#125;'</span> | awk <span class="string">'&#123; if($1 &gt; 80) print $0;&#125;'</span> | mail -s <span class="string">"High Memory Alert"</span> 2daygeek@gmail.com</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意</strong>：你需要更改电子邮件地址而不是使用我们的电子邮件地址。此外，你可以根据你的要求更改内存利用率阈值。<br><strong>输出</strong>：你将收到类似下面的电子邮件提醒。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">High Memory Alert: 80.40%</span><br></pre></td></tr></table></figure>
-
-<h2 id="方法-2：用-Linux-Bash-脚本监视内存利用率并发送电子邮件"><a href="#方法-2：用-Linux-Bash-脚本监视内存利用率并发送电子邮件" class="headerlink" title="方法-2：用 Linux Bash 脚本监视内存利用率并发送电子邮件"></a>方法-2：用 Linux Bash 脚本监视内存利用率并发送电子邮件</h2><p>如果要在邮件警报中获取有关内存利用率的更多信息。使用以下脚本，其中包括基于 top 命令和 ps 命令的最高内存利用率和进程详细信息。<br>这将立即让你了解系统的运行情况。<br>当你的系统达到内存利用率的 “80％” 时，它将触发一封电子邮件。<br><strong>注意</strong>：你需要更改电子邮件地址而不是使用我们的电子邮件地址。此外，你可以根据你的要求更改内存利用率阈值。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vi /opt/scripts/memory-alert.sh</span></span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">ramusage=$(free | awk <span class="string">'/Mem/&#123;printf("RAM Usage: %.2f\n"), $3/$2*100&#125;'</span>| awk <span class="string">'&#123;print $3&#125;'</span>)</span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$ramusage</span>"</span> &gt; 20 ]; <span class="keyword">then</span></span><br><span class="line">  SUBJECT=<span class="string">"ATTENTION: Memory Utilization is High on <span class="variable">$(hostname)</span> at <span class="variable">$(date)</span>"</span></span><br><span class="line">  MESSAGE=<span class="string">"/tmp/Mail.out"</span></span><br><span class="line">  TO=<span class="string">"2daygeek@gmail.com"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Memory Current Usage is: <span class="variable">$ramusage</span>%"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">""</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Top Memory Consuming Process Using top command"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"<span class="variable">$(top -b -o +%MEM | head -n 20)</span>"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">""</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Top Memory Consuming Process Using ps command"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"<span class="variable">$(ps -eo pid,ppid,%mem,%Memory,cmd --sort=-%mem | head)</span>"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  mail -s <span class="string">"<span class="variable">$SUBJECT</span>"</span> <span class="string">"<span class="variable">$TO</span>"</span> &lt; <span class="variable">$MESSAGE</span></span><br><span class="line">  rm /tmp/Mail.out</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<p>最后添加一个 cron 任务 来自动执行此操作。它将每 5 分钟运行一次。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># crontab -e</span></span><br><span class="line">*/5 * * * * /bin/bash /opt/scripts/memory-alert.sh</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意</strong>：由于脚本计划每 5 分钟运行一次，因此你将在最多 5 分钟后收到电子邮件提醒（但不是 5 分钟，取决于具体时间）。<br>比如说，如果你的系统达到 8.25 的给定限制，那么你将在 5 分钟内收到电子邮件警报。希望现在说清楚了。<br><strong>输出</strong>：你将收到类似下面的电子邮件提醒。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">Memory Current Usage is: 80.71%</span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">Top Memory Consuming Process Using top <span class="built_in">command</span></span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">top - 12:00:58 up 5 days,  9:03,  1 user,  load average: 1.82, 2.60, 2.83</span><br><span class="line">Tasks: 314 total,   1 running, 313 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu0  :  8.3 us, 12.5 sy,  0.0 ni, 75.0 id,  0.0 wa,  0.0 hi,  4.2 si,  0.0 st</span><br><span class="line">%Cpu1  : 13.6 us,  4.5 sy,  0.0 ni, 81.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu2  : 21.7 us, 21.7 sy,  0.0 ni, 56.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu3  : 13.6 us,  9.1 sy,  0.0 ni, 77.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu4  : 17.4 us,  8.7 sy,  0.0 ni, 73.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu5  : 20.8 us,  4.2 sy,  0.0 ni, 70.8 id,  0.0 wa,  0.0 hi,  4.2 si,  0.0 st</span><br><span class="line">%Cpu6  :  9.1 us,  0.0 sy,  0.0 ni, 90.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu7  : 17.4 us,  4.3 sy,  0.0 ni, 78.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem : 16248588 total,  5015964 free,  6453404 used,  4779220 buff/cache</span><br><span class="line">KiB Swap: 17873388 total, 16928620 free,   944768 used.  6423008 avail Mem </span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND</span><br><span class="line">17163 daygeek   20     2033204 487736 282888 S  10.0   3.0   8:26.07 /usr/lib/firefox/firefox -contentproc -childID 15 -isForBrowser -prefsLen 9408 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /u+</span><br><span class="line"> 1121 daygeek   20     4191388 419180 100552 S   5.0   2.6 126:02.84 /usr/bin/gnome-shell</span><br><span class="line"> 1902 daygeek   20     1701644 327216  82536 S  20.0   2.0 153:27.92 /opt/google/chrome/chrome</span><br><span class="line"> 2969 daygeek   20     1051116 324656  92388 S  15.0   2.0 149:38.09 /opt/google/chrome/chrome --<span class="built_in">type</span>=renderer --field-trial-handle=10346122902703263820,11905758137655502112,131072 --service-pipe-token=1339861+</span><br><span class="line"> 1068 daygeek   20     1104856 309552 278072 S   5.0   1.9 143:47.42 /usr/lib/Xorg vt2 -displayfd 3 -auth /run/user/1000/gdm/Xauthority -nolisten tcp -background none -noreset -keeptty -verbose 3</span><br><span class="line">27246 daygeek   20      907344 265600 108276 S  30.0   1.6  10:42.80 /opt/google/chrome/chrome --<span class="built_in">type</span>=renderer --field-trial-handle=10346122902703263820,11905758137655502112,131072 --service-pipe-token=8587368+</span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">Top Memory Consuming Process Using ps <span class="built_in">command</span></span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">  PID  PPID %MEM %CPU CMD</span><br><span class="line"> 8223     1  6.4  6.8 /usr/lib/firefox/firefox --new-window</span><br><span class="line">13948  1121  6.3  1.2 /usr/bin/../lib/notepadqq/notepadqq-bin</span><br><span class="line"> 8671  8223  4.4  7.5 /usr/lib/firefox/firefox -contentproc -childID 5 -isForBrowser -prefsLen 6999 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line">17163  8223  3.0  0.6 /usr/lib/firefox/firefox -contentproc -childID 15 -isForBrowser -prefsLen 9408 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 1121  1078  2.5  1.6 /usr/bin/gnome-shell</span><br><span class="line">17937  8223  2.5  0.8 /usr/lib/firefox/firefox -contentproc -childID 16 -isForBrowser -prefsLen 9410 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 8499  8223  2.2  0.6 /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 6635 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 8306  8223  2.2  0.8 /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 1 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 9198  8223  2.1  0.6 /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 8604 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br></pre></td></tr></table></figure>
-
-
+        
+          <a class="article-more-a" href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/#more">more >></a>
+        
       
 
       
@@ -202,6 +189,21 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">运维</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -243,13 +245,13 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/26/samba-config/">Samba 配置</a>
+      <a class="article-title" href="/2019/06/20/samba-config/">Samba 配置</a>
     </h1>
   
 
         
-        <a href="/2019/06/26/samba-config/" class="archive-article-date">
-  	<time datetime="2019-06-26T09:39:19.056Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
+        <a href="/2019/06/20/samba-config/" class="archive-article-date">
+  	<time datetime="2019-06-20T10:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-20</time>
 </a>
         
       </header>
@@ -257,40 +259,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="smbd和nmbd"><a href="#smbd和nmbd" class="headerlink" title="smbd和nmbd"></a>smbd和nmbd</h2><p>Samba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。<br>smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。<br>smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。<br>Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。<br>前两项服务由smbd提供，后两项服务则由nmbd提供。<br>简单地说，smbd进程的作用是处理到来的SMB软件包，为使用该软件包的资源与Linux进行协商，nmbd进程使主机(或工作站)能浏览Linux服务器。</p>
-<h2 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h2><p>syslog = 0 #严重日志才会写入系统日志<br>log level = 2 #INFO级别的日志会记录下来<br>log file = /var/log/samba/log.%m<br>max log size = 1024 #1M</p>
-<h2 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h2><table>
-<thead>
-<tr>
-<th>类型</th>
-<th>级别</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>LOG_ERR</td>
-<td>0</td>
-</tr>
-<tr>
-<td>LOG_WARNING</td>
-<td>1</td>
-</tr>
-<tr>
-<td>LOG_NOTICE</td>
-<td>2</td>
-</tr>
-<tr>
-<td>LOG_INFO</td>
-<td>3</td>
-</tr>
-</tbody></table>
-<p><strong>注意</strong></p>
-<ol>
-<li>如果没有syslog = 0，会按log level = 2将LOG_ERR到LOG_NOTICE级别的日志都记录到系统日志，这样系统日志里的内容会比较多。</li>
-<li>把日志存到非文件后端的解决方案里: logging = syslog 配合 syslog only = yes, 或者使用 logging = systemd。</li>
-</ol>
-<h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><p>阻止10.1.1.1的samba访问</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -d 10.1.1.1 -p udp --dport 137 -j DROP</span><br><span class="line">iptables -A INPUT -d 10.1.1.1 -p udp --dport 138 -j DROP</span><br><span class="line">iptables -A INPUT -d 10.1.1.1 -p tcp --dport 139 -j DROP</span><br><span class="line">iptables -A INPUT -d 10.1.1.1 -p tcp --dport 445 -j DROP</span><br></pre></td></tr></table></figure>
-
-
+        
+          <a class="article-more-a" href="/2019/06/20/samba-config/#more">more >></a>
+        
       
 
       
@@ -298,11 +269,22 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Samba</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/26/samba-config/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/06/20/samba-config/">展开全文 >></a>
         </p>
       
 
@@ -423,6 +405,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
             
             <div class="clearfix"></div>
           </ul>
