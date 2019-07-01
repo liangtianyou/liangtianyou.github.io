@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Samba 配置 | 漫漫长路</title>
+  <title>Archives: 2019/7 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="smbd和nmbdSamba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。前两项服务由">
-<meta name="keywords" content="Samba">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Samba 配置">
-<meta property="og:url" content="http://yoursite.com/2019/06/20/samba-config/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="漫漫长路">
+<meta property="og:url" content="http://yoursite.com/archives/2019/07/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="smbd和nmbdSamba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。前两项服务由">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-26T10:01:54.149Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Samba 配置">
-<meta name="twitter:description" content="smbd和nmbdSamba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。前两项服务由">
+<meta name="twitter:title" content="漫漫长路">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -161,210 +156,64 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-samba-config" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      Samba 配置
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/" class="archive-article-date">
+  	<time datetime="2019-07-01T06:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/">Linux 中如何启用和禁用网卡？</a>
     </h1>
   
 
-        
-        <a href="/2019/06/20/samba-config/" class="archive-article-date">
-  	<time datetime="2019-06-20T10:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="smbd和nmbd"><a href="#smbd和nmbd" class="headerlink" title="smbd和nmbd"></a>smbd和nmbd</h2><p>Samba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。<br>smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。<br>smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。<br>Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。<br>前两项服务由smbd提供，后两项服务则由nmbd提供。<br>简单地说，smbd进程的作用是处理到来的SMB软件包，为使用该软件包的资源与Linux进行协商，nmbd进程使主机(或工作站)能浏览Linux服务器。</p>
-<a id="more"></a>
-<h2 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h2><p>syslog = 0 #严重日志才会写入系统日志<br>log level = 2 #INFO级别的日志会记录下来<br>log file = /var/log/samba/log.%m<br>max log size = 1024 #1M</p>
-<h2 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h2><table>
-<thead>
-<tr>
-<th>类型</th>
-<th>级别</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>LOG_ERR</td>
-<td>0</td>
-</tr>
-<tr>
-<td>LOG_WARNING</td>
-<td>1</td>
-</tr>
-<tr>
-<td>LOG_NOTICE</td>
-<td>2</td>
-</tr>
-<tr>
-<td>LOG_INFO</td>
-<td>3</td>
-</tr>
-</tbody></table>
-<p><strong>注意</strong></p>
-<ol>
-<li>如果没有syslog = 0，会按log level = 2将LOG_ERR到LOG_NOTICE级别的日志都记录到系统日志，这样系统日志里的内容会比较多。</li>
-<li>把日志存到非文件后端的解决方案里: logging = syslog 配合 syslog only = yes, 或者使用 logging = systemd。</li>
-</ol>
-<h2 id="防火墙"><a href="#防火墙" class="headerlink" title="防火墙"></a>防火墙</h2><p>阻止10.1.1.1的samba访问</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iptables -A INPUT -d 10.1.1.1 -p udp --dport 137 -j DROP</span><br><span class="line">iptables -A INPUT -d 10.1.1.1 -p udp --dport 138 -j DROP</span><br><span class="line">iptables -A INPUT -d 10.1.1.1 -p tcp --dport 139 -j DROP</span><br><span class="line">iptables -A INPUT -d 10.1.1.1 -p tcp --dport 445 -j DROP</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/img/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Samba</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Network</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/06/20/samba-config/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          用 Bash 脚本监控 Linux 上的内存使用情况
-        
-      </div>
-    </a>
   
   
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -387,8 +236,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
