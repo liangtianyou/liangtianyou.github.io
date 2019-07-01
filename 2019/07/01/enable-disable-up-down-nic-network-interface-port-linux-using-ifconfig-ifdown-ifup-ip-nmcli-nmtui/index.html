@@ -19,7 +19,7 @@
 <meta property="og:image" content="http://yoursite.com/assets/blogImg/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui-1.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImg/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui-2.png">
 <meta property="og:image" content="http://yoursite.com/assets/blogImg/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui-3.png">
-<meta property="og:updated_time" content="2019-07-01T06:57:28.339Z">
+<meta property="og:updated_time" content="2019-07-01T07:01:11.841Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux 中如何启用和禁用网卡？">
 <meta name="twitter:description" content="你可能会根据你的需要执行以下命令。我会在这里列举一些你会用到这些命令的例子。当你添加一个网卡或者从一个物理网卡创建出一个虚拟网卡的时候，你可能需要使用这些命令将新网卡启用起来。另外，如果你对网卡做了某些修改或者网卡本身没有启用，那么你也需要使用以下的某个命令将网卡启用起来。启用、禁用网卡有很多种方法。在这篇文章里，我们会介绍我们使用过的最好的 5 种方法。启用禁用网卡可以使用以下 5 个方法来完成">
@@ -186,6 +186,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>你可能会根据你的需要执行以下命令。我会在这里列举一些你会用到这些命令的例子。<br>当你添加一个网卡或者从一个物理网卡创建出一个虚拟网卡的时候，你可能需要使用这些命令将新网卡启用起来。另外，如果你对网卡做了某些修改或者网卡本身没有启用，那么你也需要使用以下的某个命令将网卡启用起来。<br>启用、禁用网卡有很多种方法。在这篇文章里，我们会介绍我们使用过的最好的 5 种方法。<br>启用禁用网卡可以使用以下 5 个方法来完成：<br>    * ifconfig 命令：用于配置网卡。它可以提供网卡的很多信息。<br>    * ifdown/up 命令：ifdown 命令用于禁用网卡，ifup 命令用于启用网卡。<br>    * ip 命令：用于管理网卡，用于替代老旧的、不推荐使用的 ifconfig 命令。它和 ifconfig 命令很相似，但是提供了很多 ifconfig 命令所不具有的强大的特性。<br>    * nmcli 命令：是一个控制 NetworkManager 并报告网络状态的命令行工具。<br>    * nmtui 命令：是一个与 NetworkManager 交互的、基于 curses 图形库的终端 UI 应用。</p>
+<a id="more"></a>
 <p>以下显示的是我的 Linux 系统中可用网卡的信息。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ip a</span></span><br><span class="line">1: lo:  mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: enp0s3:  mtu 1500 qdisc fq_codel state UP group default qlen 1000</span><br><span class="line">    link/ether 08:00:27:c2:e4:e8 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.1.4/24 brd 192.168.1.255 scope global dynamic noprefixroute enp0s3</span><br><span class="line">       valid_lft 86049sec preferred_lft 86049sec</span><br><span class="line">    inet6 fe80::3899:270f:ae38:b433/64 scope link noprefixroute</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: enp0s8:  mtu 1500 qdisc fq_codel state UP group default qlen 1000</span><br><span class="line">    link/ether 08:00:27:30:5d:52 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.1.3/24 brd 192.168.1.255 scope global dynamic noprefixroute enp0s8</span><br><span class="line">       valid_lft 86049sec preferred_lft 86049sec</span><br><span class="line">    inet6 fe80::32b7:8727:bdf2:2f3/64 scope link noprefixroute</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
 
@@ -372,6 +373,15 @@
   
 <nav id="article-nav">
   
+    <a href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          如何在 Linux 上安装、配置 NTP 服务器和客户端？
+        
+      </div>
+    </a>
+  
   
     <a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">用 Bash 脚本监控 Linux 上的内存使用情况</div>
@@ -508,11 +518,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
             
             <div class="clearfix"></div>

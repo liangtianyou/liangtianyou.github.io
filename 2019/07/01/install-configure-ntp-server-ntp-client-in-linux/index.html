@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019 | 漫漫长路</title>
+  <title>如何在 Linux 上安装、配置 NTP 服务器和客户端？ | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="漫漫长路">
-<meta property="og:url" content="http://yoursite.com/archives/2019/index.html">
+  <meta name="description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。之后我们将会了解 Chrony NTP 客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。">
+<meta name="keywords" content="Linux,NTP,NTP客户端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在 Linux 上安装、配置 NTP 服务器和客户端？">
+<meta property="og:url" content="http://yoursite.com/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/index.html">
 <meta property="og:site_name" content="漫漫长路">
+<meta property="og:description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。之后我们将会了解 Chrony NTP 客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-01T07:09:30.832Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="漫漫长路">
+<meta name="twitter:title" content="如何在 Linux 上安装、配置 NTP 服务器和客户端？">
+<meta name="twitter:description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。之后我们将会了解 Chrony NTP 客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -156,36 +161,131 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-install-configure-ntp-server-ntp-client-in-linux" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/" class="archive-article-date">
-  	<time datetime="2019-07-01T07:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/">如何在 Linux 上安装、配置 NTP 服务器和客户端？</a>
+    <h1 class="article-title" itemprop="name">
+      如何在 Linux 上安装、配置 NTP 服务器和客户端？
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/" class="archive-article-date">
+  	<time datetime="2019-07-01T07:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。<br>之后我们将会了解 Chrony NTP 客户端的安装。</p>
+<h2 id="什么是-NTP-服务"><a href="#什么是-NTP-服务" class="headerlink" title="什么是 NTP 服务?"></a>什么是 NTP 服务?</h2><p>NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。<br>NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的精度，并在理想条件下，它能在局域网下达到低于一毫秒的延迟精度。<br>它使用用户数据报协议（UDP）在端口 123 上发送和接受时间戳。它是个 C/S 架构的应用程序。</p>
+<h2 id="NTP-客户端"><a href="#NTP-客户端" class="headerlink" title="NTP 客户端"></a>NTP 客户端</h2><p>NTP 客户端将其时钟与网络时间服务器同步。</p>
+<p>##Chrony 客户端<br>Chrony 是 NTP 客户端的替代品。它能以更精确的时间更快的同步系统时钟，并且它对于那些不总是在线的系统很有用。</p>
+<h2 id="为什么我们需要-NTP-服务？"><a href="#为什么我们需要-NTP-服务？" class="headerlink" title="为什么我们需要 NTP 服务？"></a>为什么我们需要 NTP 服务？</h2><p>为了使你组织中的所有服务器与基于时间的作业保持精确的时间同步。<br>为了说明这点，我将告诉你一个场景。比如说，我们有两个服务器（服务器 1 和服务器 2）。服务器 1 通常在 10:55 完成离线作业，然后服务器 2 在 11:00 需要基于服务器 1 完成的作业报告去运行其他作业。<br>如果两个服务器正在使用不同的时间（如果服务器 2 时间比服务器 1 提前，服务器 1 的时间就落后于服务器 2），然后我们就不能去执行这个作业。为了达到时间一致，我们应该安装 NTP。<br>希望上述能清除你对于 NTP 的疑惑。</p>
+<a id="more"></a>
+<p>在这篇文章中，我们将使用下列设置去测试。<br>    * NTP 服务器： 主机名：CentOS7.2daygeek.com，IP：192.168.1.8，OS：CentOS 7<br>    * NTP 客户端： 主机名：Ubuntu18.2daygeek.com，IP：192.168.1.5，OS：Ubuntu 18.04</p>
+<h2 id="NTP-服务器端：如何在-Linux-上安装-NTP？"><a href="#NTP-服务器端：如何在-Linux-上安装-NTP？" class="headerlink" title="NTP 服务器端：如何在 Linux 上安装 NTP？"></a>NTP 服务器端：如何在 Linux 上安装 NTP？</h2><p>因为它是 C/S 架构，所以 NTP 服务器端和客户端的安装包没有什么不同。在发行版的官方仓库中都有 NTP 安装包，因此可以使用发行版的包管理器安装它。<br>对于 Fedora 系统，使用 DNF 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dnf install ntp</span><br></pre></td></tr></table></figure>
+
+<p>对于 Debian/Ubuntu 系统，使用 APT-GET 命令 或者 APT 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install ntp</span><br></pre></td></tr></table></figure>
+
+<p>对基于 Arch Linux 的系统，使用 Pacman 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo pacman -S ntp</span><br></pre></td></tr></table></figure>
+
+<p>对 RHEL/CentOS 系统，使用 YUM 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install ntp</span><br></pre></td></tr></table></figure>
+
+<p>对于 openSUSE Leap 系统，使用 Zypper 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo zypper install ntp</span><br></pre></td></tr></table></figure>
+
+<h2 id="如何在-Linux-上配置-NTP-服务器？"><a href="#如何在-Linux-上配置-NTP-服务器？" class="headerlink" title="如何在 Linux 上配置 NTP 服务器？"></a>如何在 Linux 上配置 NTP 服务器？</h2><p>安装 NTP 软件包后，请确保在服务器端的 /etc/ntp.conf 文件中取消以下配置的注释。<br>默认情况下，NTP 服务器配置依赖于 X.distribution_name.pool.ntp.org。 如果有必要，可以使用默认配置，也可以访问<a href="https://www.ntppool.org/zone/@站点，根据你所在的位置（特定国家/地区）进行更改。" target="_blank" rel="noopener">https://www.ntppool.org/zone/@站点，根据你所在的位置（特定国家/地区）进行更改。</a><br>比如说如果你在印度，然后你的 NTP 服务器将是 0.in.pool.ntp.org，并且这个地址适用于大多数国家。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vi /etc/ntp.conf</span></span><br><span class="line">restrict default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict -6 default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict 127.0.0.1</span><br><span class="line">restrict -6 ::1</span><br><span class="line">server 0.asia.pool.ntp.org</span><br><span class="line">server 1.asia.pool.ntp.org</span><br><span class="line">server 2.asia.pool.ntp.org</span><br><span class="line">server 3.asia.pool.ntp.org</span><br><span class="line">restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap</span><br><span class="line">driftfile /var/lib/ntp/drift</span><br><span class="line">keys /etc/ntp/keys</span><br></pre></td></tr></table></figure>
+
+<p>我们仅允许 192.168.1.0/24 子网的客户端访问这个 NTP 服务器。<br>由于默认情况下基于 RHEL7 的发行版的防火墙是打开的，因此要允许 ntp 服务通过。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># firewall-cmd --add-service=ntp --permanent</span></span><br><span class="line"><span class="comment"># firewall-cmd --reload</span></span><br></pre></td></tr></table></figure>
+
+<p>更新配置后要重启服务：<br>对于 sysvinit 系统。基于 Debian 的系统需要去运行 ntp 而不是 ntpd。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># service ntpd restart</span></span><br><span class="line"><span class="comment"># chkconfig ntpd on</span></span><br></pre></td></tr></table></figure>
+
+<p>对于 systemctl 系统。基于 Debian 的需要去运行 ntp 和 ntpd。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl restart ntpd</span></span><br><span class="line"><span class="comment"># systemctl enable ntpd</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="NTP-客户端：如何在-Linux-上安装-NTP-客户端？"><a href="#NTP-客户端：如何在-Linux-上安装-NTP-客户端？" class="headerlink" title="NTP 客户端：如何在 Linux 上安装 NTP 客户端？"></a>NTP 客户端：如何在 Linux 上安装 NTP 客户端？</h2><p>正如我在这篇文章中前面所说的。NTP 服务器端和客户端的安装包没有什么不同。因此在客户端上也安装同样的软件包。<br>对于 Fedora 系统，使用 DNF 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo dnf install ntp</span><br></pre></td></tr></table></figure>
+
+<p>对于 Debian/Ubuntu 系统，使用 APT-GET 命令 或者 APT 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install ntp</span><br></pre></td></tr></table></figure>
+
+<p>对基于 Arch Linux 的系统，使用 Pacman 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo pacman -S ntp</span><br></pre></td></tr></table></figure>
+
+<p>对 RHEL/CentOS 系统，使用 YUM 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo yum install ntp</span><br></pre></td></tr></table></figure>
+
+<p>对于 openSUSE Leap 系统，使用 Zypper 命令 去安装 ntp。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo zypper install ntp</span><br></pre></td></tr></table></figure>
+
+<p>我已经在 CentOS7.2daygeek.com` 这台主机上安装和配置了 NTP 服务器，因此将其附加到所有的客户端机器上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vi /etc/ntp.conf</span></span><br><span class="line"></span><br><span class="line">restrict default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict -6 default kod nomodify notrap nopeer noquery</span><br><span class="line">restrict 127.0.0.1</span><br><span class="line">restrict -6 ::1</span><br><span class="line">server CentOS7.2daygeek.com prefer iburst</span><br><span class="line">driftfile /var/lib/ntp/drift</span><br><span class="line">keys /etc/ntp/keys</span><br></pre></td></tr></table></figure>
+
+<p>更新配置后重启服务：<br>对于 sysvinit 系统。基于 Debian 的系统需要去运行 ntp 而不是 ntpd。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># service ntpd restart</span></span><br><span class="line"><span class="comment"># chkconfig ntpd on</span></span><br></pre></td></tr></table></figure>
+
+<p>对于 systemctl 系统。基于 Debian 的需要去运行 ntp 和 ntpd。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># systemctl restart ntpd</span></span><br><span class="line"><span class="comment"># systemctl enable ntpd</span></span><br></pre></td></tr></table></figure>
+
+<p>重新启动 NTP 服务后等待几分钟以便从 NTP 服务器获取同步的时间。</p>
+<p>在 Linux 上运行下列命令去验证 NTP 服务的同步状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ntpq –p</span></span><br><span class="line">或</span><br><span class="line"><span class="comment"># ntpq -pn</span></span><br><span class="line">     remote           refid      st t when poll reach   delay   offset  jitter</span><br><span class="line">==============================================================================</span><br><span class="line">*CentOS7.2daygee 133.243.238.163  2 u   14   64   37    0.686    0.151  16.432</span><br></pre></td></tr></table></figure>
+
+<p>运行下列命令去得到 ntpd 的当前状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ntpstat</span></span><br><span class="line">synchronised to NTP server (192.168.1.8) at stratum 3</span><br><span class="line">   time correct to within 508 ms</span><br><span class="line">   polling server every 64 s</span><br></pre></td></tr></table></figure>
+
+<p>最后运行 date 命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># date</span></span><br><span class="line">Tue Mar 26 23:17:05 CDT 2019</span><br></pre></td></tr></table></figure>
+
+<p>如果你观察到 NTP 中输出的时间偏移很大。运行下列命令从 NTP 服务器手动同步时钟。当你执行下列命令的时候，确保你的 NTP 客户端应该为未活动状态。（LCTT 译注：当时间偏差很大时，客户端的自动校正需要花费很长时间才能逐步追上，因此应该手动运行以更新）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ntpdate –uv CentOS7.2daygeek.com</span></span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -205,141 +305,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/" class="archive-article-date">
-  	<time datetime="2019-07-01T06:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Linux 中如何启用和禁用网卡？</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/">Linux 中如何启用和禁用网卡？</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Network</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" class="archive-article-date">
-  	<time datetime="2019-06-26T06:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/">用 Bash 脚本监控 Linux 上的内存使用情况</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">运维</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/06/20/samba-config/" class="archive-article-date">
-  	<time datetime="2019-06-20T10:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-20</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/06/20/samba-config/">Samba 配置</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Samba</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -362,8 +427,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
