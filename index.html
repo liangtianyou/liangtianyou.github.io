@@ -259,10 +259,10 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。<br>之后我们将会了解 Chrony NTP 客户端的安装。</p>
-<h2 id="什么是-NTP-服务"><a href="#什么是-NTP-服务" class="headerlink" title="什么是 NTP 服务?"></a>什么是 NTP 服务?</h2><p>NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。<br>NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的精度，并在理想条件下，它能在局域网下达到低于一毫秒的延迟精度。<br>它使用用户数据报协议（UDP）在端口 123 上发送和接受时间戳。它是个 C/S 架构的应用程序。</p>
+<h2 id="什么是-NTP-服务"><a href="#什么是-NTP-服务" class="headerlink" title="什么是 NTP 服务?"></a>什么是 NTP 服务?</h2><pre><code>NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。
+NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的精度，并在理想条件下，它能在局域网下达到低于一毫秒的延迟精度。</code></pre><p>它使用用户数据报协议（UDP）在端口 123 上发送和接受时间戳。它是个 C/S 架构的应用程序。</p>
 <h2 id="NTP-客户端"><a href="#NTP-客户端" class="headerlink" title="NTP 客户端"></a>NTP 客户端</h2><p>NTP 客户端将其时钟与网络时间服务器同步。</p>
 <p>##Chrony 客户端<br>Chrony 是 NTP 客户端的替代品。它能以更精确的时间更快的同步系统时钟，并且它对于那些不总是在线的系统很有用。</p>
-<h2 id="为什么我们需要-NTP-服务？"><a href="#为什么我们需要-NTP-服务？" class="headerlink" title="为什么我们需要 NTP 服务？"></a>为什么我们需要 NTP 服务？</h2><p>为了使你组织中的所有服务器与基于时间的作业保持精确的时间同步。<br>为了说明这点，我将告诉你一个场景。比如说，我们有两个服务器（服务器 1 和服务器 2）。服务器 1 通常在 10:55 完成离线作业，然后服务器 2 在 11:00 需要基于服务器 1 完成的作业报告去运行其他作业。<br>如果两个服务器正在使用不同的时间（如果服务器 2 时间比服务器 1 提前，服务器 1 的时间就落后于服务器 2），然后我们就不能去执行这个作业。为了达到时间一致，我们应该安装 NTP。<br>希望上述能清除你对于 NTP 的疑惑。</p>
         
           <a class="article-more-a" href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/#more">more >></a>
         
@@ -486,6 +486,86 @@
 
 
   
+    <article id="post-samba-config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/20/samba-config/">Samba 配置</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/20/samba-config/" class="archive-article-date">
+  	<time datetime="2019-06-20T10:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="smbd和nmbd"><a href="#smbd和nmbd" class="headerlink" title="smbd和nmbd"></a>smbd和nmbd</h2><p>Samba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。<br>smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。<br>smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。<br>Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。<br>前两项服务由smbd提供，后两项服务则由nmbd提供。<br>简单地说，smbd进程的作用是处理到来的SMB软件包，为使用该软件包的资源与Linux进行协商，nmbd进程使主机(或工作站)能浏览Linux服务器。</p>
+        
+          <a class="article-more-a" href="/2019/06/20/samba-config/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Samba</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/20/samba-config/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
   
 
 
@@ -596,6 +676,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
