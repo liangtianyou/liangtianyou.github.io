@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>用 Bash 脚本监控 Linux 上的内存使用情况 | 漫漫长路</title>
+  <title>Tag: 联合国 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，">
-<meta name="keywords" content="Linux,运维">
-<meta property="og:type" content="article">
-<meta property="og:title" content="用 Bash 脚本监控 Linux 上的内存使用情况">
-<meta property="og:url" content="http://yoursite.com/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="漫漫长路">
+<meta property="og:url" content="http://yoursite.com/tags/联合国/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-26T10:04:45.675Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="用 Bash 脚本监控 Linux 上的内存使用情况">
-<meta name="twitter:description" content="目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，">
+<meta name="twitter:title" content="漫漫长路">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -161,201 +156,64 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-linux-bash-script-to-monitor-memory-utilization-usage-and-send-email" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      用 Bash 脚本监控 Linux 上的内存使用情况
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/07/02/live-broadcast-united-nation/" class="archive-article-date">
+  	<time datetime="2019-07-02T06:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-02</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/07/02/live-broadcast-united-nation/">直播联合国</a>
     </h1>
   
 
-        
-        <a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" class="archive-article-date">
-  	<time datetime="2019-06-26T06:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。<br>如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。<br>在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，它将给特定电子邮件地址发邮件。</p>
-<a id="more"></a>
-<h2 id="方法-1：用-Linux-Bash-脚本监视内存利用率并发送电子邮件"><a href="#方法-1：用-Linux-Bash-脚本监视内存利用率并发送电子邮件" class="headerlink" title="方法-1：用 Linux Bash 脚本监视内存利用率并发送电子邮件"></a>方法-1：用 Linux Bash 脚本监视内存利用率并发送电子邮件</h2><p>如果只想在系统达到给定阈值时通过邮件获取当前内存利用率百分比，请使用以下脚本。<br>这是个非常简单直接的单行脚本。在大多数情况下，我更喜欢使用这种方法。<br>当你的系统达到内存利用率的 80％ 时，它将触发一封电子邮件。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*/5 * * * * /usr/bin/free | awk <span class="string">'/Mem/&#123;printf("RAM Usage: %.2f%\n"), $3/$2*100&#125;'</span> |  awk <span class="string">'&#123;print $3&#125;'</span> | awk <span class="string">'&#123; if($1 &gt; 80) print $0;&#125;'</span> | mail -s <span class="string">"High Memory Alert"</span> 2daygeek@gmail.com</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意</strong>：你需要更改电子邮件地址而不是使用我们的电子邮件地址。此外，你可以根据你的要求更改内存利用率阈值。<br><strong>输出</strong>：你将收到类似下面的电子邮件提醒。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">High Memory Alert: 80.40%</span><br></pre></td></tr></table></figure>
-
-<h2 id="方法-2：用-Linux-Bash-脚本监视内存利用率并发送电子邮件"><a href="#方法-2：用-Linux-Bash-脚本监视内存利用率并发送电子邮件" class="headerlink" title="方法-2：用 Linux Bash 脚本监视内存利用率并发送电子邮件"></a>方法-2：用 Linux Bash 脚本监视内存利用率并发送电子邮件</h2><p>如果要在邮件警报中获取有关内存利用率的更多信息。使用以下脚本，其中包括基于 top 命令和 ps 命令的最高内存利用率和进程详细信息。<br>这将立即让你了解系统的运行情况。<br>当你的系统达到内存利用率的 “80％” 时，它将触发一封电子邮件。<br><strong>注意</strong>：你需要更改电子邮件地址而不是使用我们的电子邮件地址。此外，你可以根据你的要求更改内存利用率阈值。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># vi /opt/scripts/memory-alert.sh</span></span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line">ramusage=$(free | awk <span class="string">'/Mem/&#123;printf("RAM Usage: %.2f\n"), $3/$2*100&#125;'</span>| awk <span class="string">'&#123;print $3&#125;'</span>)</span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$ramusage</span>"</span> &gt; 20 ]; <span class="keyword">then</span></span><br><span class="line">  SUBJECT=<span class="string">"ATTENTION: Memory Utilization is High on <span class="variable">$(hostname)</span> at <span class="variable">$(date)</span>"</span></span><br><span class="line">  MESSAGE=<span class="string">"/tmp/Mail.out"</span></span><br><span class="line">  TO=<span class="string">"2daygeek@gmail.com"</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Memory Current Usage is: <span class="variable">$ramusage</span>%"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">""</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Top Memory Consuming Process Using top command"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"<span class="variable">$(top -b -o +%MEM | head -n 20)</span>"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">""</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"Top Memory Consuming Process Using ps command"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"------------------------------------------------------------------"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">"<span class="variable">$(ps -eo pid,ppid,%mem,%Memory,cmd --sort=-%mem | head)</span>"</span> &gt;&gt; <span class="variable">$MESSAGE</span></span><br><span class="line">  mail -s <span class="string">"<span class="variable">$SUBJECT</span>"</span> <span class="string">"<span class="variable">$TO</span>"</span> &lt; <span class="variable">$MESSAGE</span></span><br><span class="line">  rm /tmp/Mail.out</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-<p>最后添加一个 cron 任务 来自动执行此操作。它将每 5 分钟运行一次。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># crontab -e</span></span><br><span class="line">*/5 * * * * /bin/bash /opt/scripts/memory-alert.sh</span><br></pre></td></tr></table></figure>
-
-<p><strong>注意</strong>：由于脚本计划每 5 分钟运行一次，因此你将在最多 5 分钟后收到电子邮件提醒（但不是 5 分钟，取决于具体时间）。<br>比如说，如果你的系统达到 8.25 的给定限制，那么你将在 5 分钟内收到电子邮件警报。希望现在说清楚了。<br><strong>输出</strong>：你将收到类似下面的电子邮件提醒。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">Memory Current Usage is: 80.71%</span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">Top Memory Consuming Process Using top <span class="built_in">command</span></span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">top - 12:00:58 up 5 days,  9:03,  1 user,  load average: 1.82, 2.60, 2.83</span><br><span class="line">Tasks: 314 total,   1 running, 313 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu0  :  8.3 us, 12.5 sy,  0.0 ni, 75.0 id,  0.0 wa,  0.0 hi,  4.2 si,  0.0 st</span><br><span class="line">%Cpu1  : 13.6 us,  4.5 sy,  0.0 ni, 81.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu2  : 21.7 us, 21.7 sy,  0.0 ni, 56.5 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu3  : 13.6 us,  9.1 sy,  0.0 ni, 77.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu4  : 17.4 us,  8.7 sy,  0.0 ni, 73.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu5  : 20.8 us,  4.2 sy,  0.0 ni, 70.8 id,  0.0 wa,  0.0 hi,  4.2 si,  0.0 st</span><br><span class="line">%Cpu6  :  9.1 us,  0.0 sy,  0.0 ni, 90.9 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">%Cpu7  : 17.4 us,  4.3 sy,  0.0 ni, 78.3 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem : 16248588 total,  5015964 free,  6453404 used,  4779220 buff/cache</span><br><span class="line">KiB Swap: 17873388 total, 16928620 free,   944768 used.  6423008 avail Mem </span><br><span class="line">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND</span><br><span class="line">17163 daygeek   20     2033204 487736 282888 S  10.0   3.0   8:26.07 /usr/lib/firefox/firefox -contentproc -childID 15 -isForBrowser -prefsLen 9408 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /u+</span><br><span class="line"> 1121 daygeek   20     4191388 419180 100552 S   5.0   2.6 126:02.84 /usr/bin/gnome-shell</span><br><span class="line"> 1902 daygeek   20     1701644 327216  82536 S  20.0   2.0 153:27.92 /opt/google/chrome/chrome</span><br><span class="line"> 2969 daygeek   20     1051116 324656  92388 S  15.0   2.0 149:38.09 /opt/google/chrome/chrome --<span class="built_in">type</span>=renderer --field-trial-handle=10346122902703263820,11905758137655502112,131072 --service-pipe-token=1339861+</span><br><span class="line"> 1068 daygeek   20     1104856 309552 278072 S   5.0   1.9 143:47.42 /usr/lib/Xorg vt2 -displayfd 3 -auth /run/user/1000/gdm/Xauthority -nolisten tcp -background none -noreset -keeptty -verbose 3</span><br><span class="line">27246 daygeek   20      907344 265600 108276 S  30.0   1.6  10:42.80 /opt/google/chrome/chrome --<span class="built_in">type</span>=renderer --field-trial-handle=10346122902703263820,11905758137655502112,131072 --service-pipe-token=8587368+</span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">Top Memory Consuming Process Using ps <span class="built_in">command</span></span><br><span class="line">+------------------------------------------------------------------+</span><br><span class="line">  PID  PPID %MEM %CPU CMD</span><br><span class="line"> 8223     1  6.4  6.8 /usr/lib/firefox/firefox --new-window</span><br><span class="line">13948  1121  6.3  1.2 /usr/bin/../lib/notepadqq/notepadqq-bin</span><br><span class="line"> 8671  8223  4.4  7.5 /usr/lib/firefox/firefox -contentproc -childID 5 -isForBrowser -prefsLen 6999 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line">17163  8223  3.0  0.6 /usr/lib/firefox/firefox -contentproc -childID 15 -isForBrowser -prefsLen 9408 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 1121  1078  2.5  1.6 /usr/bin/gnome-shell</span><br><span class="line">17937  8223  2.5  0.8 /usr/lib/firefox/firefox -contentproc -childID 16 -isForBrowser -prefsLen 9410 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 8499  8223  2.2  0.6 /usr/lib/firefox/firefox -contentproc -childID 4 -isForBrowser -prefsLen 6635 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 8306  8223  2.2  0.8 /usr/lib/firefox/firefox -contentproc -childID 1 -isForBrowser -prefsLen 1 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br><span class="line"> 9198  8223  2.1  0.6 /usr/lib/firefox/firefox -contentproc -childID 7 -isForBrowser -prefsLen 8604 -prefMapSize 184979 -parentBuildID 20190521202118 -greomni /usr/lib/firefox/omni.ja -appomni /usr/lib/firefox/browser/omni.ja -appdir /usr/lib/firefox/browser 8223 <span class="literal">true</span> tab</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/img/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">联合国</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">运维</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">趣谈</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          Linux 中如何启用和禁用网卡？
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/06/20/samba-config/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Samba 配置</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -378,9 +236,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
+		isPost: false,
 		isArchive: false,
-		isTag: false,
+		isTag: true,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
