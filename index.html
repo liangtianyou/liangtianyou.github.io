@@ -486,82 +486,6 @@
 
 
   
-    <article id="post-samba-config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/20/samba-config/">Samba 配置</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/20/samba-config/" class="archive-article-date">
-  	<time datetime="2019-06-20T10:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="smbd和nmbd"><a href="#smbd和nmbd" class="headerlink" title="smbd和nmbd"></a>smbd和nmbd</h2><p>Samba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。<br>smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。<br>smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。<br>Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。<br>前两项服务由smbd提供，后两项服务则由nmbd提供。<br>简单地说，smbd进程的作用是处理到来的SMB软件包，为使用该软件包的资源与Linux进行协商，nmbd进程使主机(或工作站)能浏览Linux服务器。</p>
-        
-          <a class="article-more-a" href="/2019/06/20/samba-config/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Samba</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/20/samba-config/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
 
 
@@ -655,14 +579,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
@@ -683,7 +599,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
               </li>
             
             <div class="clearfix"></div>
