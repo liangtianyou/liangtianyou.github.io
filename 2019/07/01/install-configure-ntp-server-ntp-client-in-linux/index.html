@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>如何在 Linux 上安装、配置 NTP 服务器和客户端？ | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。  NTP 在公共互联网上通常能够保持时间延迟在几十毫">
+  <meta name="description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。     NTP 在公共互联网上通常能够保持时间延迟在">
 <meta name="keywords" content="Linux,NTP,NTP客户端">
 <meta property="og:type" content="article">
 <meta property="og:title" content="如何在 Linux 上安装、配置 NTP 服务器和客户端？">
 <meta property="og:url" content="http://yoursite.com/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。  NTP 在公共互联网上通常能够保持时间延迟在几十毫">
+<meta property="og:description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。     NTP 在公共互联网上通常能够保持时间延迟在">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-02T10:38:44.212Z">
+<meta property="og:updated_time" content="2019-07-03T02:03:29.549Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何在 Linux 上安装、配置 NTP 服务器和客户端？">
-<meta name="twitter:description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。  NTP 在公共互联网上通常能够保持时间延迟在几十毫">
+<meta name="twitter:description" content="你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。 什么是 NTP 服务?NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。     NTP 在公共互联网上通常能够保持时间延迟在">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -182,11 +182,9 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。</p>
-<h2 id="什么是-NTP-服务"><a href="#什么是-NTP-服务" class="headerlink" title="什么是 NTP 服务?"></a>什么是 NTP 服务?</h2><pre><code>NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。
-
-NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的精度，并在理想条件下，它能在局域网下达到低于一毫秒的延迟精度。</code></pre><p>它使用用户数据报协议（UDP）在端口 123 上发送和接受时间戳。它是个 C/S 架构的应用程序。</p>
-<h2 id="NTP-客户端"><a href="#NTP-客户端" class="headerlink" title="NTP 客户端"></a>NTP 客户端</h2><pre><code>NTP 客户端将其时钟与网络时间服务器同步。</code></pre><p>##Chrony 客户端<br>    Chrony 是 NTP 客户端的替代品。它能以更精确的时间更快的同步系统时钟，并且它对于那些不总是在线的系统很有用。</p>
-<a id="more"></a>
+<h2 id="什么是-NTP-服务"><a href="#什么是-NTP-服务" class="headerlink" title="什么是 NTP 服务?"></a>什么是 NTP 服务?</h2><pre><code>NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。    
+NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的精度，并在理想条件下，它能在局域网下达到低于一毫秒的延迟精度。
+它使用用户数据报协议（UDP）在端口 123 上发送和接受时间戳。它是个 C/S 架构的应用程序。</code></pre><h2 id="NTP-客户端"><a href="#NTP-客户端" class="headerlink" title="NTP 客户端"></a>NTP 客户端</h2><pre><code>NTP 客户端将其时钟与网络时间服务器同步。</code></pre><h2 id="Chrony-客户端"><a href="#Chrony-客户端" class="headerlink" title="Chrony 客户端"></a>Chrony 客户端</h2><pre><code>Chrony 是 NTP 客户端的替代品。它能以更精确的时间更快的同步系统时钟，并且它对于那些不总是在线的系统很有用。</code></pre><a id="more"></a>
 <h2 id="为什么我们需要-NTP-服务？"><a href="#为什么我们需要-NTP-服务？" class="headerlink" title="为什么我们需要 NTP 服务？"></a>为什么我们需要 NTP 服务？</h2><p>为了使你组织中的所有服务器与基于时间的作业保持精确的时间同步。</p>
 <p>为了说明这点，我将告诉你一个场景。比如说，我们有两个服务器（服务器 1 和服务器 2）。服务器 1 通常在 10:55 完成离线作业，然后服务器 2 在 11:00 需要基于服务器 1 完成的作业报告去运行其他作业。</p>
 <p>如果两个服务器正在使用不同的时间（如果服务器 2 时间比服务器 1 提前，服务器 1 的时间就落后于服务器 2），然后我们就不能去执行这个作业。为了达到时间一致，我们应该安装 NTP。</p>
@@ -514,19 +512,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -539,6 +529,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
             
             <div class="clearfix"></div>
