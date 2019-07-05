@@ -178,14 +178,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）"><a href="#MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）" class="headerlink" title="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）"></a>MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）</h2><p>::问题: 执行如下命令时报“1045”错误</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">INTO</span> <span class="keyword">OUTFILE</span> <span class="string">'/tmp/out.csv'</span> </span><br><span class="line"><span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">','</span> <span class="keyword">OPTIONALLY</span> <span class="keyword">ENCLOSED</span> <span class="keyword">BY</span> <span class="string">'*'</span></span><br><span class="line"><span class="keyword">LINES</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">'\n'</span></span><br><span class="line"><span class="keyword">FROM</span> ODSP.operationlog;</span><br></pre></td></tr></table></figure>
+        <h2 id="MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）"><a href="#MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）" class="headerlink" title="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）"></a>MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）</h2><h3 id="问题-执行如下命令时报“1045”错误"><a href="#问题-执行如下命令时报“1045”错误" class="headerlink" title="问题: 执行如下命令时报“1045”错误"></a>问题: 执行如下命令时报“1045”错误</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">INTO</span> <span class="keyword">OUTFILE</span> <span class="string">'/tmp/out.csv'</span> </span><br><span class="line"><span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">','</span> <span class="keyword">OPTIONALLY</span> <span class="keyword">ENCLOSED</span> <span class="keyword">BY</span> <span class="string">'*'</span></span><br><span class="line"><span class="keyword">LINES</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">'\n'</span></span><br><span class="line"><span class="keyword">FROM</span> ODSP.operationlog;</span><br></pre></td></tr></table></figure>
 
 <p>::Error:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access denied <span class="keyword">for</span> user <span class="string">'perabytes'</span>@<span class="string">'localhost'</span> (using password: YES)</span><br></pre></td></tr></table></figure>
 
-<p>::解决方案：</p>
-<ol>
+<h3 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h3><ol>
 <li><p>使用如下方式不赋权也可以导出</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo "<span class="keyword">select</span> * <span class="keyword">from</span> ODSP.operationlog<span class="string">" | mysql --host=HOST --port=PORT --user=UserName --password=Password DATABASE.SCHEMA &gt; output.txt</span></span><br></pre></td></tr></table></figure>
 </li>
@@ -780,15 +778,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
