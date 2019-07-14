@@ -161,34 +161,30 @@
     <article id="post-centos-7.0-install-ceph" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/14/centos-7.0-install-ceph/">CentOS7.0 安装Ceph</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/14/centos-7.0-install-ceph/" class="archive-article-date">
+  	<time datetime="2019-07-14T07:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-14</time>
+</a>
+        
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="CentOS7-0-安装Ceph"><a href="#CentOS7-0-安装Ceph" class="headerlink" title="CentOS7.0 安装Ceph"></a>CentOS7.0 安装Ceph</h1><hr>
-<p>title: CentOS7.0 安装Ceph<br>date: 2019-07-14 15:45<br>comments: true<br>tags:<br>    - Linux<br>    - CentOS</p>
-<pre><code>- Ceph</code></pre><hr>
-<h2 id="在-CentOS-上，可以执行下列命令："><a href="#在-CentOS-上，可以执行下列命令：" class="headerlink" title="在 CentOS 上，可以执行下列命令："></a>在 CentOS 上，可以执行下列命令：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils &amp;&amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;&amp; sudo yum install --nogpgcheck -y epel-release &amp;&amp; sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 &amp;&amp; sudo rm /etc/yum.repos.d/dl.fedoraproject.org*</span><br></pre></td></tr></table></figure>
+        <h2 id="在-CentOS-上，执行下列命令加入Ceph源："><a href="#在-CentOS-上，执行下列命令加入Ceph源：" class="headerlink" title="在 CentOS 上，执行下列命令加入Ceph源："></a>在 CentOS 上，执行下列命令加入Ceph源：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils &amp;&amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;&amp; sudo yum install --nogpgcheck -y epel-release &amp;&amp; sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 &amp;&amp; sudo rm /etc/yum.repos.d/dl.fedoraproject.org*</span><br></pre></td></tr></table></figure>
 
 <p>执行该命令时，会报如下错误：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">failure: repodata/repomd.xml from dl.fedoraproject.org: [Errno 256] No more mirrors to try.</span><br><span class="line">https://dl.fedoraproject.org/pub/epel/7/x86_64/repodata/repomd.xml: [Errno 14] curl<span class="comment">#35 - "Peer reports incompatible or unsupported protocol version."</span></span><br></pre></td></tr></table></figure>
-
-<p>解决办法：</p>
-<ol>
-<li><p>先将下载到/etc/yum.repos.d/目录下的dl.fedoraproject.org_pub_epel_7_x86_64_.repo里的enable修改为“0”，也就是禁用该源。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">baseurl=https://dl.fedoraproject.org/pub/epel/7/x86_64/</span><br><span class="line">enabled=0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>更新现有源并更新这几个包“nss curl libcurl”</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update &amp;&amp;　yum update -y nss curl libcurl</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启用dl.fedoraproject.org_pub_epel_7_x86_64_.repo。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">baseurl=https://dl.fedoraproject.org/pub/epel/7/x86_64/</span><br><span class="line">enabled=1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>再次更新源，安装ceph-deploy</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update &amp;&amp; yum install ceph-deploy</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ol>
-
+        
+          <a class="article-more-a" href="/2019/07/14/centos-7.0-install-ceph/#more">more >></a>
+        
       
 
       
@@ -196,6 +192,25 @@
     <div class="article-info article-info-index">
       
       
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
       
 
       
@@ -899,6 +914,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
