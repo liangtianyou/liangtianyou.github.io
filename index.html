@@ -165,12 +165,299 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/14/centos-7.0-install-ceph/">CentOS7.0 安装Ceph</a>
+      <a class="article-title" href="/2019/07/18/centos-7.0-install-ceph/">CentOS 7.0 安装Ceph</a>
     </h1>
   
 
         
-        <a href="/2019/07/14/centos-7.0-install-ceph/" class="archive-article-date">
+        <a href="/2019/07/18/centos-7.0-install-ceph/" class="archive-article-date">
+  	<time datetime="2019-07-18T03:15:25.217Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-18</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。</p>
+<h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><ul>
+<li>操作系统： </li>
+<li>ceph-deploy</li>
+</ul>
+<h2 id="Ceph版本"><a href="#Ceph版本" class="headerlink" title="Ceph版本"></a>Ceph版本</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>版本号</th>
+<th>发布日期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Argonaut</td>
+<td>0.48版本(LTS)</td>
+<td>2012年6月3日</td>
+</tr>
+<tr>
+<td>Bobtail</td>
+<td>0.56版本(LTS)</td>
+<td>2013年1月1日</td>
+</tr>
+<tr>
+<td>Cuttlefish</td>
+<td>0.61版本</td>
+<td>2013年5月7日</td>
+</tr>
+<tr>
+<td>Dumpling</td>
+<td>0.67版本(LTS)</td>
+<td>2013年8月14日</td>
+</tr>
+<tr>
+<td>Emperor</td>
+<td>0.72版本</td>
+<td>2013年11月9日</td>
+</tr>
+<tr>
+<td>Firefly</td>
+<td>0.80版本(LTS)</td>
+<td>2014年5月</td>
+</tr>
+<tr>
+<td>Giant</td>
+<td>Stable</td>
+<td>October 2014 - April 2015</td>
+</tr>
+<tr>
+<td>Hammer</td>
+<td>LTS</td>
+<td>April 2015 - November 2016</td>
+</tr>
+<tr>
+<td>Infernalis</td>
+<td>Stable</td>
+<td>November 2015 - June 2016</td>
+</tr>
+<tr>
+<td>Jewel</td>
+<td></td>
+<td>2016年4月</td>
+</tr>
+<tr>
+<td>Kraken</td>
+<td></td>
+<td>2017年10月</td>
+</tr>
+<tr>
+<td>Luminous</td>
+<td></td>
+<td>2017年10月</td>
+</tr>
+<tr>
+<td>mimic</td>
+<td></td>
+<td>2018年5月</td>
+</tr>
+<tr>
+<td>nautilus</td>
+<td></td>
+<td>2019年</td>
+</tr>
+</tbody></table>
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>节点的准备跟官方文档一样，一个管理节点，三个集群节点，包含一个Monitor和两个OSD守护进程。<br>准备工作主要是创建用户，关闭防火墙等，这里使用脚本实现。</p>
+<ul>
+<li>用户名ceph，密码asdf</li>
+<li>管理节点 admin-node 10.10.15.160</li>
+<li>Monitor node1 10.10.15.161</li>
+<li>OSD node2 10.10.15.162</li>
+<li>OSD node3 10.10.15.163</li>
+</ul>
+<h3 id="初始化（所有节点执行）"><a href="#初始化（所有节点执行）" class="headerlink" title="初始化（所有节点执行）"></a>初始化（所有节点执行）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># create user</span></span><br><span class="line">useradd -d /home/ceph ceph</span><br><span class="line"></span><br><span class="line"><span class="comment"># set password</span></span><br><span class="line">( <span class="built_in">echo</span> asdf ; <span class="built_in">echo</span> asdf) | passwd ceph</span><br><span class="line"></span><br><span class="line"><span class="comment"># sudo with out password</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"ceph ALL = (root) NOPASSWD:ALL"</span> | sudo tee /etc/sudoers.d/ceph</span><br><span class="line">chmod 0440 /etc/sudoers.d/ceph</span><br><span class="line"></span><br><span class="line"><span class="comment"># resove require tty</span></span><br><span class="line">sed -i <span class="string">'s/^Defaults.*requiretty$/Defaults:ceph !requiretty/'</span> /etc/sudoers</span><br><span class="line"></span><br><span class="line"><span class="comment"># firewalld</span></span><br><span class="line">firewall-cmd --zone=public --add-port=6789/tcp --permanent</span><br><span class="line">firewall-cmd --zone=public --add-port=6800-7300/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># selinux</span></span><br><span class="line">setenforce 0</span><br><span class="line">sed -i s<span class="string">'/SELINUX.*=.*enforcing/SELINUX=disabled'</span>/g /etc/selinux/config</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装-ceph-deploy"><a href="#安装-ceph-deploy" class="headerlink" title="安装 ceph-deploy"></a>安装 ceph-deploy</h3><p>直接在官方下载安装<br>浏览器打开<a href="http://download.ceph.com，选择想要安装的版本，这里选择最新的nautilu版本，进入rpm-nautilus/el7/noarch/目录，下载最新的ceph-deploy安装包。" target="_blank" rel="noopener">http://download.ceph.com，选择想要安装的版本，这里选择最新的nautilu版本，进入rpm-nautilus/el7/noarch/目录，下载最新的ceph-deploy安装包。</a><br>在管理节点执行安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ceph-deploy-2.0.1-0.noarch.rpm</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置源（所有节点执行）"><a href="#配置源（所有节点执行）" class="headerlink" title="配置源（所有节点执行）"></a>配置源（所有节点执行）</h3><ul>
+<li>使用网易源（根据自己使用的版本自行调整），这里使用的是CentOS7<br>进入/etc/yum.repos.d/，将原有的源文件删除（拷贝到其他地方备份也可以），创建两个新的源文件c7.repo和ceph.repo，分别对应CentOS7的源和Ceph的源。<br>c7.repo<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CentOS-Base.repo</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The mirror system uses the connecting IP address of the client and the</span></span><br><span class="line"><span class="comment"># update status of each mirror to pick mirrors that are updated to and</span></span><br><span class="line"><span class="comment"># geographically close to the client.  You should use this for CentOS updates</span></span><br><span class="line"><span class="comment"># unless you are manually picking other mirrors.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># If the mirrorlist= does not work for you, as a fall back you can try the </span></span><br><span class="line"><span class="comment"># remarked out baseurl= line instead.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">[base]</span><br><span class="line">name=CentOS-<span class="variable">$releasever</span> - Base - 163.com</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os</span></span><br><span class="line">baseurl=http://mirrors.163.com/centos/<span class="variable">$releasever</span>/os/<span class="variable">$basearch</span>/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"><span class="comment">#released updates</span></span><br><span class="line">[updates]</span><br><span class="line">name=CentOS-<span class="variable">$releasever</span> - Updates - 163.com</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates</span></span><br><span class="line">baseurl=http://mirrors.163.com/centos/<span class="variable">$releasever</span>/updates/<span class="variable">$basearch</span>/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"><span class="comment">#additional packages that may be useful</span></span><br><span class="line">[extras]</span><br><span class="line">name=CentOS-<span class="variable">$releasever</span> - Extras - 163.com</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras</span></span><br><span class="line">baseurl=http://mirrors.163.com/centos/<span class="variable">$releasever</span>/extras/<span class="variable">$basearch</span>/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"><span class="comment">#additional packages that extend functionality of existing packages</span></span><br><span class="line">[centosplus]</span><br><span class="line">name=CentOS-<span class="variable">$releasever</span> - Plus - 163.com</span><br><span class="line">baseurl=http://mirrors.163.com/centos/<span class="variable">$releasever</span>/centosplus/<span class="variable">$basearch</span>/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=http://mirrors.163.com/centos/RPM-GPG-KEY-CentOS-7</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>ceph.repo</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[Ceph]</span><br><span class="line">name=Ceph packages <span class="keyword">for</span> <span class="variable">$basearch</span></span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-mimic/el7/<span class="variable">$basearch</span></span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line"><span class="built_in">type</span>=rpm-md</span><br><span class="line">gpgkey=https://mirrors.163.com/ceph/keys/release.asc</span><br><span class="line">priority=1</span><br><span class="line"></span><br><span class="line">[Ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-mimic/el7/noarch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line"><span class="built_in">type</span>=rpm-md</span><br><span class="line">gpgkey=https://mirrors.163.com/ceph/keys/release.asc</span><br><span class="line">priority=1</span><br><span class="line"></span><br><span class="line">[ceph-source]</span><br><span class="line">name=Ceph <span class="built_in">source</span> packages</span><br><span class="line">baseurl=http://mirrors.163.com/ceph/rpm-mimic/el7/SRPMS</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line"><span class="built_in">type</span>=rpm-md</span><br><span class="line">gpgkey=https://mirrors.163.com/ceph/keys/release.asc</span><br><span class="line">priority=1</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装ntp、ntpdate、Ceph"><a href="#安装ntp、ntpdate、Ceph" class="headerlink" title="安装ntp、ntpdate、Ceph"></a>安装ntp、ntpdate、Ceph</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ntp ntpdate ceph ceph-radosgw</span><br></pre></td></tr></table></figure>
+
+<p>这里也可以先单台下载下来，再拷贝到不同节点上安装，这样可以省去每个节点都下载。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install --downloadonly ntp ntpdate ceph ceph-radosgw</span><br></pre></td></tr></table></figure>
+
+<p>下载完成后，将/var/cache/yum/目录拷贝到其他节点上，然后执行命令安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ntp ntpdate ceph ceph-radosgw</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置时间"><a href="#配置时间" class="headerlink" title="配置时间"></a>配置时间</h3><h4 id="管理节点配置"><a href="#管理节点配置" class="headerlink" title="管理节点配置"></a>管理节点配置</h4><p>修改/etc/ntp.conf，把下面几行修改如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="comment"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line">server 0.centos.pool.ntp.org iburst</span><br><span class="line">server 1.centos.pool.ntp.org iburst</span><br><span class="line">server 2.centos.pool.ntp.org iburst</span><br><span class="line">server 3.centos.pool.ntp.org iburst</span><br></pre></td></tr></table></figure>
+
+<p>改为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="comment"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line"><span class="comment">#server 0.centos.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 1.centos.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 2.centos.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 3.centos.pool.ntp.org iburst</span></span><br><span class="line">server 127.127.1.0</span><br><span class="line">fudge 127.127.1.0 stratum 10</span><br></pre></td></tr></table></figure>
+
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart ntpd</span><br></pre></td></tr></table></figure>
+
+<p>查看时间状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ntpq -p</span><br></pre></td></tr></table></figure>
+
+<p>结果类似如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">     remote           refid      st t when poll reach   delay   offset  jitter</span><br><span class="line">==============================================================================</span><br><span class="line">*LOCAL(0)        .LOCL.          10 l   59   64  377    0.000    0.000   0.000</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他节点配置"><a href="#其他节点配置" class="headerlink" title="其他节点配置"></a>其他节点配置</h4><p>修改/etc/ntp.conf，把下面几行修改如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="comment"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line">server 0.centos.pool.ntp.org iburst</span><br><span class="line">server 1.centos.pool.ntp.org iburst</span><br><span class="line">server 2.centos.pool.ntp.org iburst</span><br><span class="line">server 3.centos.pool.ntp.org iburst</span><br></pre></td></tr></table></figure>
+
+<p>改为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Use public servers from the pool.ntp.org project.</span></span><br><span class="line"><span class="comment"># Please consider joining the pool (http://www.pool.ntp.org/join.html).</span></span><br><span class="line"><span class="comment">#server 0.centos.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 1.centos.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 2.centos.pool.ntp.org iburst</span></span><br><span class="line"><span class="comment">#server 3.centos.pool.ntp.org iburst</span></span><br><span class="line">server 10.10.15.160</span><br><span class="line">fudge 127.127.1.0 stratum 11</span><br></pre></td></tr></table></figure>
+
+<p>重启服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart ntpd</span><br></pre></td></tr></table></figure>
+
+<p>查看时间状态：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ntpq -p</span><br></pre></td></tr></table></figure>
+
+<p>结果类似如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">          remote           refid      st t when poll reach   delay   offset  jitter</span><br><span class="line">==============================================================================</span><br><span class="line"> bogon           .INIT.          16 u    -   64    0    0.000    0.000   0.000</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建集群（管理节点执行）"><a href="#创建集群（管理节点执行）" class="headerlink" title="创建集群（管理节点执行）"></a>创建集群（管理节点执行）</h2><p>创建一个目录，用于保存 ceph-deploy 生成的配置文件和密钥对</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir my-cluster</span><br><span class="line"><span class="built_in">cd</span> mycluster</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建集群"><a href="#创建集群" class="headerlink" title="创建集群"></a>创建集群</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy new &#123;initial-monitor-node(s)&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy new node1</span><br></pre></td></tr></table></figure>
+
+<p>在当前目录下用 ls 和 cat 检查 ceph-deploy 的输出，应该有一个 Ceph 配置文件、一个 monitor 密钥环和一个日志文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy-ceph.log    ceph.conf   ceph.mon.keyring</span><br></pre></td></tr></table></figure>
+
+<h3 id="把-Ceph-配置文件里的默认副本数从-3-改成-2-，这样只有两个-OSD-也可以达到-active-clean-状态。"><a href="#把-Ceph-配置文件里的默认副本数从-3-改成-2-，这样只有两个-OSD-也可以达到-active-clean-状态。" class="headerlink" title="把 Ceph 配置文件里的默认副本数从 3 改成 2 ，这样只有两个 OSD 也可以达到 active + clean 状态。"></a>把 Ceph 配置文件里的默认副本数从 3 改成 2 ，这样只有两个 OSD 也可以达到 active + clean 状态。</h3><p>把下面这行加入 [global] 段：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osd pool default size = 2</span><br></pre></td></tr></table></figure>
+
+<p>如果你有多个网卡，可以把 public network 写入 Ceph 配置文件的 [global] 段下。详情见网络配置参考。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public network = &#123;ip-address&#125;/&#123;netmask&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里可以设置为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public network = 10.10.15.0/8</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装Ceph"><a href="#安装Ceph" class="headerlink" title="安装Ceph"></a>安装Ceph</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy install &#123;ceph-node&#125; [&#123;ceph-node&#125; ...]</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy install admin-node node1 node2 node3</span><br></pre></td></tr></table></figure>
+
+<p>ceph-deploy 将在各节点安装 Ceph。</p>
+<h3 id="出错时回滚"><a href="#出错时回滚" class="headerlink" title="出错时回滚"></a>出错时回滚</h3><p>如果在某些地方碰到麻烦，想从头再来，可以用下列命令清除配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy purgedata &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br><span class="line">ceph-deploy forgetkeys</span><br></pre></td></tr></table></figure>
+
+<p>用下列命令可以连 Ceph 安装包一起清除：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy purge &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置初始monitor-s-，并收集所有密钥："><a href="#配置初始monitor-s-，并收集所有密钥：" class="headerlink" title="配置初始monitor(s)，并收集所有密钥："></a>配置初始monitor(s)，并收集所有密钥：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mon create-initial</span><br></pre></td></tr></table></figure>
+
+<p>完成上述操作后，当前目录里应该会出现这些密钥环：</p>
+<ul>
+<li>{cluster-name}.client.admin.keyring</li>
+<li>{cluster-name}.bootstrap-osd.keyring</li>
+<li>{cluster-name}.bootstrap-mds.keyring</li>
+<li>{cluster-name}.bootstrap-rgw.keyring</li>
+<li><em>Note*</em>：只有在安装 Hammer 或更高版时才会创建 bootstrap-rgw 密钥环。 </li>
+</ul>
+<h3 id="创建OSD"><a href="#创建OSD" class="headerlink" title="创建OSD"></a>创建OSD</h3><h4 id="列举磁盘"><a href="#列举磁盘" class="headerlink" title="列举磁盘"></a>列举磁盘</h4><p>执行下列命令列举一节点上的磁盘：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy disk list &#123;node-name [node-name]...&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note</strong>：这条命令没有返回磁盘结果，应该是有BUG</p>
+<h4 id="擦净磁盘"><a href="#擦净磁盘" class="headerlink" title="擦净磁盘"></a>擦净磁盘</h4><p>用下列命令擦净（删除分区表）磁盘，以用于 Ceph ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy disk zap &#123;&#123;node-name&#125; &#123;disk-path&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note</strong>：如果磁盘没有使用过，不必执行该命令。<br>示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy disk zap node3 /dev/sdb</span><br></pre></td></tr></table></figure>
+
+<h4 id="创建OSD-1"><a href="#创建OSD-1" class="headerlink" title="创建OSD"></a>创建OSD</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create --data &#123;data-path&#125; --journal &#123;journal-path&#125; &#123;node-name&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create node3 --data /dev/sdb</span><br><span class="line">ceph-deploy osd list node3</span><br><span class="line">[ceph_deploy.conf][DEBUG ] found configuration file at: /home/ceph/.cephdeploy.conf</span><br><span class="line">[ceph_deploy.cli][INFO  ] Invoked (2.0.1): /usr/bin/ceph-deploy osd list node3</span><br><span class="line">[ceph_deploy.cli][INFO  ] ceph-deploy options:</span><br><span class="line">[ceph_deploy.cli][INFO  ]  username                      : None</span><br><span class="line">[ceph_deploy.cli][INFO  ]  verbose                       : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  debug                         : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  overwrite_conf                : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  subcommand                    : list</span><br><span class="line">[ceph_deploy.cli][INFO  ]  quiet                         : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  cd_conf                       : &lt;ceph_deploy.conf.cephdeploy.Conf instance at 0xd19cb0&gt;</span><br><span class="line">[ceph_deploy.cli][INFO  ]  cluster                       : ceph</span><br><span class="line">[ceph_deploy.cli][INFO  ]  host                          : [<span class="string">'node3'</span>]</span><br><span class="line">[ceph_deploy.cli][INFO  ]  func                          : &lt;<span class="keyword">function</span> osd at 0x7f41d0619a28&gt;</span><br><span class="line">[ceph_deploy.cli][INFO  ]  ceph_conf                     : None</span><br><span class="line">[ceph_deploy.cli][INFO  ]  default_release               : False</span><br><span class="line">[node3][DEBUG ] connection detected need <span class="keyword">for</span> sudo</span><br><span class="line">[node3][DEBUG ] connected to host: node3 </span><br><span class="line">[node3][DEBUG ] detect platform information from remote host</span><br><span class="line">[node3][DEBUG ] detect machine <span class="built_in">type</span></span><br><span class="line">[node3][DEBUG ] find the location of an executable</span><br><span class="line">[ceph_deploy.osd][INFO  ] Distro info: CentOS Linux 7.6.1810 Core</span><br><span class="line">[ceph_deploy.osd][DEBUG ] Listing disks on node3...</span><br><span class="line">[node3][DEBUG ] find the location of an executable</span><br><span class="line">[node3][INFO  ] Running <span class="built_in">command</span>: sudo /usr/sbin/ceph-volume lvm list</span><br><span class="line">[node3][DEBUG ] </span><br><span class="line">[node3][DEBUG ] </span><br><span class="line">[node3][DEBUG ] ====== osd.1 =======</span><br><span class="line">[node3][DEBUG ] </span><br><span class="line">[node3][DEBUG ]   [block]    /dev/ceph-c336034f-c5be-452f-9fe4-ecac76a87559/osd-block-328987d9-fea1-4d2c-bb16-bf016ff8d2ae</span><br><span class="line">[node3][DEBUG ] </span><br><span class="line">[node3][DEBUG ]       <span class="built_in">type</span>                      block</span><br><span class="line">[node3][DEBUG ]       osd id                    1</span><br><span class="line">[node3][DEBUG ]       cluster fsid              0eee1157-eb2e-4c1d-89a3-9faf45d3cb50</span><br><span class="line">[node3][DEBUG ]       cluster name              ceph</span><br><span class="line">[node3][DEBUG ]       osd fsid                  328987d9-fea1-4d2c-bb16-bf016ff8d2ae</span><br><span class="line">[node3][DEBUG ]       encrypted                 0</span><br><span class="line">[node3][DEBUG ]       cephx lockbox secret      </span><br><span class="line">[node3][DEBUG ]       block uuid                MGjD5u-JYMJ-LKqi-XA0S-k9jw-f6ke-PyxlL3</span><br><span class="line">[node3][DEBUG ]       block device              /dev/ceph-c336034f-c5be-452f-9fe4-ecac76a87559/osd-block-328987d9-fea1-4d2c-bb16-bf016ff8d2ae</span><br><span class="line">[node3][DEBUG ]       vdo                       0</span><br><span class="line">[node3][DEBUG ]       crush device class        None</span><br><span class="line">[node3][DEBUG ]       devices                   /dev/sdb</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：原文档里的准备（prepare）、激活（activate）命令在最新的ceph-deploy里均无效。</p>
+<h3 id="用-ceph-deploy-把配置文件和-admin-密钥拷贝到管理节点和-Ceph-节点"><a href="#用-ceph-deploy-把配置文件和-admin-密钥拷贝到管理节点和-Ceph-节点" class="headerlink" title="用 ceph-deploy 把配置文件和 admin 密钥拷贝到管理节点和 Ceph 节点"></a>用 ceph-deploy 把配置文件和 admin 密钥拷贝到管理节点和 Ceph 节点</h3><p>这样你每次执行 Ceph 命令行时就无需指定 monitor 地址和 ceph.client.admin.keyring 了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy admin &#123;admin-node&#125; &#123;ceph-node&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy admin admin-node node1 node2 node3</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note</strong>：ceph-deploy 和本地管理主机（ admin-node ）通信时，必须通过主机名可达。必要时可修改 /etc/hosts ，加入管理主机的名字。</p>
+<h3 id="确保你对-ceph-client-admin-keyring-有正确的操作权限。"><a href="#确保你对-ceph-client-admin-keyring-有正确的操作权限。" class="headerlink" title="确保你对 ceph.client.admin.keyring 有正确的操作权限。"></a>确保你对 ceph.client.admin.keyring 有正确的操作权限。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod +r /etc/ceph/ceph.client.admin.keyring</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查集群的健康状况。"><a href="#检查集群的健康状况。" class="headerlink" title="检查集群的健康状况。"></a>检查集群的健康状况。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph health</span><br></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HEALTH_WARN no active mgr</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建ceph-管理进程服务"><a href="#创建ceph-管理进程服务" class="headerlink" title="创建ceph 管理进程服务"></a>创建ceph 管理进程服务</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mgr create &#123;admin-node&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mgr create admin-node</span><br></pre></td></tr></table></figure>
+
+<h3 id="检查集群的健康状况。-1"><a href="#检查集群的健康状况。-1" class="headerlink" title="检查集群的健康状况。"></a>检查集群的健康状况。</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph health</span><br></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HEALTH_OK</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/18/centos-7.0-install-ceph/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-centos-7.0-install-ceph-faq" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/14/centos-7.0-install-ceph-faq/">CentOS7.0 官方文档安装Ceph过程中遇到的坑</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/14/centos-7.0-install-ceph-faq/" class="archive-article-date">
   	<time datetime="2019-07-14T07:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-14</time>
 </a>
         
@@ -178,12 +465,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="在-CentOS-上，执行下列命令加入Ceph源："><a href="#在-CentOS-上，执行下列命令加入Ceph源：" class="headerlink" title="在 CentOS 上，执行下列命令加入Ceph源："></a>在 CentOS 上，执行下列命令加入Ceph源：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils &amp;&amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;&amp; sudo yum install --nogpgcheck -y epel-release &amp;&amp; sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 &amp;&amp; sudo rm /etc/yum.repos.d/dl.fedoraproject.org*</span><br></pre></td></tr></table></figure>
+        <h2 id="安装ceph-deploy"><a href="#安装ceph-deploy" class="headerlink" title="安装ceph-deploy"></a>安装ceph-deploy</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils &amp;&amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;&amp; sudo yum install --nogpgcheck -y epel-release &amp;&amp; sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 &amp;&amp; sudo rm /etc/yum.repos.d/dl.fedoraproject.org*</span><br></pre></td></tr></table></figure>
 
 <p>执行该命令时，会报如下错误：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">failure: repodata/repomd.xml from dl.fedoraproject.org: [Errno 256] No more mirrors to try.</span><br><span class="line">https://dl.fedoraproject.org/pub/epel/7/x86_64/repodata/repomd.xml: [Errno 14] curl<span class="comment">#35 - "Peer reports incompatible or unsupported protocol version."</span></span><br></pre></td></tr></table></figure>
         
-          <a class="article-more-a" href="/2019/07/14/centos-7.0-install-ceph/#more">more >></a>
+          <a class="article-more-a" href="/2019/07/14/centos-7.0-install-ceph-faq/#more">more >></a>
         
       
 
@@ -215,7 +502,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/14/centos-7.0-install-ceph/">展开全文 >></a>
+          <a class="article-more-a" href="/2019/07/14/centos-7.0-install-ceph-faq/">展开全文 >></a>
         </p>
       
 
@@ -925,7 +1212,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -937,23 +1224,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
              
               <li class="article-tag-list-item">
