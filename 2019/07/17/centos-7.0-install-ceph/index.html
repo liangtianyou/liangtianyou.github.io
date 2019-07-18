@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1  Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-18T03:32:27.022Z">
+<meta property="og:updated_time" content="2019-07-18T07:52:57.669Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CentOS 7.0 安装Ceph">
 <meta name="twitter:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1  Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版">
@@ -410,6 +410,84 @@
 
 <p>输出如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HEALTH_OK</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加-OSD"><a href="#添加-OSD" class="headerlink" title="添加 OSD"></a>添加 OSD</h3><p>因为运行的这个三节点集群只是用于演示的，把 OSD 添加到 monitor 节点就行。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd create node1 --data /dev/sdb</span><br></pre></td></tr></table></figure>
+
+<p>一旦你新加了 OSD ， Ceph 集群就开始重均衡，把归置组迁移到新 OSD 。可以用下面的 ceph 命令观察此过程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph -w</span><br></pre></td></tr></table></figure>
+
+<p>你应该能看到归置组状态从 active + clean 变为 active ，还有一些降级的对象；迁移完成后又会回到 active + clean 状态（ Control-C 退出）。</p>
+<h3 id="添加元数据服务器"><a href="#添加元数据服务器" class="headerlink" title="添加元数据服务器"></a>添加元数据服务器</h3><p>至少需要一个元数据服务器才能使用 CephFS ，执行下列命令创建元数据服务器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds create &#123;ceph-node&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy mds create node1</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：当前生产环境下的 Ceph 只能运行一个元数据服务器。你可以配置多个，但现在我们还不会为多个元数据服务器的集群提供商业支持。</p>
+<h2 id="存入-检出对象数据"><a href="#存入-检出对象数据" class="headerlink" title="存入/检出对象数据"></a>存入/检出对象数据</h2><p>要把对象存入 Ceph 存储集群，客户端必须做到：</p>
+<ul>
+<li>指定对象名</li>
+<li>指定存储池<br>Ceph 客户端检出最新集群运行图，用 CRUSH 算法计算出如何把对象映射到归置组，然后动态地计算如何把归置组分配到 OSD 。要定位对象，只需要对象名和存储池名字即可，例如：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd map &#123;poolname&#125; &#123;object-name&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="查看存储池"><a href="#查看存储池" class="headerlink" title="查看存储池"></a>查看存储池</h3><p>查看pool有多种方式：</p>
+<ul>
+<li><p>方法一：rados lspools 命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]<span class="comment"># rados lspools</span></span><br><span class="line">testpool</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法二：ceph osd lspools 命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]<span class="comment"># ceph osd lspools</span></span><br><span class="line">1 testpool</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>方法三：ceph osd dump | grep pool 命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]<span class="comment"># ceph osd lspools</span></span><br><span class="line">pool 1 <span class="string">'testpool'</span> replicated size 2 min_size 1 crush_rule 0 object_hash rjenkins pg_num 64 pgp_num 64 last_change 21 flags hashpspool stripe_width 0</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="创建存储池"><a href="#创建存储池" class="headerlink" title="创建存储池"></a>创建存储池</h3><p>通常在创建pool之前，需要覆盖默认的pg_num，官方推荐：</p>
+<ul>
+<li>若少于5个OSD， 设置pg_num为128。</li>
+<li>5~10个OSD，设置pg_num为512。</li>
+<li>10~50个OSD，设置pg_num为4096。</li>
+<li>超过50个OSD，可以参考pgcalc计算。<br>创建命令：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">osd pool create &lt;poolname&gt; &lt;int[0-]&gt; &#123;&lt;int[0-]&gt;&#125;      create pool</span><br><span class="line"> &#123;replicated|erasure&#125; &#123;&lt;erasure_code_profile&gt;&#125;        </span><br><span class="line"> &#123;&lt;rule&gt;&#125; &#123;&lt;int&gt;&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>创建存储池testpool</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]<span class="comment"># ceph osd pool create testpool 64</span></span><br><span class="line">pool <span class="string">'testpool'</span> created</span><br></pre></td></tr></table></figure>
+
+<p>创建pool时要设置pg_num</p>
+<h3 id="调整POOL副本"><a href="#调整POOL副本" class="headerlink" title="调整POOL副本"></a>调整POOL副本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]<span class="comment"># ceph osd pool set testpool size 2</span></span><br><span class="line"><span class="built_in">set</span> pool 1 size to 2</span><br></pre></td></tr></table></figure>
+
+<h3 id="练习：定位某个对象"><a href="#练习：定位某个对象" class="headerlink" title="练习：定位某个对象"></a>练习：定位某个对象</h3><p>作为练习，我们先创建一个对象，用 rados put 命令加上对象名、一个有数据的测试文件路径、并指定存储池。</p>
+<h4 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> &#123;Test-data&#125; &gt; &#123;Test-file&#125;</span><br><span class="line">rados put &#123;object-name&#125; &#123;Test-file&#125; --pool=&#123;pool-name&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际操作如下：在“testfile.txt”里写入“1234567890”</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">'1234567890'</span> &gt; testfile.txt</span><br><span class="line">rados put <span class="built_in">test</span>-object-1 testfile.txt --pool=testpool</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看对象"><a href="#查看对象" class="headerlink" title="查看对象"></a>查看对象</h4><p>为确认 Ceph 存储集群存储了此对象，可执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rados -p &#123;pool-name&#125; ls</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rados -p testpool ls</span><br></pre></td></tr></table></figure>
+
+<p>输出如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rados -p testpool ls</span><br><span class="line"><span class="built_in">test</span>-object-1</span><br></pre></td></tr></table></figure>
+
+<h4 id="定位对象"><a href="#定位对象" class="headerlink" title="定位对象"></a>定位对象</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd map &#123;pool-name&#125; &#123;object-name&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd map testpool <span class="built_in">test</span>-object-1</span><br></pre></td></tr></table></figure>
+
+<p>Ceph 应该会输出对象的位置，输出如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]$ ceph osd map testpool <span class="built_in">test</span>-object-1</span><br><span class="line">osdmap e21 pool <span class="string">'testpool'</span> (1) object <span class="string">'test-object-1'</span> -&gt; pg 1.74dc35e2 (1.22) -&gt; up ([1,2], p1) acting ([1,2], p1)</span><br></pre></td></tr></table></figure>
+
+<h4 id="删除对象"><a href="#删除对象" class="headerlink" title="删除对象"></a>删除对象</h4><p>用<code>rados rm</code> 命令可删除此测试对象，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rados rm &#123;object-name&#125; --pool=&#123;pool-name&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rados rm <span class="built_in">test</span>-object-1 --pool=testpool</span><br></pre></td></tr></table></figure>
 
 
       
