@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>CentOS 7 安装Ceph | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1  Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版">
+  <meta name="description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版本(">
 <meta name="keywords" content="Linux,CentOS,Ceph">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CentOS 7 安装Ceph">
 <meta property="og:url" content="http://yoursite.com/2019/07/17/centos-7.0-install-ceph/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1  Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版">
+<meta property="og:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版本(">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-18T07:55:26.004Z">
+<meta property="og:updated_time" content="2019-07-18T07:57:42.867Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CentOS 7 安装Ceph">
-<meta name="twitter:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1  Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版">
+<meta name="twitter:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版本(">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -184,9 +184,7 @@
         <p>按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。</p>
 <h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><ul>
 <li>操作系统：CentOS Linux release 7.6.1810</li>
-<li>ceph-deploy：2.0.1</li>
-</ul>
-<h2 id="Ceph版本"><a href="#Ceph版本" class="headerlink" title="Ceph版本"></a>Ceph版本</h2><table>
+<li>ceph-deploy：2.0.1<h2 id="Ceph版本"><a href="#Ceph版本" class="headerlink" title="Ceph版本"></a>Ceph版本</h2><table>
 <thead>
 <tr>
 <th>名称</th>
@@ -265,6 +263,8 @@
 <td>2019年</td>
 </tr>
 </tbody></table>
+</li>
+</ul>
 <a id="more"></a>
 <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>节点的准备跟官方文档一样，一个管理节点，三个集群节点，包含一个Monitor和两个OSD守护进程。<br>准备工作主要是创建用户，关闭防火墙等，这里使用脚本实现。</p>
 <ul>
@@ -473,7 +473,7 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rados -p testpool ls</span><br></pre></td></tr></table></figure>
 
 <p>输出如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rados -p testpool ls</span><br><span class="line"><span class="built_in">test</span>-object-1</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[ceph@admin-node my-cluster]$ rados -p testpool ls</span><br><span class="line"><span class="built_in">test</span>-object-1</span><br></pre></td></tr></table></figure>
 
 <h4 id="定位对象"><a href="#定位对象" class="headerlink" title="定位对象"></a>定位对象</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph osd map &#123;pool-name&#125; &#123;object-name&#125;</span><br></pre></td></tr></table></figure>
 
