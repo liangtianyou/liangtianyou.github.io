@@ -6,20 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>MySQL 配置 | 漫漫长路</title>
+  <title>Tkinter点击按钮关闭窗口 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）问题: 执行如下命令时报“1045”错误1234SELECT * INTO OUTFILE &apos;/tmp/out.csv&apos; FIELDS TERMINATE">
-<meta name="keywords" content="Linux,MySQL,1045">
+  <meta name="description" content="点击Button触发关闭窗口事件。 123456789101112131415#-*-coding:utf-8-*-import Tkinterwindow = Tkinter.Tk()def close_window(root):    root.destroy()    frame = Tkinter.Frame(window)frame.pack()button = Tkinter.Butt">
+<meta name="keywords" content="Tkinter,Python,Button">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL 配置">
-<meta property="og:url" content="http://yoursite.com/2019/07/04/mysql-config/index.html">
+<meta property="og:title" content="Tkinter点击按钮关闭窗口">
+<meta property="og:url" content="http://yoursite.com/2019/07/24/tkinter-button-close-window/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）问题: 执行如下命令时报“1045”错误1234SELECT * INTO OUTFILE &apos;/tmp/out.csv&apos; FIELDS TERMINATE">
+<meta property="og:description" content="点击Button触发关闭窗口事件。 123456789101112131415#-*-coding:utf-8-*-import Tkinterwindow = Tkinter.Tk()def close_window(root):    root.destroy()    frame = Tkinter.Frame(window)frame.pack()button = Tkinter.Butt">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-05T06:57:44.424Z">
+<meta property="og:updated_time" content="2019-07-24T03:24:55.232Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL 配置">
-<meta name="twitter:description" content="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）问题: 执行如下命令时报“1045”错误1234SELECT * INTO OUTFILE &apos;/tmp/out.csv&apos; FIELDS TERMINATE">
+<meta name="twitter:title" content="Tkinter点击按钮关闭窗口">
+<meta name="twitter:description" content="点击Button触发关闭窗口事件。 123456789101112131415#-*-coding:utf-8-*-import Tkinterwindow = Tkinter.Tk()def close_window(root):    root.destroy()    frame = Tkinter.Frame(window)frame.pack()button = Tkinter.Butt">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -161,54 +161,30 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-mysql-config" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-tkinter-button-close-window" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      MySQL 配置
+      Tkinter点击按钮关闭窗口
     </h1>
   
 
         
-        <a href="/2019/07/04/mysql-config/" class="archive-article-date">
-  	<time datetime="2019-07-04T14:12:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-04</time>
+        <a href="/2019/07/24/tkinter-button-close-window/" class="archive-article-date">
+  	<time datetime="2019-07-24T03:21:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-24</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）"><a href="#MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）" class="headerlink" title="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）"></a>MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）</h2><h3 id="问题-执行如下命令时报“1045”错误"><a href="#问题-执行如下命令时报“1045”错误" class="headerlink" title="问题: 执行如下命令时报“1045”错误"></a>问题: 执行如下命令时报“1045”错误</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">INTO</span> <span class="keyword">OUTFILE</span> <span class="string">'/tmp/out.csv'</span> </span><br><span class="line"><span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">','</span> <span class="keyword">OPTIONALLY</span> <span class="keyword">ENCLOSED</span> <span class="keyword">BY</span> <span class="string">'*'</span></span><br><span class="line"><span class="keyword">LINES</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">'\n'</span></span><br><span class="line"><span class="keyword">FROM</span> ODSP.operationlog;</span><br></pre></td></tr></table></figure>
+        <p>点击Button触发关闭窗口事件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#-*-coding:utf-8-*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Tkinter</span><br><span class="line"></span><br><span class="line">window = Tkinter.Tk()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">close_window</span><span class="params">(root)</span>:</span></span><br><span class="line">    root.destroy()</span><br><span class="line">    </span><br><span class="line">frame = Tkinter.Frame(window)</span><br><span class="line">frame.pack()</span><br><span class="line"></span><br><span class="line">button = Tkinter.Button(frame,text=<span class="string">u"关闭"</span>,command=<span class="keyword">lambda</span>:close_window(window))</span><br><span class="line">button.pack()</span><br><span class="line">window.mainloop()</span><br></pre></td></tr></table></figure>
 
-<p>报如下错误</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access denied <span class="keyword">for</span> user <span class="string">'perabytes'</span>@<span class="string">'localhost'</span> (using password: YES)</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><ul>
-<li><p>使用如下方式不赋权也可以导出</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">"select * from ODSP.operationlog"</span> | mysql --host=HOST --port=PORT --user=UserName --password=Password DATABASE.SCHEMA &gt; output.txt</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用赋权来导出</p>
-</li>
-</ul>
-<ol>
-<li>“GRANT ALL”不包含“GRANT FILE”。</li>
-<li>“GRANT FILE”只针对“<em>.</em>”生效。<br>所以执行如下操作：<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">FILE</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="keyword">user</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></table></figure>
-
-</li>
-</ol>
-<p>这里就应该是：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">FILE</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">'perabytes'</span>@<span class="string">'localhost'</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></table></figure>
-
-<p>赋予增删改查权限：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> <span class="keyword">PRIVILEGES</span> <span class="keyword">ON</span> 数据库名.* <span class="keyword">TO</span> <span class="string">'用户名'</span>@<span class="string">'主机名'</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">'密码'</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></table></figure>
-
-<p>如果导出文件到的目录没有权限的话(/home/user/tmp/db)，执行如下命令：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown mysql:mysql /home/user/tmp/db</span><br></pre></td></tr></table></figure>
-
+<h2 id="如何向Button的command传递参数"><a href="#如何向Button的command传递参数" class="headerlink" title="如何向Button的command传递参数"></a>如何向Button的command传递参数</h2><p>默认的command后面跟着是无参的函数，如果需要传参，推荐的方式基本都是使用<strong>lambda</strong>函数</p>
 
       
 
@@ -248,15 +224,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Tkinter</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">1045</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Button</a>
         		</li>
       		
 		</ul>
@@ -312,7 +288,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/04/mysql-config/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/24/tkinter-button-close-window/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -326,18 +302,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/07/09/jingxingxian-customs/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/07/24/tkinter-text-disable-and-enable/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          井陉一些有趣的民俗
+          Tkinter启用禁用Text控件
         
       </div>
     </a>
   
   
-    <a href="/2019/07/02/live-broadcast-united-nation/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">直播联合国</div>
+    <a href="/2019/07/17/centos-7.0-install-ceph/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">CentOS 7 安装Ceph</div>
       <i class="icon-circle-right"></i>
     </a>
   
