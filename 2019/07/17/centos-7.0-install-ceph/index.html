@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版本(">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-18T08:05:20.143Z">
+<meta property="og:updated_time" content="2019-07-25T02:39:35.432Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CentOS 7 安装Ceph">
 <meta name="twitter:description" content="按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。 系统环境 操作系统：CentOS Linux release 7.6.1810 ceph-deploy：2.0.1Ceph版本   名称 版本号 发布日期    Argonaut 0.48版本(LTS) 2012年6月3日   Bobtail 0.56版本(">
@@ -276,7 +276,10 @@
 </ul>
 <h3 id="初始化（所有节点执行）"><a href="#初始化（所有节点执行）" class="headerlink" title="初始化（所有节点执行）"></a>初始化（所有节点执行）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># create user</span></span><br><span class="line">useradd -d /home/ceph ceph</span><br><span class="line"></span><br><span class="line"><span class="comment"># set password</span></span><br><span class="line">( <span class="built_in">echo</span> asdf ; <span class="built_in">echo</span> asdf) | passwd ceph</span><br><span class="line"></span><br><span class="line"><span class="comment"># sudo with out password</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"ceph ALL = (root) NOPASSWD:ALL"</span> | sudo tee /etc/sudoers.d/ceph</span><br><span class="line">chmod 0440 /etc/sudoers.d/ceph</span><br><span class="line"></span><br><span class="line"><span class="comment"># resove require tty</span></span><br><span class="line">sed -i <span class="string">'s/^Defaults.*requiretty$/Defaults:ceph !requiretty/'</span> /etc/sudoers</span><br><span class="line"></span><br><span class="line"><span class="comment"># firewalld</span></span><br><span class="line">firewall-cmd --zone=public --add-port=6789/tcp --permanent</span><br><span class="line">firewall-cmd --zone=public --add-port=6800-7300/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line"></span><br><span class="line"><span class="comment"># selinux</span></span><br><span class="line">setenforce 0</span><br><span class="line">sed -i s<span class="string">'/SELINUX.*=.*enforcing/SELINUX=disabled'</span>/g /etc/selinux/config</span><br></pre></td></tr></table></figure>
 
-<h3 id="安装-ceph-deploy"><a href="#安装-ceph-deploy" class="headerlink" title="安装 ceph-deploy"></a>安装 ceph-deploy</h3><p>直接在官方下载安装<br>浏览器打开<a href="http://download.ceph.com，选择想要安装的版本，这里选择最新的nautilu版本，进入rpm-nautilus/el7/noarch/目录，下载最新的ceph-deploy安装包。" target="_blank" rel="noopener">http://download.ceph.com，选择想要安装的版本，这里选择最新的nautilu版本，进入rpm-nautilus/el7/noarch/目录，下载最新的ceph-deploy安装包。</a><br>在管理节点执行安装：</p>
+<h3 id="配置主机名解析"><a href="#配置主机名解析" class="headerlink" title="配置主机名解析"></a>配置主机名解析</h3><p>在/etc/hosts里增加节点IP和主机名的对应关系</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">10.10.15.160 admin-node </span><br><span class="line">10.10.15.161 node1</span><br><span class="line">10.10.15.162 node2</span><br><span class="line">10.10.15.163 node3</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置ssh无密码访问"><a href="#配置ssh无密码访问" class="headerlink" title="配置ssh无密码访问"></a>配置ssh无密码访问</h3><h3 id="安装-ceph-deploy"><a href="#安装-ceph-deploy" class="headerlink" title="安装 ceph-deploy"></a>安装 ceph-deploy</h3><p>直接在官方下载安装<br>浏览器打开<a href="http://download.ceph.com，选择想要安装的版本，这里选择最新的nautilu版本，进入rpm-nautilus/el7/noarch/目录，下载最新的ceph-deploy安装包。" target="_blank" rel="noopener">http://download.ceph.com，选择想要安装的版本，这里选择最新的nautilu版本，进入rpm-nautilus/el7/noarch/目录，下载最新的ceph-deploy安装包。</a><br>在管理节点执行安装：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ceph-deploy-2.0.1-0.noarch.rpm</span><br></pre></td></tr></table></figure>
 
 <h3 id="配置源（所有节点执行）"><a href="#配置源（所有节点执行）" class="headerlink" title="配置源（所有节点执行）"></a>配置源（所有节点执行）</h3><ul>
@@ -771,23 +774,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -803,6 +790,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Tkinter</a>
               </li>
              
@@ -815,7 +810,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
             
             <div class="clearfix"></div>
