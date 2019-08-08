@@ -6,20 +6,15 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>CentOS7.0 官方文档安装Ceph过程中遇到的坑 | 漫漫长路</title>
+  <title>Archives: 2019/8 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="安装ceph-deploy1sudo yum install -y yum-utils &amp;amp;&amp;amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;amp;&amp;amp; sudo yum install --nogpgcheck -y epel-release &amp;amp;">
-<meta name="keywords" content="Linux,CentOS,Ceph FAQs">
-<meta property="og:type" content="article">
-<meta property="og:title" content="CentOS7.0 官方文档安装Ceph过程中遇到的坑">
-<meta property="og:url" content="http://yoursite.com/2019/07/14/centos-7.0-install-ceph-faq/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="漫漫长路">
+<meta property="og:url" content="http://yoursite.com/archives/2019/08/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="安装ceph-deploy1sudo yum install -y yum-utils &amp;amp;&amp;amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;amp;&amp;amp; sudo yum install --nogpgcheck -y epel-release &amp;amp;">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-18T03:28:50.445Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CentOS7.0 官方文档安装Ceph过程中遇到的坑">
-<meta name="twitter:description" content="安装ceph-deploy1sudo yum install -y yum-utils &amp;amp;&amp;amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;amp;&amp;amp; sudo yum install --nogpgcheck -y epel-release &amp;amp;">
+<meta name="twitter:title" content="漫漫长路">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -161,253 +156,68 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-centos-7.0-install-ceph-faq" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      CentOS7.0 官方文档安装Ceph过程中遇到的坑
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/08/08/awk-string/" class="archive-article-date">
+  	<time datetime="2019-08-08T08:51:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-08</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/08/08/awk-string/">awk 字符串操作</a>
     </h1>
   
 
-        
-        <a href="/2019/07/14/centos-7.0-install-ceph-faq/" class="archive-article-date">
-  	<time datetime="2019-07-14T07:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-14</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="安装ceph-deploy"><a href="#安装ceph-deploy" class="headerlink" title="安装ceph-deploy"></a>安装ceph-deploy</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils &amp;&amp; sudo yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/x86_64/ &amp;&amp; sudo yum install --nogpgcheck -y epel-release &amp;&amp; sudo rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7 &amp;&amp; sudo rm /etc/yum.repos.d/dl.fedoraproject.org*</span><br></pre></td></tr></table></figure>
-
-<p>执行该命令时，会报如下错误：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">failure: repodata/repomd.xml from dl.fedoraproject.org: [Errno 256] No more mirrors to try.</span><br><span class="line">https://dl.fedoraproject.org/pub/epel/7/x86_64/repodata/repomd.xml: [Errno 14] curl<span class="comment">#35 - "Peer reports incompatible or unsupported protocol version."</span></span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-<p>解决办法：</p>
-<ol>
-<li><p>先将下载到/etc/yum.repos.d/目录下的dl.fedoraproject.org_pub_epel_7_x86_64_.repo里的enable修改为“0”，也就是禁用该源。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">baseurl=https://dl.fedoraproject.org/pub/epel/7/x86_64/</span><br><span class="line">enabled=0</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>更新现有源并更新这几个包“nss curl libcurl”</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update &amp;&amp;　yum update -y nss curl libcurl</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>启用dl.fedoraproject.org_pub_epel_7_x86_64_.repo。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">baseurl=https://dl.fedoraproject.org/pub/epel/7/x86_64/</span><br><span class="line">enabled=1</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>再次更新源，安装ceph-deploy</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum update &amp;&amp; yum install ceph-deploy</span><br></pre></td></tr></table></figure>
-
-
-</li>
-</ol>
-<h2 id="出错时想重头再来，可以用下列命令清除配置："><a href="#出错时想重头再来，可以用下列命令清除配置：" class="headerlink" title="出错时想重头再来，可以用下列命令清除配置："></a>出错时想重头再来，可以用下列命令清除配置：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy purgedata &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br><span class="line">ceph-deploy forgetkeys</span><br></pre></td></tr></table></figure>
-
-<p>用下列命令可以连 Ceph 安装包一起清除：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy purge &#123;ceph-node&#125; [&#123;ceph-node&#125;]</span><br></pre></td></tr></table></figure>
-
-<h2 id="创建集群时报错"><a href="#创建集群时报错" class="headerlink" title="创建集群时报错"></a>创建集群时报错</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy install admin-node node1 node2 node3</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">[admin-node][INFO  ] Running <span class="built_in">command</span>: sudo rpm --import https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc</span><br><span class="line">[admin-node][INFO  ] Running <span class="built_in">command</span>: sudo rpm -Uvh --replacepkgs http://ceph.com/rpm-hammer/el7/noarch/ceph-release-1-0.el7.noarch.rpm</span><br><span class="line">[admin-node][DEBUG ] 获取http://ceph.com/rpm-hammer/el7/noarch/ceph-release-1-0.el7.noarch.rpm</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;html&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;head&gt;&lt;title&gt;Index 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 of 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 /rpm-hammer/&lt;/title&gt;&lt;/head&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;body 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 bgcolor=white&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;h1&gt;Index 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 of 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 /rpm-hammer/&lt;/h1&gt;&lt;hr&gt;&lt;pre&gt;&lt;a 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 href=../&gt;../&lt;/a&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;a 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 href=el6/&gt;el6/&lt;/a&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 24-Apr-2016 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 00:05 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：-: 不是 rpm 软件包 (或者没有manifest)：</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;a 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 href=el7/&gt;el7/&lt;/a&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 29-Aug-2016 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 11:53 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：-: 不是 rpm 软件包 (或者没有manifest)：</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;a 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 href=fc20/&gt;fc20/&lt;/a&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 07-Apr-2015 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 19:21 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：-: 不是 rpm 软件包 (或者没有manifest)：</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;a 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 href=rhel6/&gt;rhel6/&lt;/a&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 07-Apr-2015 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 19:22 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：-: 不是 rpm 软件包 (或者没有manifest)：</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;/pre&gt;&lt;hr&gt;&lt;/body&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][WARNIN] 错误：打开 &lt;/html&gt; 失败： 没有那个文件或目录</span><br><span class="line">[admin-node][ERROR ] RuntimeError: <span class="built_in">command</span> returned non-zero <span class="built_in">exit</span> status: 32</span><br><span class="line">[ceph_deploy][ERROR ] RuntimeError: Failed to execute <span class="built_in">command</span>: rpm -Uvh --replacepkgs http://ceph.com/rpm-hammer/el7/noarch/ceph-release-1-0.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /lib/python2.7/site-packages/ceph_deploy/hosts/centos/install.py</span><br></pre></td></tr></table></figure>
-
-<h2 id="错误原因"><a href="#错误原因" class="headerlink" title="错误原因"></a>错误原因</h2><p>把”ceph.com”修改为”download.ceph.com”</p>
-<h2 id="错误2"><a href="#错误2" class="headerlink" title="错误2"></a>错误2</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[admin-node][WARNIN] check_obsoletes has been enabled <span class="keyword">for</span> Yum priorities plugin</span><br><span class="line">[admin-node][INFO  ] Running <span class="built_in">command</span>: sudo rpm --import https://download.ceph.com/keys/release.asc</span><br><span class="line">[admin-node][INFO  ] Running <span class="built_in">command</span>: sudo rpm -Uvh --replacepkgs https://download.ceph.com/rpm-jewel/el7/noarch/ceph-release-1-0.el7.noarch.rpm</span><br><span class="line">[admin-node][DEBUG ] 获取https://download.ceph.com/rpm-jewel/el7/noarch/ceph-release-1-0.el7.noarch.rpm</span><br><span class="line">[admin-node][DEBUG ] 准备中...                          <span class="comment">########################################</span></span><br><span class="line">[admin-node][ERROR ] RuntimeError: <span class="built_in">command</span> returned non-zero <span class="built_in">exit</span> status: 1</span><br><span class="line">[ceph_deploy][ERROR ] RuntimeError: Failed to execute <span class="built_in">command</span>: rpm -Uvh --replacepkgs https://download.ceph.com/rpm-jewel/el7/noarch/ceph-release-1-0.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
-
-<h2 id="错误原因-1"><a href="#错误原因-1" class="headerlink" title="错误原因"></a>错误原因</h2><p>admin-node卸载ceph-release</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum erase ceph-release</span><br></pre></td></tr></table></figure>
-
-<h2 id="配置初始-monitor-s-、并收集所有密钥时报错："><a href="#配置初始-monitor-s-、并收集所有密钥时报错：" class="headerlink" title="配置初始 monitor(s)、并收集所有密钥时报错："></a>配置初始 monitor(s)、并收集所有密钥时报错：</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">[ceph@localhost my-cluster]$ ceph-deploy mon create-initial</span><br><span class="line">[ceph_deploy.conf][DEBUG ] found configuration file at: /home/ceph/.cephdeploy.conf</span><br><span class="line">[ceph_deploy.cli][INFO  ] Invoked (1.5.25): /usr/bin/ceph-deploy mon create-initial</span><br><span class="line">[ceph_deploy.mon][DEBUG ] Deploying mon, cluster ceph hosts node1</span><br><span class="line">[ceph_deploy.mon][DEBUG ] detecting platform <span class="keyword">for</span> host node1 ...</span><br><span class="line">[node1][DEBUG ] connection detected need <span class="keyword">for</span> sudo</span><br><span class="line">[node1][DEBUG ] connected to host: node1 </span><br><span class="line">[node1][DEBUG ] detect platform information from remote host</span><br><span class="line">[node1][DEBUG ] detect machine <span class="built_in">type</span></span><br><span class="line">[ceph_deploy.mon][INFO  ] distro info: CentOS Linux 7.6.1810 Core</span><br><span class="line">[node1][DEBUG ] determining <span class="keyword">if</span> provided host has same hostname <span class="keyword">in</span> remote</span><br><span class="line">[node1][DEBUG ] get remote short hostname</span><br><span class="line">[node1][DEBUG ] deploying mon to node1</span><br><span class="line">[node1][DEBUG ] get remote short hostname</span><br><span class="line">[node1][DEBUG ] remote hostname: node1</span><br><span class="line">[node1][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf</span><br><span class="line">[node1][DEBUG ] create the mon path <span class="keyword">if</span> it does not exist</span><br><span class="line">[node1][DEBUG ] checking <span class="keyword">for</span> <span class="keyword">done</span> path: /var/lib/ceph/mon/ceph-node1/<span class="keyword">done</span></span><br><span class="line">[node1][DEBUG ] create a <span class="keyword">done</span> file to avoid re-doing the mon deployment</span><br><span class="line">[node1][DEBUG ] create the init path <span class="keyword">if</span> it does not exist</span><br><span class="line">[node1][DEBUG ] locating the `service` executable...</span><br><span class="line">[node1][INFO  ] Running <span class="built_in">command</span>: sudo /usr/sbin/service ceph -c /etc/ceph/ceph.conf start mon.node1</span><br><span class="line">[node1][WARNIN] The service <span class="built_in">command</span> supports only basic LSB actions (start, stop, restart, try-restart, reload, force-reload, status). For other actions, please try to use systemctl.</span><br><span class="line">[node1][ERROR ] RuntimeError: <span class="built_in">command</span> returned non-zero <span class="built_in">exit</span> status: 2</span><br><span class="line">[ceph_deploy.mon][ERROR ] Failed to execute <span class="built_in">command</span>: /usr/sbin/service ceph -c /etc/ceph/ceph.conf start mon.node1</span><br><span class="line">[ceph_deploy][ERROR ] GenericError: Failed to create 1 monitors</span><br></pre></td></tr></table></figure>
-
-<h2 id="错误原因："><a href="#错误原因：" class="headerlink" title="错误原因："></a>错误原因：</h2><p>epel中的ceph-deploy版本过低，从ceph官网下载最新版即可。<br>下载地址：<br><a href="https://download.ceph.com/rpm-kraken/el7/noarch/" target="_blank" rel="noopener">https://download.ceph.com/rpm-kraken/el7/noarch/</a></p>
-<h2 id="错误2-1"><a href="#错误2-1" class="headerlink" title="错误2"></a>错误2</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[node1][DEBUG ] connection detected need <span class="keyword">for</span> sudo</span><br><span class="line">[node1][DEBUG ] connected to host: node1 </span><br><span class="line">[node1][DEBUG ] detect platform information from remote host</span><br><span class="line">[node1][DEBUG ] detect machine <span class="built_in">type</span></span><br><span class="line">[node1][DEBUG ] find the location of an executable</span><br><span class="line">[ceph_deploy.mon][INFO  ] distro info: CentOS Linux 7.6.1810 Core</span><br><span class="line">[node1][DEBUG ] determining <span class="keyword">if</span> provided host has same hostname <span class="keyword">in</span> remote</span><br><span class="line">[node1][DEBUG ] get remote short hostname</span><br><span class="line">[node1][DEBUG ] deploying mon to node1</span><br><span class="line">[node1][DEBUG ] get remote short hostname</span><br><span class="line">[node1][DEBUG ] remote hostname: node1</span><br><span class="line">[node1][DEBUG ] write cluster configuration to /etc/ceph/&#123;cluster&#125;.conf</span><br><span class="line">[ceph_deploy.mon][ERROR ] RuntimeError: config file /etc/ceph/ceph.conf exists with different content; use --overwrite-conf to overwrite</span><br></pre></td></tr></table></figure>
-
-<h2 id="错误原因：-1"><a href="#错误原因：-1" class="headerlink" title="错误原因："></a>错误原因：</h2><p>配置文件不一致，使用–overwrite-conf覆盖</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy --overwrite-conf mon create-initial</span><br></pre></td></tr></table></figure>
-
-<h2 id="错误3"><a href="#错误3" class="headerlink" title="错误3"></a>错误3</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[node1][INFO  ] Running <span class="built_in">command</span>: sudo systemctl <span class="built_in">enable</span> ceph.target</span><br><span class="line">[node1][INFO  ] Running <span class="built_in">command</span>: sudo systemctl <span class="built_in">enable</span> ceph-mon@node1</span><br><span class="line">[node1][INFO  ] Running <span class="built_in">command</span>: sudo systemctl start ceph-mon@node1</span><br><span class="line">[node1][INFO  ] Running <span class="built_in">command</span>: sudo ceph --cluster=ceph --admin-daemon /var/run/ceph/ceph-mon.node1.asok mon_status</span><br><span class="line">[node1][ERROR ] admin_socket: exception getting <span class="built_in">command</span> descriptions: [Errno 2] No such file or directory</span><br><span class="line">[node1][WARNIN] monitor: mon.node1, might not be running yet</span><br><span class="line">[node1][INFO  ] Running <span class="built_in">command</span>: sudo ceph --cluster=ceph --admin-daemon /var/run/ceph/ceph-mon.node1.asok mon_status</span><br><span class="line">[node1][ERROR ] admin_socket: exception getting <span class="built_in">command</span> descriptions: [Errno 2] No such file or directory</span><br><span class="line">[node1][WARNIN] monitor node1 does not exist <span class="keyword">in</span> monmap</span><br></pre></td></tr></table></figure>
-
-<h2 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h2><p>删除ceph残留的文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /etc/ceph/*</span><br><span class="line">rm -rf /var/lib/ceph/*/*</span><br><span class="line">rm -rf /var/<span class="built_in">log</span>/ceph/*</span><br><span class="line">rm -rf /var/run/ceph/*</span><br></pre></td></tr></table></figure>
-
-<p>重新部署：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy new node1</span><br><span class="line">ceph-deploy mon create-initial</span><br></pre></td></tr></table></figure>
-
-<h2 id="激活osd时报错"><a href="#激活osd时报错" class="headerlink" title="激活osd时报错"></a>激活osd时报错</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd activate &#123;ceph-node&#125;:/path/to/directory</span><br></pre></td></tr></table></figure>
-
-<p>例如：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ceph-deploy osd activate node2:/var/<span class="built_in">local</span>/osd0 node3:/var/<span class="built_in">local</span>/osd1</span><br></pre></td></tr></table></figure>
-
-<p>报错信息：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[node2][WARNIN] 2019-07-16 17:43:53.556669 7f19aaaacac0 -1 OSD::mkfs: ObjectStore::mkfs failed with error -13</span><br><span class="line">[node2][WARNIN] 2019-07-16 17:43:53.556734 7f19aaaacac0 -1  ** ERROR: error creating empty object store <span class="keyword">in</span> /var/<span class="built_in">local</span>/osd0: (13) Permission denied</span><br><span class="line">[node2][WARNIN] </span><br><span class="line">[node2][ERROR ] RuntimeError: <span class="built_in">command</span> returned non-zero <span class="built_in">exit</span> status: 1</span><br><span class="line">[ceph_deploy][ERROR ] RuntimeError: Failed to execute <span class="built_in">command</span>: /usr/sbin/ceph-disk -v activate --mark-init systemd --mount /var/<span class="built_in">local</span>/osd0</span><br></pre></td></tr></table></figure>
-
-<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><p>增加用户和磁盘的权限，重启后也需要增加</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown ceph:ceph /var/<span class="built_in">local</span>/osd0</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-        <div class="page-reward">
-          <a href="javascript:;" class="page-reward-btn tooltip-top">
-            <div class="tooltip tooltip-east">
-            <span class="tooltip-item">
-              赏
-            </span>
-            <span class="tooltip-content">
-              <span class="tooltip-text">
-                <span class="tooltip-inner">
-                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
-                  <div class="reward-box">
-                    
-                    
-                    <div class="reward-box-item">
-                      <img class="reward-img" src="/assets/img/weixin.jpg">
-                      <span class="reward-type">微信</span>
-                    </div>
-                    
-                  </div>
-                </span>
-              </span>
-            </span>
-          </div>
-          </a>
-        </div>
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
+        <div class="article-info info-on-right">
+          
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">shell</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">awk</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph FAQs</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">string</a>
         		</li>
       		
 		</ul>
 	</div>
 
-      
+          
 
-      
-
-      
-        
-<div class="share-btn share-icons tooltip-left">
-  <div class="tooltip tooltip-east">
-    <span class="tooltip-item">
-      <a href="javascript:;" class="share-sns share-outer">
-        <i class="icon icon-share"></i>
-      </a>
-    </span>
-    <span class="tooltip-content">
-      <div class="share-wrap">
-        <div class="share-icons">
-          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
-            <i class="icon icon-weibo"></i>
-          </a>
-          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
-            <i class="icon icon-weixin"></i>
-          </a>
-          <a class="qq share-sns" href="javascript:;" data-type="qq">
-            <i class="icon icon-qq"></i>
-          </a>
-          <a class="douban share-sns" href="javascript:;" data-type="douban">
-            <i class="icon icon-douban"></i>
-          </a>
-          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
-            <i class="icon icon-qzone"></i>
-          </a>
-          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
-            <i class="icon icon-facebook"></i>
-          </a>
-          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
-            <i class="icon icon-twitter"></i>
-          </a>
-          <a class="google share-sns" href="javascript:;" data-type="google">
-            <i class="icon icon-google"></i>
-          </a>
         </div>
-      </div>
-    </span>
-  </div>
-</div>
-
-<div class="page-modal wx-share js-wx-box">
-    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p>扫一扫，分享到微信</p>
-    <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/14/centos-7.0-install-ceph-faq/" alt="微信分享二维码">
-    </div>
-</div>
-
-<div class="mask js-mask"></div>
-      
-      <div class="clearfix"></div>
-    </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2019/07/17/centos-7.0-install-ceph/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          CentOS 7 安装Ceph
-        
-      </div>
-    </a>
   
   
-    <a href="/2019/07/09/jingxingxian-customs/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">井陉一些有趣的民俗</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -430,8 +240,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
