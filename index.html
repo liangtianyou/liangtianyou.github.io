@@ -178,8 +178,14 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="indexOf-方法"><a href="#indexOf-方法" class="headerlink" title="indexOf() 方法"></a>indexOf() 方法</h2><p>::功能: 在数组中查找某个元素<br>::浏览器支持: 所有主要浏览器都支持 indexOf() 方法，但是 Internet Explorer 8 及 更早IE版本不支持该方法。<br>自定义实现:</p>
+        <h2 id="indexOf-方法"><a href="#indexOf-方法" class="headerlink" title="indexOf() 方法"></a>indexOf() 方法</h2><p><strong>功能</strong>: 在数组中查找某个元素<br><strong>浏览器支持</strong>: 所有主要浏览器都支持 indexOf() 方法，但是 Internet Explorer 8 及 更早IE版本不支持该方法。<br><strong>IE8以下版本Hack</strong>:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!<span class="built_in">Array</span>.prototype.indexOf)&#123;</span><br><span class="line">    <span class="built_in">Array</span>.prototype.indexOf=<span class="function"><span class="keyword">function</span>(<span class="params">item,i</span>)</span>&#123;</span><br><span class="line">        i || (i=<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">var</span> length=<span class="keyword">this</span>.length;</span><br><span class="line">        <span class="keyword">if</span>(i&lt;<span class="number">0</span>)&#123;</span><br><span class="line">            i = length;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(;i&lt;length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>[i] === item)&#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="纯数字排序错误"><a href="#纯数字排序错误" class="headerlink" title="纯数字排序错误"></a>纯数字排序错误</h2><p>在js中对纯数字的的数组用sort()函数排序时，会发现的他的排序是错误的，这是因为它采用的unicode编码导致的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">arr = [<span class="number">1</span>,<span class="number">11</span>,<span class="number">22</span>,<span class="number">2</span>]</span><br><span class="line">arr.sort()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line">[ <span class="number">1</span>, <span class="number">11</span>, <span class="number">2</span>, <span class="number">22</span> ]</span><br></pre></td></tr></table></figure>
+
+<p><strong>解决方法</strong>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">arr.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a-b;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(arr);</span><br><span class="line">[ <span class="number">1</span>, <span class="number">2</span>, <span class="number">11</span>, <span class="number">22</span> ]</span><br><span class="line"><span class="string">`</span></span><br></pre></td></tr></table></figure>
 
 
       
@@ -1269,19 +1275,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1297,15 +1295,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1314,34 +1312,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1357,6 +1327,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
@@ -1366,6 +1340,38 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
             
             <div class="clearfix"></div>
