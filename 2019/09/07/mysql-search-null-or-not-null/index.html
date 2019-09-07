@@ -8,18 +8,18 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>MySQL如何查询一个字段的值为NULL或不为NULL | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="准备工作创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。 1234567CREATE TABLE `test` (  `t_id` int(11) NOT NULL AUTO_INCREMENT,  `t_name` text,  `t_password` text,  `t_birth` text,  PRIMARY KEY (`">
+  <meta name="description" content="准备工作创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。 1234567CREATE TABLE `test` (  `t_id` INT(11) NOT NULL AUTO_INCREMENT,  `t_name` TEXT,  `t_password` TEXT,  `t_birth` TEXT,  PRIMARY KEY (`">
 <meta name="keywords" content="Linux,MySQL,NOT NULL">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL如何查询一个字段的值为NULL或不为NULL">
 <meta property="og:url" content="http://yoursite.com/2019/09/07/mysql-search-null-or-not-null/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="准备工作创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。 1234567CREATE TABLE `test` (  `t_id` int(11) NOT NULL AUTO_INCREMENT,  `t_name` text,  `t_password` text,  `t_birth` text,  PRIMARY KEY (`">
+<meta property="og:description" content="准备工作创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。 1234567CREATE TABLE `test` (  `t_id` INT(11) NOT NULL AUTO_INCREMENT,  `t_name` TEXT,  `t_password` TEXT,  `t_birth` TEXT,  PRIMARY KEY (`">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-07T06:08:35.656Z">
+<meta property="og:updated_time" content="2019-09-07T11:40:08.176Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL如何查询一个字段的值为NULL或不为NULL">
-<meta name="twitter:description" content="准备工作创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。 1234567CREATE TABLE `test` (  `t_id` int(11) NOT NULL AUTO_INCREMENT,  `t_name` text,  `t_password` text,  `t_birth` text,  PRIMARY KEY (`">
+<meta name="twitter:description" content="准备工作创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。 1234567CREATE TABLE `test` (  `t_id` INT(11) NOT NULL AUTO_INCREMENT,  `t_name` TEXT,  `t_password` TEXT,  `t_birth` TEXT,  PRIMARY KEY (`">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -182,7 +182,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">text</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">text</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">text</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 
 <p>插入数据</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1990-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name2'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1991-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'myname1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1992-1-1'</span>);</span><br></pre></td></tr></table></figure>
@@ -204,7 +204,8 @@
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; SELECT * FROM `test` WHERE t_birth IS NULL;</span><br><span class="line">+<span class="comment">------+--------+----------------------+---------+</span></span><br><span class="line">| t_id | t_name | t_password           | t_birth |</span><br><span class="line">+<span class="comment">------+--------+----------------------+---------+</span></span><br><span class="line">|    1 | name1  | 12345678901234567890 | NULL    |</span><br><span class="line">+<span class="comment">------+--------+----------------------+---------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="string">`test`</span> <span class="keyword">WHERE</span> t_birth <span class="keyword">IS</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>;</span><br><span class="line">+<span class="comment">------+---------+----------------------+----------+</span></span><br><span class="line">| t_id | t_name  | t_password           | t_birth  |</span><br><span class="line">+<span class="comment">------+---------+----------------------+----------+</span></span><br><span class="line">|    2 | name2   | 12345678901234567890 | 1991-1-1 |</span><br><span class="line">|    3 | myname1 | 12345678901234567890 | 1992-1-1 |</span><br><span class="line">+<span class="comment">------+---------+----------------------+----------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></table></figure>
 
 <h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><ol>
-<li>查询字段值为空的语法：WHERE &lt;字段名&gt; IS NULL<br>2、查询字段值不为空的语法：WHERE &lt;字段名&gt; IS NOT NULL</li>
+<li>查询字段值为空的语法：WHERE &lt;字段名&gt; IS NULL</li>
+<li>查询字段值不为空的语法：WHERE &lt;字段名&gt; IS NOT NULL</li>
 </ol>
 
       
@@ -322,6 +323,15 @@
 
   
 <nav id="article-nav">
+  
+    <a href="/2019/09/07/mysql-search-regexp-or-not-regexp/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          MySQL如何查询一个字段的值包含或不包含某个字符
+        
+      </div>
+    </a>
   
   
     <a href="/2019/09/06/jquery-ui-layout-property/" id="article-nav-older" class="article-nav-link-wrap">
@@ -479,7 +489,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -495,11 +525,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,15 +541,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -547,23 +569,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Tkinter</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
+                <a href="javascript:void(0)" class="js-tag color2">Button</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -571,11 +581,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -591,15 +605,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Button</a>
+                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
               </li>
             
             <div class="clearfix"></div>
