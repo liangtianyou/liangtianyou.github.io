@@ -158,6 +158,94 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-mysql-search-null-or-not-null" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/07/mysql-search-null-or-not-null/">MySQL如何查询一个字段的值为NULL或不为NULL</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/07/mysql-search-null-or-not-null/" class="archive-article-date">
+  	<time datetime="2019-09-07T03:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">int</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">text</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">text</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">text</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>插入数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1990-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name2'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1991-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'myname1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1992-1-1'</span>);</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NOT NULL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-jquery-ui-layout-property" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -865,11 +953,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Text</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Text</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
         		</li>
       		
 		</ul>
@@ -950,11 +1038,11 @@
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Button</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Button</a>
         		</li>
       		
 		</ul>
@@ -965,173 +1053,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/07/24/tkinter-button-close-window/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-centos-7.0-install-ceph" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/17/centos-7.0-install-ceph/">CentOS 7 安装Ceph</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/17/centos-7.0-install-ceph/" class="archive-article-date">
-  	<time datetime="2019-07-17T02:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-17</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。</p>
-<h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><ul>
-<li>操作系统：CentOS Linux release 7.6.1810</li>
-<li>ceph-deploy：2.0.1<h2 id="Ceph版本"><a href="#Ceph版本" class="headerlink" title="Ceph版本"></a>Ceph版本</h2><table>
-<thead>
-<tr>
-<th>名称</th>
-<th>版本号</th>
-<th>发布日期</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Argonaut</td>
-<td>0.48版本(LTS)</td>
-<td>2012年6月3日</td>
-</tr>
-<tr>
-<td>Bobtail</td>
-<td>0.56版本(LTS)</td>
-<td>2013年1月1日</td>
-</tr>
-<tr>
-<td>Cuttlefish</td>
-<td>0.61版本</td>
-<td>2013年5月7日</td>
-</tr>
-<tr>
-<td>Dumpling</td>
-<td>0.67版本(LTS)</td>
-<td>2013年8月14日</td>
-</tr>
-<tr>
-<td>Emperor</td>
-<td>0.72版本</td>
-<td>2013年11月9日</td>
-</tr>
-<tr>
-<td>Firefly</td>
-<td>0.80版本(LTS)</td>
-<td>2014年5月</td>
-</tr>
-<tr>
-<td>Giant</td>
-<td>Stable</td>
-<td>October 2014 - April 2015</td>
-</tr>
-<tr>
-<td>Hammer</td>
-<td>LTS</td>
-<td>April 2015 - November 2016</td>
-</tr>
-<tr>
-<td>Infernalis</td>
-<td>Stable</td>
-<td>November 2015 - June 2016</td>
-</tr>
-<tr>
-<td>Jewel</td>
-<td></td>
-<td>2016年4月</td>
-</tr>
-<tr>
-<td>Kraken</td>
-<td></td>
-<td>2017年10月</td>
-</tr>
-<tr>
-<td>Luminous</td>
-<td></td>
-<td>2017年10月</td>
-</tr>
-<tr>
-<td>mimic</td>
-<td></td>
-<td>2018年5月</td>
-</tr>
-<tr>
-<td>nautilus</td>
-<td></td>
-<td>2019年</td>
-</tr>
-</tbody></table>
-</li>
-</ul>
-        
-          <a class="article-more-a" href="/2019/07/17/centos-7.0-install-ceph/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/17/centos-7.0-install-ceph/">展开全文 >></a>
         </p>
       
 
@@ -1286,27 +1207,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1322,11 +1223,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1338,7 +1239,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1358,7 +1267,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1366,7 +1291,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Button</a>
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1374,15 +1299,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
+                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1398,11 +1319,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">web.py</a>
+                <a href="javascript:void(0)" class="js-tag color2">Button</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
             
             <div class="clearfix"></div>
