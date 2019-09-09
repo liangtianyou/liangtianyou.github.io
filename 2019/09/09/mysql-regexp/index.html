@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="MySQL和正则正则表达式的引擎主要分为两类：DFA和NFA。NFA又分为传统型NFA和POSIX NFA两种。DFA Deterministic finite automaton 确定型有穷自动机。NFA Non-deterministic finite automaton　非确定型有穷自动机。  DFA引擎因为不需要回溯，所以匹配快速，但不支持捕获组，所以也就不支持反向引用和$number这种">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-09T02:47:35.018Z">
+<meta property="og:updated_time" content="2019-09-09T02:51:22.507Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL正则">
 <meta name="twitter:description" content="MySQL和正则正则表达式的引擎主要分为两类：DFA和NFA。NFA又分为传统型NFA和POSIX NFA两种。DFA Deterministic finite automaton 确定型有穷自动机。NFA Non-deterministic finite automaton　非确定型有穷自动机。  DFA引擎因为不需要回溯，所以匹配快速，但不支持捕获组，所以也就不支持反向引用和$number这种">
@@ -203,11 +203,11 @@
 <p>在MySQL中，正则表达式是用来匹配查询的，关键字为“regexp”或“rlike”。 </p>
 <a id="more"></a>
 <h2 id="常用符号"><a href="#常用符号" class="headerlink" title="常用符号"></a>常用符号</h2><p>MySQL数据库中正则表达式的语法，主要包括各种符号的含义。</p>
-<ol>
+<ul>
 <li>^ 字符<br>匹配字符串的开始位置，如“^a”表示以字母a开头的字符串。</li>
-</ol>
+</ul>
 <p>mysql&gt; select ‘xxxyyy’ regexp ‘^xx’;<br>+———————–+<br>| ‘xxxyyy’ regexp ‘^xx’ |<br>+———————–+<br>|                     1 |<br>+———————–+<br>1 row in set (0.00 sec)<br>查询xxxyyy字符串中是否以xx开头，结果值为1，表示值为true，满足条件。</p>
-<ol start="2">
+<ul>
 <li><p>$ 字符<br>匹配字符串的结束位置，如“X$”表示以字母X结尾的字符串。</p>
 </li>
 <li><p>. 字符<br>这个字符就是英文下的点，它匹配任何一个字符，包括回车、换行等。</p>
@@ -220,7 +220,7 @@
 </li>
 <li><p>? 字符<br>问号匹配0次或1次。</p>
 </li>
-</ol>
+</ul>
 
       
 
@@ -343,8 +343,8 @@
 <nav id="article-nav">
   
   
-    <a href="/2019/09/07/mysql-search-regexp-or-not-regexp/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">MySQL如何查询一个字段的值包含或不包含某个字符</div>
+    <a href="/2019/09/07/mysql-search-null-or-not-null/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MySQL如何查询一个字段的值为NULL或不为NULL</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -470,18 +470,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">shell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">awk</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">string</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
@@ -491,6 +479,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">string</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -511,6 +511,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -543,14 +551,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
