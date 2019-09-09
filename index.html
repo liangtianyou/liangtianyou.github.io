@@ -59,6 +59,8 @@
 	        
 				<li><a href="/tags/Linux/">Linux</a></li>
 	        
+				<li><a href="/tags/MySQL/">MySQL</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -117,6 +119,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -137,11 +141,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/Python/">Python</a></li>
+					<li style="width: 25%"><a href="/tags/Python/">Python</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/Linux/">Linux</a></li>
+					<li style="width: 25%"><a href="/tags/Linux/">Linux</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/MySQL/">MySQL</a></li>
 		        
 				</ul>
 			</nav>
@@ -192,26 +198,9 @@
 </ol>
 <p>MySQL采用Henry Spencer的正则表达式实施，其目标是符合POSIX 1003.2。MySQL采用了扩展的版本，以支持在SQL语句中与REGEXP操作符一起使用的模式匹配操作。</p>
 <p>在MySQL中，正则表达式是用来匹配查询的，关键字为“regexp”或“rlike”。 </p>
-<h2 id="常用符号"><a href="#常用符号" class="headerlink" title="常用符号"></a>常用符号</h2><p>MySQL数据库中正则表达式的语法，主要包括各种符号的含义。</p>
-<ol>
-<li>^ 字符<br>匹配字符串的开始位置，如“^a”表示以字母a开头的字符串。</li>
-</ol>
-<p>mysql&gt; select ‘xxxyyy’ regexp ‘^xx’;<br>+———————–+<br>| ‘xxxyyy’ regexp ‘^xx’ |<br>+———————–+<br>|                     1 |<br>+———————–+<br>1 row in set (0.00 sec)<br>查询xxxyyy字符串中是否以xx开头，结果值为1，表示值为true，满足条件。</p>
-<ol start="2">
-<li><p>$ 字符<br>匹配字符串的结束位置，如“X$”表示以字母X结尾的字符串。</p>
-</li>
-<li><p>. 字符<br>这个字符就是英文下的点，它匹配任何一个字符，包括回车、换行等。</p>
-</li>
-<li><p>* 字符<br>星号匹配0个或多个字符，在它之前必须有内容。如：<br>mysql&gt; select ‘xxxyyy’ regexp ‘x*‘;<br>这个SQL语句，正则匹配为true。</p>
-</li>
-<li><ul>
-<li>字符<br>加号匹配1个或多个字符，在它之前也必须有内容。加号跟星号的用法类似，只是星号允许出现0次，加号则必须至少出现一次。</li>
-</ul>
-</li>
-<li><p>? 字符<br>问号匹配0次或1次。</p>
-</li>
-</ol>
-
+        
+          <a class="article-more-a" href="/2019/09/09/mysql-regexp/#more">more >></a>
+        
       
 
       
@@ -1276,14 +1265,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
               </li>
              
@@ -1301,6 +1282,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
