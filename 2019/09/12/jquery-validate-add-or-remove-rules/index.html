@@ -6,61 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>直播联合国 | 漫漫长路</title>
+  <title>jquery.validate 动态增加或删除规则 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="100个故事，100种表达。每个故事里，都有一个不一样的联合国。《直播联合国》独家探秘联合国的每一个“角度”，带你走近这个看似遥远，又与你息息相关的国际组织。">
-<meta name="keywords" content="联合国,趣谈">
+  <meta name="description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
+<meta name="keywords" content="jquery.validate,validator,动态增删,规则,rules">
 <meta property="og:type" content="article">
-<meta property="og:title" content="直播联合国">
-<meta property="og:url" content="http://yoursite.com/2019/07/02/live-broadcast-united-nation/index.html">
+<meta property="og:title" content="jquery.validate 动态增加或删除规则">
+<meta property="og:url" content="http://yoursite.com/2019/09/12/jquery-validate-add-or-remove-rules/index.html">
 <meta property="og:site_name" content="漫漫长路">
-<meta property="og:description" content="100个故事，100种表达。每个故事里，都有一个不一样的联合国。《直播联合国》独家探秘联合国的每一个“角度”，带你走近这个看似遥远，又与你息息相关的国际组织。">
+<meta property="og:description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun01.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun02.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun03.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun04.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun05.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun06.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun07.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun08.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun09.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun10.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun11.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun12.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun13.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun14.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun15.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun16.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun17.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun18.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun19.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun20.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun21.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun22.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun23.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun24.jpg">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun25.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun26.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun27.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun28.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun29.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun30.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun31.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun32.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun33.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun34.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun35.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun36.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun37.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun38.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun39.png">
-<meta property="og:image" content="http://yoursite.com/assets/blogImg/liveun40.png">
-<meta property="og:updated_time" content="2019-07-03T01:34:44.488Z">
+<meta property="og:updated_time" content="2019-09-12T09:03:13.301Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="直播联合国">
-<meta name="twitter:description" content="100个故事，100种表达。每个故事里，都有一个不一样的联合国。《直播联合国》独家探秘联合国的每一个“角度”，带你走近这个看似遥远，又与你息息相关的国际组织。">
-<meta name="twitter:image" content="http://yoursite.com/assets/blogImg/liveun01.png">
+<meta name="twitter:title" content="jquery.validate 动态增加或删除规则">
+<meta name="twitter:description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -208,141 +167,36 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-live-broadcast-united-nation" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-jquery-validate-add-or-remove-rules" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      直播联合国
+      jquery.validate 动态增加或删除规则
     </h1>
   
 
         
-        <a href="/2019/07/02/live-broadcast-united-nation/" class="archive-article-date">
-  	<time datetime="2019-07-02T06:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-02</time>
+        <a href="/2019/09/12/jquery-validate-add-or-remove-rules/" class="archive-article-date">
+  	<time datetime="2019-09-12T08:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-12</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>100个故事，100种表达。每个故事里，都有一个不一样的联合国。《直播联合国》独家探秘联合国的每一个“角度”，带你走近这个看似遥远，又与你息息相关的国际组织。</p>
+        <p>按照官方的文档，可以通过rules函数来动态的添加和删除规则。<br>实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。</p>
 <a id="more"></a>
-<h2 id="《直播联合国》第一集：联合国总部诞生记"><a href="#《直播联合国》第一集：联合国总部诞生记" class="headerlink" title="《直播联合国》第一集：联合国总部诞生记"></a>《直播联合国》第一集：联合国总部诞生记</h2><p><a href="http://www.xinhuanet.com/sike/liveun/detail1.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun01.png" alt="第一集：联合国总部诞生记"></a></p>
-<ul>
-<li>构建联合国总部花了多少钱?<br>建造联合国总部花了6500万美元，是由美国政府提供的无息贷款，知道1982年联合国才还清。</li>
-<li>妇秘书大厦为什么是南北走向？<br>南北走向投下的阴影会比东西走向更少</li>
-<li>联合国秘书长在哪办公？<br>联合国秘书长办公室在秘书处大厦38层<h2 id="《直播联合国》第二集：联合国里说的话"><a href="#《直播联合国》第二集：联合国里说的话" class="headerlink" title="《直播联合国》第二集：联合国里说的话"></a>《直播联合国》第二集：联合国里说的话</h2><a href="http://www.xinhuanet.com/sike/liveun/detail2.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun02.png" alt="第二集：联合国里说的话"></a></li>
-<li>在联合国语言类的工作有哪些？<br>六个工种：口译、笔译、逐字记录、编辑、词汇/资料员、文本处理员</li>
-<li>在《联合国宪章》上代表中国签字的是哪些人？<br>顾维钧、王宠惠、魏道明、吴贻芳、李璜、张君劢、董必武、胡霖</li>
-<li>现任联合国秘书长精通几种语言？<br>英语、法语、西班牙语、葡萄牙文<h2 id="《直播联合国》第三集：特殊的勋章"><a href="#《直播联合国》第三集：特殊的勋章" class="headerlink" title="《直播联合国》第三集：特殊的勋章"></a>《直播联合国》第三集：特殊的勋章</h2><a href="http://www.xinhuanet.com/sike/liveun/detail3.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun03.png" alt="第三集：特殊的勋章"></a></li>
-<li>当选一名维和警察需要什么条件？<br>外语水平、警务技能、驾驶技能射击、外交知识、优秀的身心素质</li>
-<li>维和人员在海外怎么吃饭？<br>食物由联合国统一供给以每人每天所需热量供给肉类</li>
-<li>“维和行动结束了，那么多装备怎么办？<br>失去价值的报废处理大部分大型装备捐赠<h2 id="《直播联合国》第四集：打结的手枪"><a href="#《直播联合国》第四集：打结的手枪" class="headerlink" title="《直播联合国》第四集：打结的手枪"></a>《直播联合国》第四集：打结的手枪</h2><a href="http://www.xinhuanet.com/sike/liveun/detail4.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun04.jpg" alt="第四集：打结的手枪"></a></li>
-<li>披头士乐队有多火？<br>10座格莱美奖、15座艾弗·诺韦洛奖、唱片销量约十亿、格莱美终身成就奖</li>
-<li>打结的手枪最早何时落成？<br>1985年 共三件 原作赠送给联合国的一件最广为人知</li>
-<li>雕塑家还有其他作品吗？<br>Susan Sontag肖像画、绑在椅子的人、保护地球<h2 id="《直播联合国》第五集：泰坦尼克号的遗产"><a href="#《直播联合国》第五集：泰坦尼克号的遗产" class="headerlink" title="《直播联合国》第五集：泰坦尼克号的遗产"></a>《直播联合国》第五集：泰坦尼克号的遗产</h2><a href="http://www.xinhuanet.com/sike/liveun/detail5.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun05.jpg" alt="第五集：泰坦尼克号的遗产"></a></li>
-</ul>
-<h2 id="《直播联合国》第六集：通信的秘密"><a href="#《直播联合国》第六集：通信的秘密" class="headerlink" title="《直播联合国》第六集：通信的秘密"></a>《直播联合国》第六集：通信的秘密</h2><p><a href="http://www.xinhuanet.com/sike/liveun/detail6.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun06.jpg" alt="第六集：通信的秘密"></a></p>
-<ul>
-<li>5G的G代表什么？<br>Generation首字母，意为“一代”，5G是第5代移动通信技术的简称</li>
-<li>SOS用莫尔斯电码怎么表达？<br>在莫尔斯电码中，三长音代表O，三短音代表S</li>
-<li>在联合国游玩，如何拨通北京手机号？<br>按规则，拨打顺序为美国国籍冠码011＋中国国家区号86＋被呼叫手机号<h2 id="《直播联合国》第七集：漫“邮”联合国"><a href="#《直播联合国》第七集：漫“邮”联合国" class="headerlink" title="《直播联合国》第七集：漫“邮”联合国"></a>《直播联合国》第七集：漫“邮”联合国</h2><a href="http://www.xinhuanet.com/sike/liveun/detail7.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun07.jpg" alt="第七集：漫“邮”联合国"></a></li>
-<li>联合国邮票发行有何特殊规则？<br>只售新票,纪念版邮票在12个月内销售,过期即全部销毁</li>
-<li>黑便士上的人像是谁？<br>15岁的维多利亚女王</li>
-<li>庚申年猴票有何特别之处？<br>中国发行的第一枚生肖邮票,由黄永玉绘制,整版收藏价格超过百万<h2 id="《直播联合国》第八集：神奇的马桶"><a href="#《直播联合国》第八集：神奇的马桶" class="headerlink" title="《直播联合国》第八集：神奇的马桶"></a>《直播联合国》第八集：神奇的马桶</h2><a href="http://www.xinhuanet.com/sike/liveun/detail8.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun08.jpg" alt="第八集：神奇的马桶"></a></li>
-<li>大力建设厕所有多值？<br>超值！回报率1:7每投入6元可得到42元的回报</li>
-<li>世界上最有趣的小便池在哪里？<br>位于南极点350米附近，每年以10米的速度向南极点靠拢</li>
-<li>第三卫生间是什么？<br>是专供行为障碍者或者协助行动不能自理的人（尤其是异性）使用<h2 id="《直播联合国》第九集：抗艾小斗士"><a href="#《直播联合国》第九集：抗艾小斗士" class="headerlink" title="《直播联合国》第九集：抗艾小斗士"></a>《直播联合国》第九集：抗艾小斗士</h2><a href="http://www.xinhuanet.com/sike/liveun/detail9.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun09.png" alt="第九集：抗艾小斗士"></a></li>
-<li>艾滋病可以治愈吗？<br>目前还不能。艾滋病病毒感染者可以通过服用抗逆转录病毒药物抑制病毒</li>
-<li>联合国艾滋病规划署是什么时候成立的？<br>1994年，由联合国的六个机构联合组建：世界卫生组织、开发计划署、儿童基金会、人口基金会、教科文组织和世界银行</li>
-<li>防治艾滋病的标志红丝带由谁设计？<br>15名感染艾滋病病毒的艺术家设计，灵感来源于海湾战争时悬挂的丝带<h2 id="《直播联合国》第十集：可能消失的咖啡"><a href="#《直播联合国》第十集：可能消失的咖啡" class="headerlink" title="《直播联合国》第十集：可能消失的咖啡"></a>《直播联合国》第十集：可能消失的咖啡</h2><a href="http://www.xinhuanet.com/sike/liveun/detail10.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun10.jpg" alt="第十集：可能消失的咖啡"></a></li>
-<li>除了阿拉比卡，还有什么咖啡豆品种呢？<br>罗布斯塔（Robusta）和利比里亚（Liberica）</li>
-<li>我们平时常点的咖啡由什么构成？<br>浓缩咖啡、牛奶和奶泡根据不同比例调制</li>
-<li>2018年联合国气候大会在哪里召开？<br>12月3日至14日在波兰卡托维兹召开<h2 id="《直播联合国》第十一集：你好！地球卫士"><a href="#《直播联合国》第十一集：你好！地球卫士" class="headerlink" title="《直播联合国》第十一集：你好！地球卫士"></a>《直播联合国》第十一集：你好！地球卫士</h2><a href="http://www.xinhuanet.com/sike/liveun/detail11.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun11.jpg" alt="第十一集：你好！地球卫士"></a></li>
-<li>中国有哪些项目曾获“地球卫士奖”？<br>“塞罕坝”机械林场建设者</li>
-<li>除了“激励与行动奖”，“地球卫士奖”还设置了什么奖项？<br>政策领袖奖、商界卓识奖、科学与创新奖、终身成就奖</li>
-<li>安吉县还有为什么闻名世界？<br>安吉竹海是电影《卧虎藏龙》的拍摄地<h2 id="《直播联合国》第十二集：联合国的超级食物"><a href="#《直播联合国》第十二集：联合国的超级食物" class="headerlink" title="《直播联合国》第十二集：联合国的超级食物"></a>《直播联合国》第十二集：联合国的超级食物</h2><a href="http://www.xinhuanet.com/sike/liveun/detail12.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun12.jpg" alt="第十二集：联合国的超级食物"></a></li>
-<li>藜麦是一种谷物吗？<br>不是，它是藜属植物的种子，和水稻、小麦有本质区别</li>
-<li>三种颜色的藜麦营养价值有区别吗？<br>藜麦品种多达120种，颜色也不止3种，但营养成分基本相似</li>
-<li>藜麦通常怎么吃？<br>藜麦可与其他食材搭配烹煮，也可制成藜麦粉，用来制作各式面包和点心<h2 id="《直播联合国》第十三集：走进联合国的土著人"><a href="#《直播联合国》第十三集：走进联合国的土著人" class="headerlink" title="《直播联合国》第十三集：走进联合国的土著人"></a>《直播联合国》第十三集：走进联合国的土著人</h2><a href="http://www.xinhuanet.com/sike/liveun/detail13.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun13.jpg" alt="第十四集：出行的智慧"></a></li>
-<li>“土著”究竟怎样定义？<br>一个地方的原始居民（相对外来殖民者而言）。中国的56个民族都是世居民族，故没有符合土著人定义的人群</li>
-<li>德斯卡赫最终怎么样了？<br>由于担心被拘捕，德斯卡赫去到美国塔斯卡洛拉保留区并在1925年逝世，再也没有回到家乡</li>
-<li>联合国关于土著的节日还有哪些？<br>2019年，我们将迎来土著语言年<h2 id="《直播联合国》第十四集：出行的智慧"><a href="#《直播联合国》第十四集：出行的智慧" class="headerlink" title="《直播联合国》第十四集：出行的智慧"></a>《直播联合国》第十四集：出行的智慧</h2><a href="http://www.xinhuanet.com/sike/liveun/detail14.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun14.jpg" alt="第十四集：出行的智慧"></a></li>
-<li>联合国世界地理信息大会为何落户德清？<br>当地地理信息产业发展领先，联合国希望能把它的经验推广到全球</li>
-<li>世界上每个国家都有红绿灯吗？<br>不是，圣马力诺共和国没有，人们自觉遵守交规，极少有堵车现象</li>
-<li>联合国世界地理信息大会有哪些酷炫“黑科技”？<br>无人巴士、全息地图影像、机器导航犬<h2 id="《直播联合国》第十五集：无声的呼唤"><a href="#《直播联合国》第十五集：无声的呼唤" class="headerlink" title="《直播联合国》第十五集：无声的呼唤"></a>《直播联合国》第十五集：无声的呼唤</h2><a href="http://www.xinhuanet.com/sike/liveun/detail15.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun15.jpg" alt="第十五集：无声的呼唤"></a></li>
-<li>国际通用手语有哪些优势？<br>它比自然手语简单，可供聋哑人在非正式场合使用</li>
-<li>第一所聋哑人学校在哪里诞生？<br>18世纪，世界上第一所聋哑人学校在法国巴黎出现</li>
-<li>中国手语有了“通用语”的标志是什么？<br>2018年7月1日，《国家通用手语常用词表》正式实施<h2 id="《直播联合国》第十六集：安理会很忙"><a href="#《直播联合国》第十六集：安理会很忙" class="headerlink" title="《直播联合国》第十六集：安理会很忙"></a>《直播联合国》第十六集：安理会很忙</h2><a href="http://www.xinhuanet.com/sike/liveun/detail16.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun16.jpg" alt="第十六集：安理会很忙"></a></li>
-<li>安理会第一次轮值从何时开始？<br>1946年1月，当时联合国的办公地点位于伦敦</li>
-<li>安理会是否一直都是15个理事国？<br>安理会最早只有11个理事国，1963年联大通过决议，增加4个非常任理事国</li>
-<li>如果有多名秘书长人选，安理会要怎样做？<br>通过闭门磋商和非正式投票等形式确定人选<h2 id="《直播联合国》第十七集：了不起的营养包"><a href="#《直播联合国》第十七集：了不起的营养包" class="headerlink" title="《直播联合国》第十七集：了不起的营养包"></a>《直播联合国》第十七集：了不起的营养包</h2><a href="http://www.xinhuanet.com/sike/liveun/detail17.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun17.jpg" alt="第十七集：了不起的营养包"></a></li>
-<li>营养不良只意味着营养不足吗？<br>不是。超重、肥胖和微量营养素缺乏或过剩也属于营养不良</li>
-<li>婴儿摄取营养最关键的时间段是？<br>生命最初的1000天，也就是妇女怀孕初始到儿童两岁</li>
-<li>中国营养包是谁研制的？<br>中国预防医学科学院第一任院长陈春明教授，带领团队用15年研制<h2 id="《直播联合国》第十八集：欢迎收看世界频道"><a href="#《直播联合国》第十八集：欢迎收看世界频道" class="headerlink" title="《直播联合国》第十八集：欢迎收看世界频道"></a>《直播联合国》第十八集：欢迎收看世界频道</h2><a href="http://www.xinhuanet.com/sike/liveun/detail18.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun18.jpg" alt="第十八集：欢迎收看世界频道"></a></li>
-<li>世界上第一部电视剧是什么？<br>《女王的信使》，由美国实验性的电视台W2XB播出</li>
-<li>中国的第一台电视机是何时生产的？<br>1958年，由天津无线电厂试制，名为“北京”</li>
-<li>电视停播后出现圆形图案是什么？<br>电视信号测试图，用来确定屏幕显示正常<h2 id="《直播联合国》第十九集：寻味联合国"><a href="#《直播联合国》第十九集：寻味联合国" class="headerlink" title="《直播联合国》第十九集：寻味联合国"></a>《直播联合国》第十九集：寻味联合国</h2><a href="http://www.xinhuanet.com/sike/liveun/detail19.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun19.jpg" alt="第十九集：寻味联合国"></a></li>
-<li>联合国代表餐厅接待普通游客吗？<br>需要提前预约，然后就能和外交官们一起，享用全球美食啦</li>
-<li>在国外，哪些中国菜知名度最高？<br>饺子、烤鸭和麻婆豆腐是许多外国人心中最具代表性的中餐菜品</li>
-<li>中国美食分为八大菜系，你知道是哪八个吗？<br>鲁菜、淮扬菜、粤菜、川菜、浙菜、闽菜、湘菜和徽菜<h2 id="《直播联合国》第二十集：昆曲声声入梦来"><a href="#《直播联合国》第二十集：昆曲声声入梦来" class="headerlink" title="《直播联合国》第二十集：昆曲声声入梦来"></a>《直播联合国》第二十集：昆曲声声入梦来</h2><a href="http://www.xinhuanet.com/sike/liveun/detail20.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun20.jpg" alt="第二十集：昆曲声声入梦来"></a></li>
-<li>昆曲的创始人是谁？<br>明代戏曲家魏良辅改良昆山腔为昆曲，被后人奉为“曲圣”</li>
-<li>《牡丹亭》仅仅讲述的是爱情故事吗？<br>不是，汤显祖借杜、柳二人表达了自己追求理想的心声</li>
-<li>中国总共有多少个项目入选“非遗”？<br>32项，最新一项是2018年入选的“藏医药浴法”<h2 id="《直播联合国》第二十一集：探索宇宙的征途"><a href="#《直播联合国》第二十一集：探索宇宙的征途" class="headerlink" title="《直播联合国》第二十一集：探索宇宙的征途"></a>《直播联合国》第二十一集：探索宇宙的征途</h2><a href="http://www.xinhuanet.com/sike/liveun/detail21.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun21.jpg" alt="第二十一集：探索宇宙的征途"></a></li>
-<li>人类航天史上最年长的宇航员是谁？<br>美国宇航员约翰·格伦，1998年进入太空时已77岁高龄</li>
-<li>进入太空会长高，是真的吗？<br>是的，脊柱由于没有重力作用会变长，人也就变高了</li>
-<li>人类历史上第一位女宇航员是谁？<br>前苏联宇航员瓦伦蒂娜·捷列什科娃。1963年6月16日，她乘坐“东方-6号”飞船进入太空<h2 id="《直播联合国》第二十二集：珠算入“非遗”"><a href="#《直播联合国》第二十二集：珠算入“非遗”" class="headerlink" title="《直播联合国》第二十二集：珠算入“非遗”"></a>《直播联合国》第二十二集：珠算入“非遗”</h2><a href="http://www.xinhuanet.com/sike/liveun/detail22.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun22.jpg" alt="第二十二集：珠算入“非遗”"></a></li>
-<li>珠算口诀的开创者是谁？<br>明代商人程大位，他规范了珠算口诀，被誉为“珠算宗师”</li>
-<li>珠算能完成哪些运算？<br>加减乘除、乘方开方、解高次方程等运算</li>
-<li>联合国教科文组织“非遗”名录有哪些种类？<br>口头传统、表演艺术、仪式节庆、有关自然界和宇宙的知识、传统手工艺等<h2 id="《直播联合国》第二十三集：联合国里的“她”力量"><a href="#《直播联合国》第二十三集：联合国里的“她”力量" class="headerlink" title="《直播联合国》第二十三集：联合国里的“她”力量"></a>《直播联合国》第二十三集：联合国里的“她”力量</h2><a href="http://www.xinhuanet.com/sike/liveun/detail23.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun23.jpg" alt="第二十三集：联合国里的“她”力量"></a></li>
-<li>“三八”国际妇女节与联合国有何联系？<br>联合国将1975年设立为国际妇女年，并从当年开始正式庆祝国际妇女节</li>
-<li>妇女地位委员会与联合国妇女署是什么关系？<br>妇女地位委员会与妇女署同时活跃在一线，两者开展工作，相辅相成</li>
-<li>第四次妇女大会提出了怎样的概念？<br>社会性别主流化，即在做出任何评估或出台任何政策之前，将男女双方的需求均列入考虑，保证双方受益均等<h2 id="《直播联合国》第二十四集：“绣”出美好生活"><a href="#《直播联合国》第二十四集：“绣”出美好生活" class="headerlink" title="《直播联合国》第二十四集：“绣”出美好生活"></a>《直播联合国》第二十四集：“绣”出美好生活</h2><a href="http://www.xinhuanet.com/sike/liveun/detail24.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun24.jpg" alt="第二十四集：“绣”出美好生活"></a></li>
-<li>世界消除贫困日是哪一天？<br>联合国从1992年起将每年的10月17日设立为世界消除贫困日</li>
-<li>极端贫困线是怎么界定的？<br>国际极端贫困线的标准是一人一天1.9美元</li>
-<li>苗绣有哪些濒临失传的技法？<br>打籽绣、数纱绣、双针绕线绣<h2 id="《直播联合国》第二十五集：一起骑车呀"><a href="#《直播联合国》第二十五集：一起骑车呀" class="headerlink" title="《直播联合国》第二十五集：一起骑车呀"></a>《直播联合国》第二十五集：一起骑车呀</h2><a href="http://www.xinhuanet.com/sike/liveun/detail25.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun25.png" alt="第二十五集：一起骑车呀"></a></li>
-<li>“自行车”一词何时出现在中国？<br>清同治七年（1868年），张德彝在考察巴黎的日记中写道：“见游人有骑两轮自行车者，西名曰‘威娄希兆达’”</li>
-<li>坦博拉火山爆发还催生了什么？<br>为躲避阴冷天气，玛丽·雪莱等一群作家终日待在日内瓦的别墅消磨时间，《科学怪人》就在这里诞生</li>
-<li>德莱斯还有哪些神奇发明？<br>1821年，德莱斯发明了最早的带键盘的打字机<h2 id="《直播联合国》第二十六集：可持续的时尚"><a href="#《直播联合国》第二十六集：可持续的时尚" class="headerlink" title="《直播联合国》第二十六集：可持续的时尚"></a>《直播联合国》第二十六集：可持续的时尚</h2><a href="http://www.xinhuanet.com/sike/liveun/detail26.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun26.png" alt="第二十六集：可持续的时尚"></a></li>
-<li>蒂齐亚诺·瓜迪尼还有什么代表性作品？<br>用贝壳和废旧唱片CD制成的亮片设计了一条宝石蓝吊带裙，裙上绣着一只章鱼</li>
-<li>服装A、B、C三个安全级别分别代表什么？<br>A类为婴幼儿服装，B类可直接接触皮肤，C类不能直接接触皮肤</li>
-<li>我们可以选择哪些环保面料的衣服？<br>有机棉、竹纤维、大豆蛋白纤维、莫代尔、原木天丝等<h2 id="《直播联合国》第二十七集：足球的力量"><a href="#《直播联合国》第二十七集：足球的力量" class="headerlink" title="《直播联合国》第二十七集：足球的力量"></a>《直播联合国》第二十七集：足球的力量</h2><a href="http://www.xinhuanet.com/sike/liveun/detail27.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun27.png" alt="第二十六集：可持续的时尚"></a></li>
-<li>为什么各国大使选择10号球衣？<br>因为10号往往是一个球队的核心，是关键角色</li>
-<li>第一届世界杯在何时举办？<br>1930年7月13日至7月30日在乌拉圭举行，东道主最终夺冠</li>
-<li>足球裁判的服装为什么是黑色？<br>这是国际足联规定的，目的是让裁判与场上球员能够明显区分<h2 id="《直播联合国》第二十八集：甜蜜的负担"><a href="#《直播联合国》第二十八集：甜蜜的负担" class="headerlink" title="《直播联合国》第二十八集：甜蜜的负担"></a>《直播联合国》第二十八集：甜蜜的负担</h2><a href="http://www.xinhuanet.com/sike/liveun/detail28.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun28.png" alt="第二十八集：甜蜜的负担"></a></li>
-<li>无糖饮料真的无糖吗？<br>无糖可以理解成没有添加糖。无糖饮料一般是指不含蔗糖、葡萄糖、麦芽糖、果糖等的甜味饮料</li>
-<li>世界上较早开始征收糖税的国家还有？<br>挪威，如今它也是全球肥胖率较低的国家之一</li>
-<li>成年人每天摄取多少糖合适？<br>联合国发布的《中国居民膳食指南》建议，中国人每天的糖摄入量不应超过50克，最好控制在约25克以下<h2 id="《直播联合国》第二十九集：“蝴蝶姐妹”的故事"><a href="#《直播联合国》第二十九集：“蝴蝶姐妹”的故事" class="headerlink" title="《直播联合国》第二十九集：“蝴蝶姐妹”的故事"></a>《直播联合国》第二十九集：“蝴蝶姐妹”的故事</h2><a href="http://www.xinhuanet.com/sike/liveun/detail29.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun29.png" alt="第二十九集：“蝴蝶姐妹”的故事"></a></li>
-<li>联合国还有其它反对性别暴力的运动吗？<br>2014年 联合国妇女署发起“HeForShe”运动，呼吁全球男性加入行动</li>
-<li>中国有哪些消除对妇女暴力的法律？<br>《中华人民共和国反家庭暴力法》自2016年3月1日起实施</li>
-<li>多米尼加人民是如何纪念“蝴蝶姐妹”的？<br>1985年多米尼加邮政局发行邮票，2007年多米尼加中央银行发行纸币，设立米拉瓦尔三姐妹纪念雕塑<h2 id="《直播联合国》第三十集：别惹“大麻”烦"><a href="#《直播联合国》第三十集：别惹“大麻”烦" class="headerlink" title="《直播联合国》第三十集：别惹“大麻”烦"></a>《直播联合国》第三十集：别惹“大麻”烦</h2><a href="http://www.xinhuanet.com/sike/liveun/detail30.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun30.png" alt="第三十集：别惹“大麻”烦"></a></li>
-<li>大麻等管制品可以用来消遣吗？<br>根据《1961年麻醉品单一公约》，所有类别的毒品都只能用于医疗和科研用途，严禁消遣性用途</li>
-<li>国际层面的药物管制始于何时？<br>1909年始于上海“万国禁烟会”</li>
-<li>麻醉药品委员会规定的管制药品有哪几类？<br>共六类：吗啡型药物；可卡因、可卡叶；大麻；人工合成兴奋剂；安眠镇静剂；安定等精神药物<h2 id="《直播联合国》第三十一集：索尔斯木槌"><a href="#《直播联合国》第三十一集：索尔斯木槌" class="headerlink" title="《直播联合国》第三十一集：索尔斯木槌"></a>《直播联合国》第三十一集：索尔斯木槌</h2><a href="http://www.xinhuanet.com/sike/liveun/detail31.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun31.png" alt="第三十一集：索尔斯木槌"></a></li>
-<li>去冰岛旅游，怎么到议会旧址？<br>在首都雷克雅未克东北方向大约40公里处</li>
-<li>木槌特殊的造型是什么意思？<br>槌头是一个维京海盗祈求和平的图案</li>
-<li>1960年，木槌是怎么敲断的？<br>当时赫鲁晓夫用鞋子敲击桌子，博兰德想让他冷静下来<h2 id="《直播联合国》第三十二集：《联合国宪章》的诞生"><a href="#《直播联合国》第三十二集：《联合国宪章》的诞生" class="headerlink" title="《直播联合国》第三十二集：《联合国宪章》的诞生"></a>《直播联合国》第三十二集：《联合国宪章》的诞生</h2><a href="http://www.xinhuanet.com/sike/liveun/detail32.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun32.png" alt="第三十二集：《联合国宪章》的诞生"></a></li>
-<li>联合国成立70周年时新设计的《联合国宪章》增加了哪些内容？<br>“从战争到和平”的介绍、独家档案照片、《国际法院规约》</li>
-<li>联合国创始成员国是51个，但为什么只有50个国家参加签字仪式？<br>波兰没有派代表参会，但随后补签了《联合国宪章》</li>
-<li>《联合国宪章》是在哪里签署的？<br>美国旧金山退伍军人纪念堂礼堂<h2 id="《直播联合国》第三十三集：点亮能源之光"><a href="#《直播联合国》第三十三集：点亮能源之光" class="headerlink" title="《直播联合国》第三十三集：点亮能源之光"></a>《直播联合国》第三十三集：点亮能源之光</h2><a href="http://www.xinhuanet.com/sike/liveun/detail33.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun33.png" alt="第三十三集：点亮能源之光"></a></li>
-<li>太阳能的主要利用方式有哪些？<br>光伏发电系统、太阳能热发电系统、太阳能热利用等</li>
-<li>将现有能源转换成可持续能源，要花多少钱？<br>全球每年能源设施投资要增至3倍，约为1.25万亿美元</li>
-<li>中国何时全面实现无电人口用电？<br>2015年12月24，青海省最后3.96万无电人口实现通电，中国全面解决无电人口用电问题<h2 id="《直播联合国》第三十四集：如果蜜蜂消失了"><a href="#《直播联合国》第三十四集：如果蜜蜂消失了" class="headerlink" title="《直播联合国》第三十四集：如果蜜蜂消失了"></a>《直播联合国》第三十四集：如果蜜蜂消失了</h2><a href="http://www.xinhuanet.com/sike/liveun/detail34.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun34.png" alt="第三十四集：如果蜜蜂消失了"></a></li>
-<li>蜜蜂为什么会发出嗡嗡声？<br>蜜蜂的翅膀每分钟击打11400次，从而具有独特的嗡嗡声</li>
-<li>蜜蜂给了发明家什么启示？<br>飞机的机身和机翼、人造卫星的外壳、用于导航的偏光罗盘</li>
-<li>除了蜜蜂，还有哪些授粉生物？<br>蝴蝶、鸟类、蝙蝠、甲虫等<h2 id="《直播联合国》第三十五集：联合国“最萌”代言人"><a href="#《直播联合国》第三十五集：联合国“最萌”代言人" class="headerlink" title="《直播联合国》第三十五集：联合国“最萌”代言人"></a>《直播联合国》第三十五集：联合国“最萌”代言人</h2><a href="http://www.xinhuanet.com/sike/liveun/detail35.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun35.png" alt="第三十五集：联合国“最萌”代言人"></a></li>
-<li>联合国还有哪些“特殊”大使？<br>2016年绿色荣誉大使——愤怒的小鸟，2017年创新大使——人工智能机器人索菲亚，2009年绿色荣誉大使——奇妙仙女</li>
-<li>大熊猫只有黑白色吗？<br>不是哦，“秦岭大熊猫”的亚种“七仔”就是棕色的，非常罕见</li>
-<li>双胞胎大熊猫普遍吗？<br>在人工圈养条件下，大熊猫平均每胎生1.4只。双胞胎比单胎概率更低<h2 id="《直播联合国》第三十六集：联合国的“微”记录"><a href="#《直播联合国》第三十六集：联合国的“微”记录" class="headerlink" title="《直播联合国》第三十六集：联合国的“微”记录"></a>《直播联合国》第三十六集：联合国的“微”记录</h2><a href="http://www.xinhuanet.com/sike/liveun/detail36.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun36.png" alt="第三十六集：联合国的“微”记录"></a></li>
-</ul>
-<h2 id="《直播联合国》第三十七集：一手“提起”两个生命"><a href="#《直播联合国》第三十七集：一手“提起”两个生命" class="headerlink" title="《直播联合国》第三十七集：一手“提起”两个生命"></a>《直播联合国》第三十七集：一手“提起”两个生命</h2><p><a href="http://www.xinhuanet.com/sike/liveun/detail37.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun37.png" alt="第三十七集：一手“提起”两个生命"></a></p>
-<h2 id="《直播联合国》第三十八集：青年力量推动可持续发展"><a href="#《直播联合国》第三十八集：青年力量推动可持续发展" class="headerlink" title="《直播联合国》第三十八集：青年力量推动可持续发展"></a>《直播联合国》第三十八集：青年力量推动可持续发展</h2><p><a href="http://www.xinhuanet.com/sike/liveun/detail38.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun38.png" alt="第三十八集：青年力量推动可持续发展"></a></p>
-<h2 id="《直播联合国》第三十九集：联合国的民间使者"><a href="#《直播联合国》第三十九集：联合国的民间使者" class="headerlink" title="《直播联合国》第三十九集：联合国的民间使者"></a>《直播联合国》第三十九集：联合国的民间使者</h2><p><a href="http://www.xinhuanet.com/sike/liveun/detail39.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun39.png" alt="第三十九集：联合国的民间使者"></a></p>
-<h2 id="《直播联合国》第四十集：“欢迎来到联合国参观”"><a href="#《直播联合国》第四十集：“欢迎来到联合国参观”" class="headerlink" title="《直播联合国》第四十集：“欢迎来到联合国参观”"></a>《直播联合国》第四十集：“欢迎来到联合国参观”</h2><p><a href="http://www.xinhuanet.com/sike/liveun/detail40.htm" target="_blank" rel="noopener"><img src="/assets/blogImg/liveun40.png" alt="第四十集：“欢迎来到联合国参观”"></a></p>
+<p>比如定义了一个form，包含name，age，birth。定义校验规则如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> validoptions = &#123;</span><br><span class="line">    rules:&#123;</span><br><span class="line">        name:&#123;</span><br><span class="line">            required: <span class="literal">true</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        age:&#123;</span><br><span class="line">            required: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    messages:&#123;</span><br><span class="line">        name:&#123;</span><br><span class="line">            required: <span class="string">"fill up name!"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        age:&#123;</span><br><span class="line">            required: <span class="string">"fill up age"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">$(<span class="string">"#fmcreateuser"</span>).validate(validoptions);</span><br></pre></td></tr></table></figure>
 
+<p>如果想给age增加数字的校验规则，增加逻辑如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//判断是否执行了</span></span><br><span class="line"><span class="keyword">if</span>($.data($(<span class="string">"#age"</span>)[<span class="number">0</span>].form,<span class="string">"validator"</span>)) &#123;</span><br><span class="line">    $(<span class="string">"#age"</span>).rules(<span class="string">"add"</span>, &#123;</span><br><span class="line">        digits: <span class="literal">true</span></span><br><span class="line">        messages: &#123;<span class="attr">digits</span>: <span class="string">"age must be number"</span>&#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    validoptions.rules.age = &#123;</span><br><span class="line">        required: <span class="literal">true</span>,</span><br><span class="line">        digits: <span class="literal">true</span></span><br><span class="line">    &#125;;</span><br><span class="line">    validoptions.messages.age = &#123;</span><br><span class="line">        required: <span class="string">"fill up age"</span>,</span><br><span class="line">        monthstr: <span class="string">"age must be number"</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>官方文档</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">rules()</span><br><span class="line"></span><br><span class="line">    This signature does not accept any <span class="built_in">arguments</span>.</span><br><span class="line"></span><br><span class="line">rules( <span class="string">"add"</span>, rules )</span><br><span class="line"></span><br><span class="line">    <span class="string">"add"</span></span><br><span class="line">    Type: <span class="built_in">String</span></span><br><span class="line">    rules</span><br><span class="line">    Type: <span class="built_in">Object</span></span><br><span class="line">    The rules to add. Accepts the same format <span class="keyword">as</span> the rules-option <span class="keyword">of</span> the validate-method.</span><br><span class="line"></span><br><span class="line">rules( <span class="string">"remove"</span>, rules )</span><br><span class="line"></span><br><span class="line">    <span class="string">"remove"</span></span><br><span class="line">    Type: <span class="built_in">String</span></span><br><span class="line">    rules</span><br><span class="line">    Type: <span class="built_in">Object</span></span><br><span class="line">    The space-seperated names <span class="keyword">of</span> rules to remove and <span class="keyword">return</span>. If left unspecified, removes and returns all rules. Manipulates only rules specified via rules-option or via rules(<span class="string">"add"</span>).</span><br></pre></td></tr></table></figure>
       
 
       
@@ -381,11 +235,23 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">联合国</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">jquery.validate</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">趣谈</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">validator</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动态增删</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">规则</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">rules</a>
         		</li>
       		
 		</ul>
@@ -441,7 +307,7 @@
     <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/07/02/live-broadcast-united-nation/" alt="微信分享二维码">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/09/12/jquery-validate-add-or-remove-rules/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -455,18 +321,9 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/07/04/mysql-config/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          MySQL 配置
-        
-      </div>
-    </a>
   
-  
-    <a href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">如何在 Linux 上安装、配置 NTP 服务器和客户端？</div>
+    <a href="/2019/09/09/mysql-regexp/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MySQL正则</div>
       <i class="icon-circle-right"></i>
     </a>
   
