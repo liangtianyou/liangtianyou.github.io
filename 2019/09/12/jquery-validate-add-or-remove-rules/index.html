@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-16T03:37:02.578Z">
+<meta property="og:updated_time" content="2019-09-16T03:47:01.183Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jquery.validate 动态增加或删除规则">
 <meta name="twitter:description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
@@ -204,21 +204,34 @@
 <p>官方文档</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">rules()</span><br><span class="line"></span><br><span class="line">    This signature does not accept any <span class="built_in">arguments</span>.</span><br><span class="line"></span><br><span class="line">rules( <span class="string">"add"</span>, rules )</span><br><span class="line"></span><br><span class="line">    <span class="string">"add"</span></span><br><span class="line">    Type: <span class="built_in">String</span></span><br><span class="line">    rules</span><br><span class="line">    Type: <span class="built_in">Object</span></span><br><span class="line">    The rules to add. Accepts the same format <span class="keyword">as</span> the rules-option <span class="keyword">of</span> the validate-method.</span><br><span class="line"></span><br><span class="line">rules( <span class="string">"remove"</span>, rules )</span><br><span class="line"></span><br><span class="line">    <span class="string">"remove"</span></span><br><span class="line">    Type: <span class="built_in">String</span></span><br><span class="line">    rules</span><br><span class="line">    Type: <span class="built_in">Object</span></span><br><span class="line">    The space-seperated names <span class="keyword">of</span> rules to remove and <span class="keyword">return</span>. If left unspecified, removes and returns all rules. Manipulates only rules specified via rules-option or via rules(<span class="string">"add"</span>).</span><br></pre></td></tr></table></figure>
 
-<p>完整示例：<br><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"></p>
-<html>
-<head><meta name="generator" content="Hexo 3.9.0">
-    <title>jQuery Validate动态添加和删除rules</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="description" content>
-    <meta name="keywords" content>
-    <link rel="stylesheet" type="text/css" href="/assets/res/jquery-ui/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+<p>示例：</p>
+<link rel="stylesheet" type="text/css" href="/assets/res/jquery-ui/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="/assets/css/style.css">
 
-<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/res/jquery/jquery.min.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/res/jquery-ui/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/res/jquery-validate/jquery.validate.min.js&quot;&gt;&lt;/script&gt;
+<script type="text/javascript" src="/assets/res/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/res/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/assets/res/jquery-validate/jquery.validate.min.js"></script>
 
-&lt;script type=&quot;text/javascript&quot;&gt;
+<form id="fmcreateuser">
+    <fieldset>
+        <label for="name">姓名</label>
+        <input type="text" id="name" name="name" class="ui-widget-content ui-corner-all"><br><br>
+        <label for="age">年龄</label>
+        <input type="text" id="age" name="age" class="ui-widget-content ui-corner-all"><br><br>
+        <label for="birth">生日</label>
+        <input type="text" id="birth" name="birth" class="ui-widget-content ui-corner-all"><br><br>
+        <div class="form-bottom">
+            <button type="button" onclick="javascript:validForm();">提交</button>
+        </div>
+    </fieldset>
+</form>
+<div id="dialog-message" style="display:none;" title="提示信息">
+    <p>
+        表单已提交
+    </p>
+</div>
+
+<script type="text/javascript">
     var validoptions = {
         rules:{
             name:{
@@ -230,18 +243,18 @@
         },
         messages:{
             name:{
-                required: &quot;姓名不能为空&quot;
+                required: "姓名不能为空"
             },
             age:{
-                required: &quot;年龄不能为空&quot;
+                required: "年龄不能为空"
             }
         }
     };
     function validForm(){
-        if($.data($(&quot;#age&quot;)[0].form,&quot;validator&quot;)) {
-            $(&quot;#age&quot;).rules(&quot;add&quot;, {
+        if($.data($("#age")[0].form,"validator")) {
+            $("#age").rules("add", {
                 digits: true,
-                messages: {digits: &quot;年龄必须为数字&quot;}
+                messages: {digits: "年龄必须为数字"}
             });
         }else {
             validoptions.rules.age = {
@@ -249,49 +262,28 @@
                 digits: true
             };
             validoptions.messages.age = {
-                required: &quot;年龄不能为空&quot;,
-                digits: &quot;年龄必须为数字&quot;
+                required: "年龄不能为空",
+                digits: "年龄必须为数字"
             };
         }
-        $(&quot;#fmcreateuser&quot;).validate(validoptions);
-        if(!$(&quot;#fmcreateuser&quot;).valid()){
+        $("#fmcreateuser").validate(validoptions);
+        if(!$("#fmcreateuser").valid()){
             return false;
         }else{
-            $( &quot;#dialog-message&quot; ).dialog({
+            $( "#dialog-message" ).dialog({
                 modal: true,
                 buttons: {
                     Ok: function() {
-                        $( this ).dialog( &quot;close&quot; );
+                        $( this ).dialog( "close" );
                     }
                 }
             });
         }
     }
     $(function(){
-        $(&quot;button&quot;).button();
+        $("button").button();
     })
-&lt;/script&gt;</code></pre></head>
-<body>
-    <form id="fmcreateuser">
-        <fieldset>
-            <label for="name">姓名</label>
-            <input type="text" id="name" name="name" class="ui-widget-content ui-corner-all"><br><br>
-            <label for="age">年龄</label>
-            <input type="text" id="age" name="age" class="ui-widget-content ui-corner-all"><br><br>
-            <label for="birth">生日</label>
-            <input type="text" id="birth" name="birth" class="ui-widget-content ui-corner-all"><br><br>
-            <div class="form-bottom">
-                <button type="button" onclick="javascript:validForm();">提交</button>
-            </div>
-        </fieldset>
-    </form>
-    <div id="dialog-message" style="display:none;" title="提示信息">
-        <p>
-            表单已提交
-        </p>
-    </div>
-</body>
-</html>
+</script>
       
 
       
@@ -564,23 +556,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -596,6 +576,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Javascript</a>
               </li>
              
@@ -605,6 +597,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数组</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -625,6 +633,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">rules</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -676,11 +688,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -709,22 +717,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
             
             <div class="clearfix"></div>
