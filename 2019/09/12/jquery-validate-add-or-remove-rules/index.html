@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-12T09:03:13.301Z">
+<meta property="og:updated_time" content="2019-09-16T03:37:02.578Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jquery.validate 动态增加或删除规则">
 <meta name="twitter:description" content="按照官方的文档，可以通过rules函数来动态的添加和删除规则。实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。">
@@ -189,14 +189,109 @@
       
         <p>按照官方的文档，可以通过rules函数来动态的添加和删除规则。<br>实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。</p>
 <a id="more"></a>
-<p>比如定义了一个form，包含name，age，birth。定义校验规则如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> validoptions = &#123;</span><br><span class="line">    rules:&#123;</span><br><span class="line">        name:&#123;</span><br><span class="line">            required: <span class="literal">true</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        age:&#123;</span><br><span class="line">            required: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    messages:&#123;</span><br><span class="line">        name:&#123;</span><br><span class="line">            required: <span class="string">"fill up name!"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        age:&#123;</span><br><span class="line">            required: <span class="string">"fill up age"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">$(<span class="string">"#fmcreateuser"</span>).validate(validoptions);</span><br></pre></td></tr></table></figure>
+<p>比如定义了一个form，包含name，age，birth。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"fmcreateuser"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">fieldset</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"name"</span>&gt;</span>姓名<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"name"</span> <span class="attr">name</span>=<span class="string">"name"</span> <span class="attr">class</span>=<span class="string">"ui-widget-content ui-corner-all"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"age"</span>&gt;</span>年龄<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"age"</span> <span class="attr">name</span>=<span class="string">"age"</span> <span class="attr">class</span>=<span class="string">"ui-widget-content ui-corner-all"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">label</span> <span class="attr">for</span>=<span class="string">"birth"</span>&gt;</span>生日<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">id</span>=<span class="string">"birth"</span> <span class="attr">name</span>=<span class="string">"birth"</span> <span class="attr">class</span>=<span class="string">"ui-widget-content ui-corner-all"</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span><span class="tag">&lt;<span class="name">br</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"form-bottom"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">onclick</span>=<span class="string">"javascript:validForm();"</span>&gt;</span>提交<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">fieldset</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>定义校验规则如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> validoptions = &#123;</span><br><span class="line">    rules:&#123;</span><br><span class="line">        name:&#123;</span><br><span class="line">            required: <span class="literal">true</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">        age:&#123;</span><br><span class="line">            required: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    messages:&#123;</span><br><span class="line">        name:&#123;</span><br><span class="line">            required: <span class="string">"姓名不能为空"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        age:&#123;</span><br><span class="line">            required: <span class="string">"年龄不能为空"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>提交表单时，触发校验：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">validForm</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    $(<span class="string">"#fmcreateuser"</span>).validate(validoptions);</span><br><span class="line">    <span class="keyword">if</span>(!$(<span class="string">"#fmcreateuser"</span>).valid())&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        $( <span class="string">"#dialog-message"</span> ).dialog(&#123;</span><br><span class="line">            modal: <span class="literal">true</span>,</span><br><span class="line">            buttons: &#123;</span><br><span class="line">                Ok: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">                    $( <span class="keyword">this</span> ).dialog( <span class="string">"close"</span> );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>如果想给age增加数字的校验规则，增加逻辑如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//判断是否执行了</span></span><br><span class="line"><span class="keyword">if</span>($.data($(<span class="string">"#age"</span>)[<span class="number">0</span>].form,<span class="string">"validator"</span>)) &#123;</span><br><span class="line">    $(<span class="string">"#age"</span>).rules(<span class="string">"add"</span>, &#123;</span><br><span class="line">        digits: <span class="literal">true</span></span><br><span class="line">        messages: &#123;<span class="attr">digits</span>: <span class="string">"age must be number"</span>&#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    validoptions.rules.age = &#123;</span><br><span class="line">        required: <span class="literal">true</span>,</span><br><span class="line">        digits: <span class="literal">true</span></span><br><span class="line">    &#125;;</span><br><span class="line">    validoptions.messages.age = &#123;</span><br><span class="line">        required: <span class="string">"fill up age"</span>,</span><br><span class="line">        monthstr: <span class="string">"age must be number"</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//判断是否执行了validate</span></span><br><span class="line"><span class="keyword">if</span>($.data($(<span class="string">"#age"</span>)[<span class="number">0</span>].form,<span class="string">"validator"</span>)) &#123;</span><br><span class="line">    $(<span class="string">"#age"</span>).rules(<span class="string">"add"</span>, &#123;</span><br><span class="line">        digits: <span class="literal">true</span>,</span><br><span class="line">        messages: &#123;<span class="attr">digits</span>: <span class="string">"年龄必须为数字"</span>&#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    validoptions.rules.age = &#123;</span><br><span class="line">        required: <span class="literal">true</span>,</span><br><span class="line">        digits: <span class="literal">true</span></span><br><span class="line">    &#125;;</span><br><span class="line">    validoptions.messages.age = &#123;</span><br><span class="line">        required: <span class="string">"年龄不能为空"</span>,</span><br><span class="line">        digits: <span class="string">"年龄必须为数字"</span></span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>官方文档</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">rules()</span><br><span class="line"></span><br><span class="line">    This signature does not accept any <span class="built_in">arguments</span>.</span><br><span class="line"></span><br><span class="line">rules( <span class="string">"add"</span>, rules )</span><br><span class="line"></span><br><span class="line">    <span class="string">"add"</span></span><br><span class="line">    Type: <span class="built_in">String</span></span><br><span class="line">    rules</span><br><span class="line">    Type: <span class="built_in">Object</span></span><br><span class="line">    The rules to add. Accepts the same format <span class="keyword">as</span> the rules-option <span class="keyword">of</span> the validate-method.</span><br><span class="line"></span><br><span class="line">rules( <span class="string">"remove"</span>, rules )</span><br><span class="line"></span><br><span class="line">    <span class="string">"remove"</span></span><br><span class="line">    Type: <span class="built_in">String</span></span><br><span class="line">    rules</span><br><span class="line">    Type: <span class="built_in">Object</span></span><br><span class="line">    The space-seperated names <span class="keyword">of</span> rules to remove and <span class="keyword">return</span>. If left unspecified, removes and returns all rules. Manipulates only rules specified via rules-option or via rules(<span class="string">"add"</span>).</span><br></pre></td></tr></table></figure>
+
+<p>完整示例：<br><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"></p>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+    <title>jQuery Validate动态添加和删除rules</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content>
+    <meta name="keywords" content>
+    <link rel="stylesheet" type="text/css" href="/assets/res/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
+
+<pre><code>&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/res/jquery/jquery.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/res/jquery-ui/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/assets/res/jquery-validate/jquery.validate.min.js&quot;&gt;&lt;/script&gt;
+
+&lt;script type=&quot;text/javascript&quot;&gt;
+    var validoptions = {
+        rules:{
+            name:{
+                required: true,
+            },
+            age:{
+                required: true
+            }
+        },
+        messages:{
+            name:{
+                required: &quot;姓名不能为空&quot;
+            },
+            age:{
+                required: &quot;年龄不能为空&quot;
+            }
+        }
+    };
+    function validForm(){
+        if($.data($(&quot;#age&quot;)[0].form,&quot;validator&quot;)) {
+            $(&quot;#age&quot;).rules(&quot;add&quot;, {
+                digits: true,
+                messages: {digits: &quot;年龄必须为数字&quot;}
+            });
+        }else {
+            validoptions.rules.age = {
+                required: true,
+                digits: true
+            };
+            validoptions.messages.age = {
+                required: &quot;年龄不能为空&quot;,
+                digits: &quot;年龄必须为数字&quot;
+            };
+        }
+        $(&quot;#fmcreateuser&quot;).validate(validoptions);
+        if(!$(&quot;#fmcreateuser&quot;).valid()){
+            return false;
+        }else{
+            $( &quot;#dialog-message&quot; ).dialog({
+                modal: true,
+                buttons: {
+                    Ok: function() {
+                        $( this ).dialog( &quot;close&quot; );
+                    }
+                }
+            });
+        }
+    }
+    $(function(){
+        $(&quot;button&quot;).button();
+    })
+&lt;/script&gt;</code></pre></head>
+<body>
+    <form id="fmcreateuser">
+        <fieldset>
+            <label for="name">姓名</label>
+            <input type="text" id="name" name="name" class="ui-widget-content ui-corner-all"><br><br>
+            <label for="age">年龄</label>
+            <input type="text" id="age" name="age" class="ui-widget-content ui-corner-all"><br><br>
+            <label for="birth">生日</label>
+            <input type="text" id="birth" name="birth" class="ui-widget-content ui-corner-all"><br><br>
+            <div class="form-bottom">
+                <button type="button" onclick="javascript:validForm();">提交</button>
+            </div>
+        </fieldset>
+    </form>
+    <div id="dialog-message" style="display:none;" title="提示信息">
+        <p>
+            表单已提交
+        </p>
+    </div>
+</body>
+</html>
       
 
       
@@ -449,6 +544,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">string</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Linux</a>
               </li>
              
@@ -457,11 +564,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -477,26 +596,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">shell</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">awk</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">string</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Javascript</a>
               </li>
              
@@ -506,14 +605,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数组</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -537,10 +628,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -557,15 +644,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">REGEXP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -589,7 +676,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -613,23 +712,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
+                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
             
             <div class="clearfix"></div>
