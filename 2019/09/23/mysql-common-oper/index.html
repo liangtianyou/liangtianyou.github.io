@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="类型转换CAST(字段名 AS 转换的类型)，其中类型可以为：    类型 释义    CHAR[(N)] 字符型   DATE 日期型   DATETIME 日期和时间型   DECIMAL 浮点数(float)   SIGNED 整数(int)   TIME 时间型   示例： 1SELECT CAST(AVG(clock) AS SIGNED) AS clock,AVG(value) AS">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-23T05:54:00.768Z">
+<meta property="og:updated_time" content="2019-09-23T05:57:03.647Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL通用操作">
 <meta name="twitter:description" content="类型转换CAST(字段名 AS 转换的类型)，其中类型可以为：    类型 释义    CHAR[(N)] 字符型   DATE 日期型   DATETIME 日期和时间型   DECIMAL 浮点数(float)   SIGNED 整数(int)   TIME 时间型   示例： 1SELECT CAST(AVG(clock) AS SIGNED) AS clock,AVG(value) AS">
@@ -257,7 +257,7 @@
 
 <h2 id="MySQL优化–表之间JOIN的关键字ON和WHERE"><a href="#MySQL优化–表之间JOIN的关键字ON和WHERE" class="headerlink" title="MySQL优化–表之间JOIN的关键字ON和WHERE"></a>MySQL优化–表之间JOIN的关键字ON和WHERE</h2><ol>
 <li>Join关键字，就是把多个表连接起来，而on和WHERE都是条件，但是针对的对象不一样。<br> 1.1 关键字 On是指怎样把两个表连接起来，如：on a.name = b.name，是一行一行的比较，然后联合起来，此时并没有判断WHERE子句的内容。<br> 1.2 关键字 WHERE 是针对所有表联合起来的最终的数据，所以说它们的作用是不一样的。</li>
-<li>适当的优化<br> 1.1 关键字 WHERE 是遍历最终联合的数据，逐条遍历与条件匹配，所以最终数据的数据行数越少，效率越高(题外，WHERE条件字段的顺序对效率的影响)<br> 1.2 同时 ON 和 WHERE 都是作为条件约束来过滤数据，所以能在 ON 语句中使用的条件 就不要放在 WHERE 中使用<br>```</li>
+<li>适当的优化<br> 1.1 关键字 WHERE 是遍历最终联合的数据，逐条遍历与条件匹配，所以最终数据的数据行数越少，效率越高(题外，WHERE条件字段的顺序对效率的影响)。<br> 1.2 同时 ON 和 WHERE 都是作为条件约束来过滤数据，所以能在 ON 语句中使用的条件 就不要放在 WHERE 中使用。</li>
 </ol>
 
       
@@ -528,6 +528,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
@@ -588,18 +600,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
@@ -628,11 +628,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
+                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
+                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
