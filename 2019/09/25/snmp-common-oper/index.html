@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: Python | 漫漫长路</title>
+  <title>SNMP通用操作 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="漫漫长路">
-<meta property="og:url" content="http://yoursite.com/tags/Python/index.html">
+  <meta name="description" content="snmp查看DEBUG信息snmpd -f -Lo -Ducd-snmp/pass snmptrap查看DEBUG信息snmptrapd -d -f -Lo 查看mib信息snmptranslate -Tp -IR hacking 获取信息系统相关获取操作系统snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.1 12[root@node1 ~]#">
+<meta name="keywords" content="Linux,snmp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SNMP通用操作">
+<meta property="og:url" content="http://yoursite.com/2019/09/25/snmp-common-oper/index.html">
 <meta property="og:site_name" content="漫漫长路">
+<meta property="og:description" content="snmp查看DEBUG信息snmpd -f -Lo -Ducd-snmp/pass snmptrap查看DEBUG信息snmptrapd -d -f -Lo 查看mib信息snmptranslate -Tp -IR hacking 获取信息系统相关获取操作系统snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.1 12[root@node1 ~]#">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-09-25T09:56:41.370Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="漫漫长路">
+<meta name="twitter:title" content="SNMP通用操作">
+<meta name="twitter:description" content="snmp查看DEBUG信息snmpd -f -Lo -Ducd-snmp/pass snmptrap查看DEBUG信息snmptrapd -d -f -Lo 查看mib信息snmptranslate -Tp -IR hacking 获取信息系统相关获取操作系统snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.1 12[root@node1 ~]#">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -162,114 +167,192 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-snmp-common-oper" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/24/tkinter-text-disable-and-enable/" class="archive-article-date">
-  	<time datetime="2019-07-24T03:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-24</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/24/tkinter-text-disable-and-enable/">Tkinter启用禁用Text控件</a>
+    <h1 class="article-title" itemprop="name">
+      SNMP通用操作
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/09/25/snmp-common-oper/" class="archive-article-date">
+  	<time datetime="2019-09-25T09:16:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="snmp查看DEBUG信息"><a href="#snmp查看DEBUG信息" class="headerlink" title="snmp查看DEBUG信息"></a>snmp查看DEBUG信息</h2><p>snmpd -f -Lo -Ducd-snmp/pass</p>
+<h2 id="snmptrap查看DEBUG信息"><a href="#snmptrap查看DEBUG信息" class="headerlink" title="snmptrap查看DEBUG信息"></a>snmptrap查看DEBUG信息</h2><p>snmptrapd -d -f -Lo</p>
+<h2 id="查看mib信息"><a href="#查看mib信息" class="headerlink" title="查看mib信息"></a>查看mib信息</h2><p>snmptranslate -Tp -IR hacking</p>
+<h2 id="获取信息"><a href="#获取信息" class="headerlink" title="获取信息"></a>获取信息</h2><h2 id="系统相关"><a href="#系统相关" class="headerlink" title="系统相关"></a>系统相关</h2><h3 id="获取操作系统"><a href="#获取操作系统" class="headerlink" title="获取操作系统"></a>获取操作系统</h3><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v 2c -c public 10.10.10.15 1.3.6.1.2.1.1.1</span></span><br><span class="line">SNMPv2-SMI::mib-2.1.1.0 = STRING: <span class="string">"Linux controller-1 4.4.163 #2 SMP Fri Aug 9 14:25:35 CST 2019 aarch64"</span></span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+<h2 id="获取系统开机时间"><a href="#获取系统开机时间" class="headerlink" title="获取系统开机时间"></a>获取系统开机时间</h2><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.3</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.3</span></span><br><span class="line">SNMPv2-SMI::mib-2.1.3.0 = Timeticks: (3023954) 8:23:59.54</span><br></pre></td></tr></table></figure>
+
+<h2 id="网卡相关"><a href="#网卡相关" class="headerlink" title="网卡相关"></a>网卡相关</h2><h3 id="抓取网卡名"><a href="#抓取网卡名" class="headerlink" title="抓取网卡名"></a>抓取网卡名</h3><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.2.2.1.2</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.2.2.1.2</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.2.1 = STRING: <span class="string">"lo"</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.2.2 = STRING: <span class="string">"sit0"</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.2.3 = STRING: <span class="string">"enp8s0"</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.2.4 = STRING: <span class="string">"enp5s0f0"</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.2.5 = STRING: <span class="string">"enp5s0f1"</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="网卡RX"><a href="#网卡RX" class="headerlink" title="网卡RX"></a>网卡RX</h3><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.2.2.1.10</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.2.2.1.10</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.10.1 = Counter32: 11079344</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.10.2 = Counter32: 0</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.10.3 = Counter32: 111155309</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.10.4 = Counter32: 164471513</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.10.5 = Counter32: 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="网卡TX"><a href="#网卡TX" class="headerlink" title="网卡TX"></a>网卡TX</h3><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.2.2.1.16</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.2.2.1.16</span></span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.16.1 = Counter32: 186613861</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.16.2 = Counter32: 0</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.16.3 = Counter32: 119336235</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.16.4 = Counter32: 329624964</span><br><span class="line">SNMPv2-SMI::mib-2.2.2.1.16.5 = Counter32: 0</span><br></pre></td></tr></table></figure>
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Tkinter</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Text</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">snmp</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/09/25/snmp-common-oper/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/07/24/tkinter-button-close-window/" class="archive-article-date">
-  	<time datetime="2019-07-24T03:21:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-24</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/09/23/mysql-common-oper/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">MySQL通用操作</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/07/24/tkinter-button-close-window/">Tkinter点击按钮关闭窗口</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Tkinter</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Button</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -292,9 +375,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
