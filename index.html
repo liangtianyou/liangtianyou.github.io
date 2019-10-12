@@ -164,6 +164,146 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-deploy-gerrit-on-centos7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/12/deploy-gerrit-on-centos7/">Gerrit 代码服务器安装</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/12/deploy-gerrit-on-centos7/" class="archive-article-date">
+  	<time datetime="2019-10-12T03:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="代码服务器安装"><a href="#代码服务器安装" class="headerlink" title="代码服务器安装"></a>代码服务器安装</h1><p>使用了两台设备来备份代码，两台机器的配置一样。创建RAID，挂载到/data目录，gerrit和project目录都部署到/data上。</p>
+<h2 id="修改源"><a href="#修改源" class="headerlink" title="修改源"></a>修改源</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /etc/yum.repos.d/*</span><br><span class="line">cat &gt; /etc/yum.repos.d/c7-digiocean.repo &lt;&lt; EOF</span><br><span class="line">[c7-digiocean]</span><br><span class="line">name=c7-digiocean</span><br><span class="line">baseurl=http://10.10.1.8/centos-7.0/</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h2><p>yum -y install git mariadb-server postfix dovecot httpd</p>
+<h2 id="安装drbd"><a href="#安装drbd" class="headerlink" title="安装drbd"></a>安装drbd</h2><p>yum install DRBD/drbd-km-3.10.0_123.el7.x86_64-8.4.10-1.x86_64.rpm DRBD/drbd-utils-9.0.0-1.el7.centos.x86_64.rpm</p>
+<h2 id="配置drbd"><a href="#配置drbd" class="headerlink" title="配置drbd"></a>配置drbd</h2><ul>
+<li><p>配置文件：/etc/drbd.d/data.res，内容如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">resource data &#123;</span><br><span class="line">	on EServer1 &#123;</span><br><span class="line">		device /dev/drbd0;</span><br><span class="line">		disk /dev/centos_bogon/data;</span><br><span class="line">		address 10.10.1.21:7788;</span><br><span class="line">		meta-disk internal;</span><br><span class="line">	&#125;</span><br><span class="line">	on EServer3 &#123;</span><br><span class="line">		device /dev/drbd0;</span><br><span class="line">		disk /dev/centos_bogon/data;</span><br><span class="line">		address 10.10.1.23:7788;</span><br><span class="line">		meta-disk internal;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建drbd</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">drbdadm create-md data</span><br><span class="line">drbdadm up data</span><br><span class="line">drbdadm -- --overwrite-data-of-peer primary data</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开机启动服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> drbd</span><br><span class="line">systemctl start drbd</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>Tip: 创建drbd后无法连接上，检查是否防火墙开启。</p>
+<h2 id="挂载drbd"><a href="#挂载drbd" class="headerlink" title="挂载drbd"></a>挂载drbd</h2><ul>
+<li><p>格式化</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkfs.xfs /dev/drbd0</span><br><span class="line">``</span><br><span class="line">* 写入fstab</span><br><span class="line">vim /etc/fstab，写入内容如下：</span><br><span class="line">```bash</span><br><span class="line">/dev/drbd0 /data                   xfs     defaults        1 2</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>挂载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /data</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="设置开机启动"><a href="#设置开机启动" class="headerlink" title="设置开机启动"></a>设置开机启动</h2><ul>
+<li>开机脚本：/etc/init.d/startgerrit，内容如下：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># start drbd and gerrit after boot</span></span><br><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="comment"># chkconfig: 2345 20 20</span></span><br><span class="line"><span class="comment"># description: start drbd and gerrit after boot</span></span><br><span class="line"></span><br><span class="line">. /etc/rc.d/init.d/<span class="built_in">functions</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">start</span></span>() &#123;</span><br><span class="line">    <span class="comment">#up drbd</span></span><br><span class="line">    modprobe drbd</span><br><span class="line">    drbdadm up data</span><br><span class="line">    drbdadm primary data</span><br><span class="line">    <span class="comment">#mount /data</span></span><br><span class="line">    mount /dev/drbd0 /data</span><br><span class="line">    <span class="comment">#start gerrit</span></span><br><span class="line">    /data/gerrit/bin/gerrit.sh start</span><br><span class="line">    <span class="comment">#start httpd</span></span><br><span class="line">    systemctl start httpd</span><br><span class="line">    <span class="built_in">return</span> 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">stop</span></span>() &#123;</span><br><span class="line">    <span class="built_in">return</span> 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">restart</span></span>() &#123;</span><br><span class="line">    stop</span><br><span class="line">    start</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="string">"<span class="variable">$1</span>"</span> <span class="keyword">in</span></span><br><span class="line">    start)</span><br><span class="line">        <span class="variable">$1</span></span><br><span class="line">        ;;</span><br><span class="line">    stop)</span><br><span class="line">        <span class="variable">$1</span></span><br><span class="line">        ;;</span><br><span class="line">    restart)</span><br><span class="line">        <span class="variable">$1</span></span><br><span class="line">        ;;</span><br><span class="line">    *)</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Usage: <span class="variable">$0</span> &#123;start|stop|restart&#125;"</span></span><br><span class="line">        <span class="built_in">exit</span> 1</span><br><span class="line">        ;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置开机启动<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> startgerrit</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="初始化数据库"><a href="#初始化数据库" class="headerlink" title="初始化数据库"></a>初始化数据库</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> mariadb</span><br><span class="line">systemctl start mariadb</span><br><span class="line">mysqladmin -uroot password <span class="string">'xxx'</span></span><br><span class="line">mysql -uroot -pxxx -e <span class="string">"CREATE DATABASE reviewdb CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="安装gerrit"><a href="#安装gerrit" class="headerlink" title="安装gerrit"></a>安装gerrit</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar gerrit-2.14.6.war init -d /data/gerrit</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装后配置文件"><a href="#安装后配置文件" class="headerlink" title="安装后配置文件"></a>安装后配置文件</h3><ul>
+<li>配置文件：/data/gerrit/etc/gerrit.config，内容如下：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[gerrit]</span><br><span class="line">	basePath = /data/project</span><br><span class="line">	serverId = 3cf32b37-2598-4441-a34c-4c7dc8d4ef56</span><br><span class="line">	canonicalWebUrl = http://gerrit1.perabytes.com/</span><br><span class="line">[database]</span><br><span class="line">	<span class="built_in">type</span> = mysql</span><br><span class="line">	hostname = localhost</span><br><span class="line">	database = reviewdb</span><br><span class="line">	username = root</span><br><span class="line">[index]</span><br><span class="line">	<span class="built_in">type</span> = LUCENE</span><br><span class="line">[auth]</span><br><span class="line">	<span class="built_in">type</span> = HTTP</span><br><span class="line">[receive]</span><br><span class="line">	enableSignedPush = <span class="literal">false</span></span><br><span class="line">[sendemail]</span><br><span class="line">	smtpServer = EServer1.perabytes.com</span><br><span class="line">	smtpUser = admin</span><br><span class="line">[container]</span><br><span class="line">	user = root</span><br><span class="line">	javaHome = /usr/java/jdk1.8.0_152/jre</span><br><span class="line">[sshd]</span><br><span class="line">	listenAddress = *:29418</span><br><span class="line">[httpd]</span><br><span class="line">	listenUrl = proxy-http://*:8081/</span><br><span class="line">[cache]</span><br><span class="line">	directory = cache</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="创建管理员"><a href="#创建管理员" class="headerlink" title="创建管理员"></a>创建管理员</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">htpasswd -c /data/gerrit/etc/passwd admin</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动gerrit"><a href="#启动gerrit" class="headerlink" title="启动gerrit"></a>启动gerrit</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/gerrit/bin/gerrit.sh start</span><br></pre></td></tr></table></figure>
+
+<h3 id="停止gerrit"><a href="#停止gerrit" class="headerlink" title="停止gerrit"></a>停止gerrit</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/data/gerrit/bin/gerrit.sh stop</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置httpd"><a href="#配置httpd" class="headerlink" title="配置httpd"></a>配置httpd</h3><ul>
+<li><p>配置文件：/etc/httpd/conf.d/gerrit.conf，内容如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;VirtualHost *:80&gt;</span><br><span class="line">    ServerName gerrit1.perabytes.com</span><br><span class="line"></span><br><span class="line">    ProxyRequests Off  </span><br><span class="line">    ProxyVia Off  </span><br><span class="line">    ProxyPreserveHost On  </span><br><span class="line">  </span><br><span class="line">    &lt;Proxy *&gt;  </span><br><span class="line">          Order deny,allow  </span><br><span class="line">          Allow from all  </span><br><span class="line">    &lt;/Proxy&gt;  </span><br><span class="line">  </span><br><span class="line">    &lt;Location /login/&gt;  </span><br><span class="line">        AuthType Basic  </span><br><span class="line">        AuthName <span class="string">"Gerrit Code Review"</span>  </span><br><span class="line">        AuthBasicProvider file  </span><br><span class="line">        AuthUserFile /data/gerrit/etc/passwd  </span><br><span class="line">        Require valid-user  </span><br><span class="line">    &lt;/Location&gt;</span><br><span class="line">  </span><br><span class="line">    AllowEncodedSlashes On  </span><br><span class="line">    ProxyPass / http://10.10.1.21:8081/    </span><br><span class="line">&lt;/VirtualHost&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置开机启动</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> httpd</span><br><span class="line">systemctl start httpd</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Gerrit</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">drbd</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">CentOS 7</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/12/deploy-gerrit-on-centos7/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-openstack-devstack-manage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -990,91 +1130,6 @@
 
 
   
-    <article id="post-create-simple-local-rpm-source" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/02/create-simple-local-rpm-source/">搭建简单的本地RPM源</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/02/create-simple-local-rpm-source/" class="archive-article-date">
-  	<time datetime="2019-09-02T02:23:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="创建一个简单的本地RPM-Source"><a href="#创建一个简单的本地RPM-Source" class="headerlink" title="创建一个简单的本地RPM Source"></a>创建一个简单的本地RPM Source</h2>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">rpm</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">repo</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">source</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/02/create-simple-local-rpm-source/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1212,15 +1267,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color2">Gerrit</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+                <a href="javascript:void(0)" class="js-tag color5">drbd</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color4">CentOS 7</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1236,19 +1299,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1272,10 +1327,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -1285,6 +1336,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1300,11 +1359,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">snmp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1317,18 +1388,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">driver</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">devstack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">snmp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1345,14 +1404,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1373,6 +1424,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">devstack</a>
               </li>
             
             <div class="clearfix"></div>
