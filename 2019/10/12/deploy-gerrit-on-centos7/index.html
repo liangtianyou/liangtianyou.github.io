@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="代码服务器安装使用了两台设备来备份代码，两台机器的配置一样。创建RAID，挂载到/data目录，gerrit和project目录都部署到/data上。 修改源12345678rm -rf /etc/yum.repos.d/*cat &amp;gt; /etc/yum.repos.d/c7-digiocean.repo &amp;lt;&amp;lt; EOF[c7-digiocean]name=c7-digioceanb">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-10-12T03:03:55.178Z">
+<meta property="og:updated_time" content="2019-10-12T11:04:01.234Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Gerrit 代码服务器安装">
 <meta name="twitter:description" content="代码服务器安装使用了两台设备来备份代码，两台机器的配置一样。创建RAID，挂载到/data目录，gerrit和project目录都部署到/data上。 修改源12345678rm -rf /etc/yum.repos.d/*cat &amp;gt; /etc/yum.repos.d/c7-digiocean.repo &amp;lt;&amp;lt; EOF[c7-digiocean]name=c7-digioceanb">
@@ -190,8 +190,11 @@
         <h1 id="代码服务器安装"><a href="#代码服务器安装" class="headerlink" title="代码服务器安装"></a>代码服务器安装</h1><p>使用了两台设备来备份代码，两台机器的配置一样。创建RAID，挂载到/data目录，gerrit和project目录都部署到/data上。</p>
 <h2 id="修改源"><a href="#修改源" class="headerlink" title="修改源"></a>修改源</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rm -rf /etc/yum.repos.d/*</span><br><span class="line">cat &gt; /etc/yum.repos.d/c7-digiocean.repo &lt;&lt; EOF</span><br><span class="line">[c7-digiocean]</span><br><span class="line">name=c7-digiocean</span><br><span class="line">baseurl=http://10.10.1.8/centos-7.0/</span><br><span class="line">gpgcheck=0</span><br><span class="line">enabled=1</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
 
-<h2 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h2><p>yum -y install git mariadb-server postfix dovecot httpd</p>
-<h2 id="安装drbd"><a href="#安装drbd" class="headerlink" title="安装drbd"></a>安装drbd</h2><p>yum install DRBD/drbd-km-3.10.0_123.el7.x86_64-8.4.10-1.x86_64.rpm DRBD/drbd-utils-9.0.0-1.el7.centos.x86_64.rpm</p>
+<a id="more"></a>
+<h2 id="安装依赖包"><a href="#安装依赖包" class="headerlink" title="安装依赖包"></a>安装依赖包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install git mariadb-server postfix dovecot httpd</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装drbd"><a href="#安装drbd" class="headerlink" title="安装drbd"></a>安装drbd</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install DRBD/drbd-km-3.10.0_123.el7.x86_64-8.4.10-1.x86_64.rpm DRBD/drbd-utils-9.0.0-1.el7.centos.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
 <h2 id="配置drbd"><a href="#配置drbd" class="headerlink" title="配置drbd"></a>配置drbd</h2><ul>
 <li><p>配置文件：/etc/drbd.d/data.res，内容如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">resource data &#123;</span><br><span class="line">	on EServer1 &#123;</span><br><span class="line">		device /dev/drbd0;</span><br><span class="line">		disk /dev/centos_bogon/data;</span><br><span class="line">		address 10.10.1.21:7788;</span><br><span class="line">		meta-disk internal;</span><br><span class="line">	&#125;</span><br><span class="line">	on EServer3 &#123;</span><br><span class="line">		device /dev/drbd0;</span><br><span class="line">		disk /dev/centos_bogon/data;</span><br><span class="line">		address 10.10.1.23:7788;</span><br><span class="line">		meta-disk internal;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -543,11 +546,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -563,11 +570,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -591,6 +606,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -600,14 +619,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -623,23 +634,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">snmp</a>
+                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -652,6 +651,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">driver</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">devstack</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">snmp</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -668,6 +679,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -688,22 +707,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">devstack</a>
               </li>
             
             <div class="clearfix"></div>
