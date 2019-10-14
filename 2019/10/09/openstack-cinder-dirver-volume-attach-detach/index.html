@@ -6,15 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Tag: 动态增删 | 漫漫长路</title>
+  <title>openstack cinder 之 卷挂载/卸载工作流程 | 漫漫长路</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="漫漫长路">
-<meta property="og:url" content="http://yoursite.com/tags/动态增删/index.html">
+  <meta name="description" content="在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。 挂载/卸载操作是有多条命令组成在挂载/卸载调用的工作流程中，发生了三类事情1)更新数据库中卷的状态(例如：attaching/detaching状态)对于挂载操作，对应的方法为cinder.volume.api.reserve_volume对于卸载操作，对应的方法为cinder.volume.api.begin_deta">
+<meta name="keywords" content="openstack,cinder,driver">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openstack cinder 之 卷挂载&#x2F;卸载工作流程">
+<meta property="og:url" content="http://yoursite.com/2019/10/09/openstack-cinder-dirver-volume-attach-detach/index.html">
 <meta property="og:site_name" content="漫漫长路">
+<meta property="og:description" content="在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。 挂载/卸载操作是有多条命令组成在挂载/卸载调用的工作流程中，发生了三类事情1)更新数据库中卷的状态(例如：attaching/detaching状态)对于挂载操作，对应的方法为cinder.volume.api.reserve_volume对于卸载操作，对应的方法为cinder.volume.api.begin_deta">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-10-14T01:47:38.350Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="漫漫长路">
+<meta name="twitter:title" content="openstack cinder 之 卷挂载&#x2F;卸载工作流程">
+<meta name="twitter:description" content="在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。 挂载/卸载操作是有多条命令组成在挂载/卸载调用的工作流程中，发生了三类事情1)更新数据库中卷的状态(例如：attaching/detaching状态)对于挂载操作，对应的方法为cinder.volume.api.reserve_volume对于卸载操作，对应的方法为cinder.volume.api.begin_deta">
   
     <link rel="alternative" href="/atom.xml" title="漫漫长路" type="application/atom+xml">
   
@@ -162,76 +167,215 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-openstack-cinder-dirver-volume-attach-detach" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/12/jquery-validate-add-or-remove-rules/" class="archive-article-date">
-  	<time datetime="2019-09-12T08:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-12</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/12/jquery-validate-add-or-remove-rules/">jquery.validate 动态增加或删除规则</a>
+    <h1 class="article-title" itemprop="name">
+      openstack cinder 之 卷挂载/卸载工作流程
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" class="archive-article-date">
+  	<time datetime="2019-10-09T07:29:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。</p>
+<h2 id="挂载-卸载操作是有多条命令组成"><a href="#挂载-卸载操作是有多条命令组成" class="headerlink" title="挂载/卸载操作是有多条命令组成"></a>挂载/卸载操作是有多条命令组成</h2><p>在挂载/卸载调用的工作流程中，发生了三类事情<br>1)更新数据库中卷的状态(例如：attaching/detaching状态)<br>对于挂载操作，对应的方法为cinder.volume.api.reserve_volume<br>对于卸载操作，对应的方法为cinder.volume.api.begin_detaching</p>
+<p>2)处理需要在卷上执行的连接操作<br>对于挂载操作,对应的方法为cinder.volume.api.initialize_connection<br>对于卸载操作，对应的方法为cinder.volume.api.terminate_connection</p>
+<p>3)确定卷的状态并释放资源<br>对于挂载操作，对应的方法为cinder.volume.api.attach<br>对于卸载操作，对应的方法为cinder.volume.api.detach</p>
+<h2 id="挂载流程涉及的api"><a href="#挂载流程涉及的api" class="headerlink" title="挂载流程涉及的api"></a>挂载流程涉及的api</h2><p>1)reserve_volume(self, context, volume)<br>此方法仅检查指定的卷是否处于“available”状态及是否可以挂载。任何其他状态都会导致错误响应，并通知Nova，卷不可用。成功调用该api的唯一有效状态是“available”。<br>对于multi-attach，将在上述可接受状态中添加“in-use”。如果卷实际上是available，将立即向Cinder数据库发出更新，并将卷的状态标记为“attaching”，从而保留卷，<br>使其不会被其他任何API调用使用</p>
+<p>2)initialize_connection(self, context, volume, connector)<br>这是唯一一个应该执行任何重要工作的挂载相关的API调用。该方法负责构建和返回调用者(nova)所需的所有信息，去实际的将特定的卷挂载到远程节点。<br>这个方法将重要的信息返回给调用者，这些信息包括 CHAP凭证、iqn和lun信息.<br>一个响应示例：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    'driver_volume_type': 'iscsi',</span><br><span class="line">    'data': &#123;</span><br><span class="line">        'auth_password': 'YZ2Hceyh7VySh5HY',</span><br><span class="line">        'target_discovered': False,</span><br><span class="line">        'encrypted': False,</span><br><span class="line">        'qos_specs': None,</span><br><span class="line">        'target_iqn': 'iqn.2010-10.org.openstack:volume-8b1ec3fe-8c57-45ca-a1cf-a481bfc8fce2',</span><br><span class="line">        'target_portal': '11.0.0.8:3260',</span><br><span class="line">        'volume_id': '8b1ec3fe-8c57-45ca-a1cf-a481bfc8fce2',</span><br><span class="line">        'target_lun': 1,</span><br><span class="line">        'access_mode': 'rw',</span><br><span class="line">        'auth_username': 'nE9PY8juynmmZ95F7Xb7',</span><br><span class="line">        'auth_method': 'CHAP'</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在构建此数据结构的过程中，Cinder卷管理器对后端驱动程序进行多次调用，并在数据库中构建volume_attachment条目，以存储通过 connector 对象传入的连接信息</p>
+<ul>
+<li><p>driver.validate_connector<br>简单的验证initiator数据包含在connector中。有些驱动程序，使用connector的部分数据</p>
+</li>
+<li><p>driver.create_export<br>这是与卷关联的特定于目标的持久数据。此方法负责构建实际的iSCSI target，并提供“位置”和“身份验证”信息，这些信息将用于在父请求中形成响应数据。<br>我们将其称为infor model_update，用于更新Cinder数据库中与卷关联的target信息。</p>
+</li>
+<li><p>driver.initialize_connection<br>现在我们已经构建了一个target，并保存了与之相关的重要信息。我们已经准备好将target实际分配到一个卷中，并形成所需的信息以传递回调用者。</p>
+</li>
+</ul>
+<p>这就是我们最终将所有内容放在一起并形成前面显示的示例数据结构响应的地方。它对我们在create_export调用中放在一起的数据进行了大量格式化。</p>
+<p>但它并不提供任何新的信息。它完全依赖于在create_export调用中收集并放入数据库的信息。在这一点上，我们所做的就是从数据库中获取所有不同的条目，并将其组合成所需的格式/结构。<br>更新和获取所有这些信息的关键方法调用由create_export调用完成。然后将格式化的数据传回API，并作为响应传回Nova。<br>此时，我们将attach信息返回给调用者，它提供了创建远程iSCSI连接所需的一切。</p>
+<p>3)attach(self, context, volume, instance_uuid, host_name, mountpoint, mode)<br>这是最后一个非常简单的调用.这样做的目的是为了完成挂载过程。换句话说，我们只需更新数据库中卷的状态，并提供一种机制来通知驱动程序挂载已成功完成。</p>
+<h2 id="卸载流程设计的api"><a href="#卸载流程设计的api" class="headerlink" title="卸载流程设计的api"></a>卸载流程设计的api</h2><p>1)begin_detaching(self, context, volume)<br>类似于Attach工作流reserve_volume方法.执行卷状态的简单条件更新为detaching</p>
+<p>2)terminate_connection(self, context, volume, connector, force=False)<br>类似于Attach工作流initialize_connection方法。</p>
+<p>用于向drivers/target-drivers发送调用，以执行它们可能需要的任何类型的清理.</p>
+<p>对于大多数情况，这是一个noop，因为连接和iscsi会话管理是发起者的职责.</p>
+<p>然而，这里有许多特殊的情况，特别是对于像LIO这样使用访问组的target-drivers，在这些情况下，它们会在调用期间从访问列表中删除 initiator，从而有效地从目标端关闭会话</p>
+<p>3)detach(self, context, volume, attachment_id)<br>数据库的最终更新，这是又一个将某些内容传递给volume-driver的机会.最初是一个简单的回调，现在在volume-manager中有了相当多的功能.</p>
+<p>对于像LVM这样的驱动程序，这也是一个noop，只需更新db条目，将内容标记为完成，并再次将卷设置为available。</p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/weixin.jpg">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">jquery.validate</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">validator</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动态增删</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">规则</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">rules</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
         		</li>
       		
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
+  
+<nav id="article-nav">
+  
+    <a href="/2019/10/11/openstack-devstack-manage/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          openstack 之 devstack 管理
+        
+      </div>
+    </a>
   
   
-    </div></section>
+    <a href="/2019/10/09/openstack-cinder-dirver-implement/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">openstack cinder 之 driver 实现</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+  
+  
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -254,9 +398,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
