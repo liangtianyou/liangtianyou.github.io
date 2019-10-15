@@ -16,7 +16,7 @@
 <meta property="og:site_name" content="漫漫长路">
 <meta property="og:description" content="在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。 挂载/卸载操作是有多条命令组成在挂载/卸载调用的工作流程中，发生了三类事情1)更新数据库中卷的状态(例如：attaching/detaching状态)对于挂载操作，对应的方法为cinder.volume.api.reserve_volume对于卸载操作，对应的方法为cinder.volume.api.begin_deta">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-10-14T01:47:38.350Z">
+<meta property="og:updated_time" content="2019-10-15T08:10:03.072Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="openstack cinder 之 卷挂载&#x2F;卸载工作流程">
 <meta name="twitter:description" content="在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。 挂载/卸载操作是有多条命令组成在挂载/卸载调用的工作流程中，发生了三类事情1)更新数据库中卷的状态(例如：attaching/detaching状态)对于挂载操作，对应的方法为cinder.volume.api.reserve_volume对于卸载操作，对应的方法为cinder.volume.api.begin_deta">
@@ -65,6 +65,10 @@
 				<li><a href="/tags/Linux/">Linux</a></li>
 	        
 				<li><a href="/tags/MySQL/">MySQL</a></li>
+	        
+				<li><a href="/tags/snmp/">SNMP</a></li>
+	        
+				<li><a href="/tags/openstack/">OpenStack</a></li>
 	        
 			</ul>
 		</nav>
@@ -126,6 +130,10 @@
 			
 				
 			
+				
+			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -146,13 +154,17 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 25%"><a href="/">主页</a></li>
+					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/Python/">Python</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/Python/">Python</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/Linux/">Linux</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/Linux/">Linux</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/MySQL/">MySQL</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/MySQL/">MySQL</a></li>
+		        
+					<li style="width: 16.666666666666668%"><a href="/tags/snmp/">SNMP</a></li>
+		        
+					<li style="width: 16.666666666666668%"><a href="/tags/openstack/">OpenStack</a></li>
 		        
 				</ul>
 			</nav>
@@ -180,7 +192,7 @@
 
         
         <a href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" class="archive-article-date">
-  	<time datetime="2019-10-09T07:29:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
+  	<time datetime="2019-10-09T07:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
 </a>
         
       </header>
@@ -191,6 +203,7 @@
 <h2 id="挂载-卸载操作是有多条命令组成"><a href="#挂载-卸载操作是有多条命令组成" class="headerlink" title="挂载/卸载操作是有多条命令组成"></a>挂载/卸载操作是有多条命令组成</h2><p>在挂载/卸载调用的工作流程中，发生了三类事情<br>1)更新数据库中卷的状态(例如：attaching/detaching状态)<br>对于挂载操作，对应的方法为cinder.volume.api.reserve_volume<br>对于卸载操作，对应的方法为cinder.volume.api.begin_detaching</p>
 <p>2)处理需要在卷上执行的连接操作<br>对于挂载操作,对应的方法为cinder.volume.api.initialize_connection<br>对于卸载操作，对应的方法为cinder.volume.api.terminate_connection</p>
 <p>3)确定卷的状态并释放资源<br>对于挂载操作，对应的方法为cinder.volume.api.attach<br>对于卸载操作，对应的方法为cinder.volume.api.detach</p>
+<a id="more"></a>
 <h2 id="挂载流程涉及的api"><a href="#挂载流程涉及的api" class="headerlink" title="挂载流程涉及的api"></a>挂载流程涉及的api</h2><p>1)reserve_volume(self, context, volume)<br>此方法仅检查指定的卷是否处于“available”状态及是否可以挂载。任何其他状态都会导致错误响应，并通知Nova，卷不可用。成功调用该api的唯一有效状态是“available”。<br>对于multi-attach，将在上述可接受状态中添加“in-use”。如果卷实际上是available，将立即向Cinder数据库发出更新，并将卷的状态标记为“attaching”，从而保留卷，<br>使其不会被其他任何API调用使用</p>
 <p>2)initialize_connection(self, context, volume, connector)<br>这是唯一一个应该执行任何重要工作的挂载相关的API调用。该方法负责构建和返回调用者(nova)所需的所有信息，去实际的将特定的卷挂载到远程节点。<br>这个方法将重要的信息返回给调用者，这些信息包括 CHAP凭证、iqn和lun信息.<br>一个响应示例：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    'driver_volume_type': 'iscsi',</span><br><span class="line">    'data': &#123;</span><br><span class="line">        'auth_password': 'YZ2Hceyh7VySh5HY',</span><br><span class="line">        'target_discovered': False,</span><br><span class="line">        'encrypted': False,</span><br><span class="line">        'qos_specs': None,</span><br><span class="line">        'target_iqn': 'iqn.2010-10.org.openstack:volume-8b1ec3fe-8c57-45ca-a1cf-a481bfc8fce2',</span><br><span class="line">        'target_portal': '11.0.0.8:3260',</span><br><span class="line">        'volume_id': '8b1ec3fe-8c57-45ca-a1cf-a481bfc8fce2',</span><br><span class="line">        'target_lun': 1,</span><br><span class="line">        'access_mode': 'rw',</span><br><span class="line">        'auth_username': 'nE9PY8juynmmZ95F7Xb7',</span><br><span class="line">        'auth_method': 'CHAP'</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -331,18 +344,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2019/10/11/openstack-devstack-manage/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/10/09/openstack-cinder-dirver-implement/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          openstack 之 devstack 管理
+          openstack cinder 之 driver 实现
         
       </div>
     </a>
   
   
-    <a href="/2019/10/09/openstack-cinder-dirver-implement/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">openstack cinder 之 driver 实现</div>
+    <a href="/2019/09/25/snmp-common-oper/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">SNMP通用操作</div>
       <i class="icon-circle-right"></i>
     </a>
   
@@ -484,11 +497,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Gerrit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">drbd</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">CentOS 7</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -496,15 +529,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -520,19 +557,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -564,27 +609,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
+                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -604,15 +633,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">snmp</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -632,6 +657,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Vue.js</a>
               </li>
              
@@ -644,11 +677,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -657,30 +694,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Gerrit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">drbd</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">CentOS 7</a>
               </li>
             
             <div class="clearfix"></div>

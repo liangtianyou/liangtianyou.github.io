@@ -61,6 +61,10 @@
 	        
 				<li><a href="/tags/MySQL/">MySQL</a></li>
 	        
+				<li><a href="/tags/snmp/">SNMP</a></li>
+	        
+				<li><a href="/tags/openstack/">OpenStack</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -121,6 +125,10 @@
 			
 				
 			
+				
+			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -141,13 +149,17 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 25%"><a href="/">主页</a></li>
+					<li style="width: 16.666666666666668%"><a href="/">主页</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/Python/">Python</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/Python/">Python</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/Linux/">Linux</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/Linux/">Linux</a></li>
 		        
-					<li style="width: 25%"><a href="/tags/MySQL/">MySQL</a></li>
+					<li style="width: 16.666666666666668%"><a href="/tags/MySQL/">MySQL</a></li>
+		        
+					<li style="width: 16.666666666666668%"><a href="/tags/snmp/">SNMP</a></li>
+		        
+					<li style="width: 16.666666666666668%"><a href="/tags/openstack/">OpenStack</a></li>
 		        
 				</ul>
 			</nav>
@@ -341,114 +353,6 @@
 
 
   
-    <article id="post-openstack-cinder-dirver-volume-attach-detach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">openstack cinder 之 卷挂载/卸载工作流程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" class="archive-article-date">
-  	<time datetime="2019-10-09T07:29:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。</p>
-<h2 id="挂载-卸载操作是有多条命令组成"><a href="#挂载-卸载操作是有多条命令组成" class="headerlink" title="挂载/卸载操作是有多条命令组成"></a>挂载/卸载操作是有多条命令组成</h2><p>在挂载/卸载调用的工作流程中，发生了三类事情<br>1)更新数据库中卷的状态(例如：attaching/detaching状态)<br>对于挂载操作，对应的方法为cinder.volume.api.reserve_volume<br>对于卸载操作，对应的方法为cinder.volume.api.begin_detaching</p>
-<p>2)处理需要在卷上执行的连接操作<br>对于挂载操作,对应的方法为cinder.volume.api.initialize_connection<br>对于卸载操作，对应的方法为cinder.volume.api.terminate_connection</p>
-<p>3)确定卷的状态并释放资源<br>对于挂载操作，对应的方法为cinder.volume.api.attach<br>对于卸载操作，对应的方法为cinder.volume.api.detach</p>
-<h2 id="挂载流程涉及的api"><a href="#挂载流程涉及的api" class="headerlink" title="挂载流程涉及的api"></a>挂载流程涉及的api</h2><p>1)reserve_volume(self, context, volume)<br>此方法仅检查指定的卷是否处于“available”状态及是否可以挂载。任何其他状态都会导致错误响应，并通知Nova，卷不可用。成功调用该api的唯一有效状态是“available”。<br>对于multi-attach，将在上述可接受状态中添加“in-use”。如果卷实际上是available，将立即向Cinder数据库发出更新，并将卷的状态标记为“attaching”，从而保留卷，<br>使其不会被其他任何API调用使用</p>
-<p>2)initialize_connection(self, context, volume, connector)<br>这是唯一一个应该执行任何重要工作的挂载相关的API调用。该方法负责构建和返回调用者(nova)所需的所有信息，去实际的将特定的卷挂载到远程节点。<br>这个方法将重要的信息返回给调用者，这些信息包括 CHAP凭证、iqn和lun信息.<br>一个响应示例：</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    'driver_volume_type': 'iscsi',</span><br><span class="line">    'data': &#123;</span><br><span class="line">        'auth_password': 'YZ2Hceyh7VySh5HY',</span><br><span class="line">        'target_discovered': False,</span><br><span class="line">        'encrypted': False,</span><br><span class="line">        'qos_specs': None,</span><br><span class="line">        'target_iqn': 'iqn.2010-10.org.openstack:volume-8b1ec3fe-8c57-45ca-a1cf-a481bfc8fce2',</span><br><span class="line">        'target_portal': '11.0.0.8:3260',</span><br><span class="line">        'volume_id': '8b1ec3fe-8c57-45ca-a1cf-a481bfc8fce2',</span><br><span class="line">        'target_lun': 1,</span><br><span class="line">        'access_mode': 'rw',</span><br><span class="line">        'auth_username': 'nE9PY8juynmmZ95F7Xb7',</span><br><span class="line">        'auth_method': 'CHAP'</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在构建此数据结构的过程中，Cinder卷管理器对后端驱动程序进行多次调用，并在数据库中构建volume_attachment条目，以存储通过 connector 对象传入的连接信息</p>
-<ul>
-<li><p>driver.validate_connector<br>简单的验证initiator数据包含在connector中。有些驱动程序，使用connector的部分数据</p>
-</li>
-<li><p>driver.create_export<br>这是与卷关联的特定于目标的持久数据。此方法负责构建实际的iSCSI target，并提供“位置”和“身份验证”信息，这些信息将用于在父请求中形成响应数据。<br>我们将其称为infor model_update，用于更新Cinder数据库中与卷关联的target信息。</p>
-</li>
-<li><p>driver.initialize_connection<br>现在我们已经构建了一个target，并保存了与之相关的重要信息。我们已经准备好将target实际分配到一个卷中，并形成所需的信息以传递回调用者。</p>
-</li>
-</ul>
-<p>这就是我们最终将所有内容放在一起并形成前面显示的示例数据结构响应的地方。它对我们在create_export调用中放在一起的数据进行了大量格式化。</p>
-<p>但它并不提供任何新的信息。它完全依赖于在create_export调用中收集并放入数据库的信息。在这一点上，我们所做的就是从数据库中获取所有不同的条目，并将其组合成所需的格式/结构。<br>更新和获取所有这些信息的关键方法调用由create_export调用完成。然后将格式化的数据传回API，并作为响应传回Nova。<br>此时，我们将attach信息返回给调用者，它提供了创建远程iSCSI连接所需的一切。</p>
-<p>3)attach(self, context, volume, instance_uuid, host_name, mountpoint, mode)<br>这是最后一个非常简单的调用.这样做的目的是为了完成挂载过程。换句话说，我们只需更新数据库中卷的状态，并提供一种机制来通知驱动程序挂载已成功完成。</p>
-<h2 id="卸载流程设计的api"><a href="#卸载流程设计的api" class="headerlink" title="卸载流程设计的api"></a>卸载流程设计的api</h2><p>1)begin_detaching(self, context, volume)<br>类似于Attach工作流reserve_volume方法.执行卷状态的简单条件更新为detaching</p>
-<p>2)terminate_connection(self, context, volume, connector, force=False)<br>类似于Attach工作流initialize_connection方法。</p>
-<p>用于向drivers/target-drivers发送调用，以执行它们可能需要的任何类型的清理.</p>
-<p>对于大多数情况，这是一个noop，因为连接和iscsi会话管理是发起者的职责.</p>
-<p>然而，这里有许多特殊的情况，特别是对于像LIO这样使用访问组的target-drivers，在这些情况下，它们会在调用期间从访问列表中删除 initiator，从而有效地从目标端关闭会话</p>
-<p>3)detach(self, context, volume, attachment_id)<br>数据库的最终更新，这是又一个将某些内容传递给volume-driver的机会.最初是一个简单的回调，现在在volume-manager中有了相当多的功能.</p>
-<p>对于像LVM这样的驱动程序，这也是一个noop，只需更新db条目，将内容标记为完成，并再次将卷设置为available。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
     <article id="post-openstack-cinder-dirver-implement" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -502,6 +406,93 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-implement/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-openstack-cinder-dirver-volume-attach-detach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">openstack cinder 之 卷挂载/卸载工作流程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" class="archive-article-date">
+  	<time datetime="2019-10-09T07:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。</p>
+<h2 id="挂载-卸载操作是有多条命令组成"><a href="#挂载-卸载操作是有多条命令组成" class="headerlink" title="挂载/卸载操作是有多条命令组成"></a>挂载/卸载操作是有多条命令组成</h2><p>在挂载/卸载调用的工作流程中，发生了三类事情<br>1)更新数据库中卷的状态(例如：attaching/detaching状态)<br>对于挂载操作，对应的方法为cinder.volume.api.reserve_volume<br>对于卸载操作，对应的方法为cinder.volume.api.begin_detaching</p>
+<p>2)处理需要在卷上执行的连接操作<br>对于挂载操作,对应的方法为cinder.volume.api.initialize_connection<br>对于卸载操作，对应的方法为cinder.volume.api.terminate_connection</p>
+<p>3)确定卷的状态并释放资源<br>对于挂载操作，对应的方法为cinder.volume.api.attach<br>对于卸载操作，对应的方法为cinder.volume.api.detach</p>
+        
+          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">展开全文 >></a>
         </p>
       
 
@@ -922,6 +913,94 @@
 
 
   
+    <article id="post-mysql-search-null-or-not-null" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/07/mysql-search-null-or-not-null/">MySQL如何查询一个字段的值为NULL或不为NULL</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/07/mysql-search-null-or-not-null/" class="archive-article-date">
+  	<time datetime="2019-09-07T03:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-07</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>插入数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1990-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name2'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1991-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'myname1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1992-1-1'</span>);</span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NOT NULL</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql-search-regexp-or-not-regexp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -985,94 +1064,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/09/07/mysql-search-regexp-or-not-regexp/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-search-null-or-not-null" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/07/mysql-search-null-or-not-null/">MySQL如何查询一个字段的值为NULL或不为NULL</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/07/mysql-search-null-or-not-null/" class="archive-article-date">
-  	<time datetime="2019-09-07T03:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>插入数据</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1990-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name2'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1991-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'myname1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1992-1-1'</span>);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NOT NULL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/">展开全文 >></a>
         </p>
       
 
@@ -1215,11 +1206,31 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Gerrit</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">drbd</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">CentOS 7</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1227,15 +1238,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1251,19 +1266,27 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1295,27 +1318,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
+                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1335,15 +1342,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">snmp</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1363,6 +1366,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Vue.js</a>
               </li>
              
@@ -1375,11 +1386,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1388,30 +1403,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Gerrit</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">drbd</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">CentOS 7</a>
               </li>
             
             <div class="clearfix"></div>
