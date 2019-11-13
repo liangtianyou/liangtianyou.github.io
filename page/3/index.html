@@ -176,6 +176,571 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-awk-string" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/08/awk-string/">awk 字符串操作</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/08/awk-string/" class="archive-article-date">
+  	<time datetime="2019-08-08T08:51:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="awk内置字符串函数"><a href="#awk内置字符串函数" class="headerlink" title="awk内置字符串函数"></a>awk内置字符串函数</h2><table>
+<thead>
+<tr>
+<th align="left">函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">gsub(r,s)</td>
+<td>在整个$0中用s替代r</td>
+</tr>
+<tr>
+<td align="left">gsub(r,s,t)</td>
+<td>在整个t中用s替代r</td>
+</tr>
+<tr>
+<td align="left">index(s,t)</td>
+<td>返回s中字符串t的第一位置</td>
+</tr>
+<tr>
+<td align="left">length(s)</td>
+<td>返回s长度</td>
+</tr>
+<tr>
+<td align="left">match(s,r)</td>
+<td>测试s是否包含匹配r的字符串</td>
+</tr>
+<tr>
+<td align="left">split(s,a,fs)</td>
+<td>在fs上将s分成序列a</td>
+</tr>
+<tr>
+<td align="left">sprint(fmt,exp)</td>
+<td>返回经fmt格式化后的exp</td>
+</tr>
+<tr>
+<td align="left">sub(r,s)</td>
+<td>用$0中最左边最长的子串代替s</td>
+</tr>
+<tr>
+<td align="left">substr(s,p)</td>
+<td>返回字符串s中从p开始的后缀部分</td>
+</tr>
+<tr>
+<td align="left">substr(s,p,n)</td>
+<td>返回字符串s中从p开始长度为n的后缀部分 详细说明一下各个函数的使用方法。</td>
+</tr>
+<tr>
+<td align="left">gensub(a,b,c[,d])</td>
+<td>全局替换，匹配正则a， 用b替换，c为指定替换目标是第几次匹配，d为指定替换目标是哪个域如$1,$2，若无d指$0，返回值为target替换后内容(未替换还是返回 target原内容)，与sub、gsub不同的是，target内容替换后不改变。</td>
+</tr>
+</tbody></table>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><ul>
+<li><p>替换$1中 第一次匹配到的123为字符x，返回值为$1替换后的内容，且$1的内容并没有改变</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gensub(/123/,<span class="string">"x"</span>,1,<span class="variable">$1</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>返回值为匹配正则第1对()内的内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gensub(/a(.*)b/,<span class="string">"\\1"</span>,1)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>返回值为匹配正则第2对()内的内容</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gensub(/a(.*)b(.*)c/,<span class="string">"\\2"</span>,1)</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">shell</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">awk</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">string</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/08/awk-string/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-webpy-apache-cgi" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/25/webpy-apache-cgi/">web.py配置Apache CGI模式</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/25/webpy-apache-cgi/" class="archive-article-date">
+  	<time datetime="2019-07-25T02:53:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Debian 5<br>Apache 2.2.9<br>Python 2.5.2<br>web.py 0.34<br>脚本根目录 /usr/local/digitools/</p>
+<h2 id="Apache配置"><a href="#Apache配置" class="headerlink" title="Apache配置"></a>Apache配置</h2><p>配置文件：/etc/apache2/site-enable/000-default<br>配置内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Alias /static /usr/<span class="built_in">local</span>/digitools/static</span><br><span class="line">ScriptAlias /license /usr/<span class="built_in">local</span>/digitools/storage.py</span><br><span class="line">&lt;Directory <span class="string">"/usr/local/digitools/"</span>&gt;</span><br><span class="line">    Options +ExecCGI +FollowSymLinks</span><br><span class="line">    Order allow,deny</span><br><span class="line">    Allow from all</span><br><span class="line">&lt;/Directory&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="htaccess-配置"><a href="#htaccess-配置" class="headerlink" title=".htaccess 配置"></a>.htaccess 配置</h2><p>配置文件：/usr/local/digitools/.htaccess<br>配置内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Options +ExecCGI</span><br><span class="line">AddHandler cgi-script .py</span><br><span class="line">DirectoryIndex storage.py</span><br><span class="line">AddType text/html .py</span><br><span class="line">&lt;IfModule mode_rewrite.c&gt;</span><br><span class="line">    RewriteEngine on</span><br><span class="line">    RewriteBase /</span><br><span class="line">    RewriteCond %&#123;REQUEST_FILENAME&#125; !-f</span><br><span class="line">    RewriteCond %&#123;REQUEST_FILENAME&#125; !-d</span><br><span class="line">    RewriteCond %&#123;REQUEST_URI&#125; !^/favion.ico$</span><br><span class="line">    RewriteCond %&#123;REQUEST_URI&#125; !^(/.*)+storage.py/</span><br><span class="line">    RewriteRule ^/license/(.*)$ storage.py/<span class="variable">$1</span> [PT]</span><br><span class="line">&lt;/IfModule&gt;</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">web.py</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Apache</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/25/webpy-apache-cgi/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-tkinter-text-disable-and-enable" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/24/tkinter-text-disable-and-enable/">Tkinter启用禁用Text控件</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/24/tkinter-text-disable-and-enable/" class="archive-article-date">
+  	<time datetime="2019-07-24T03:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>点击Button触发关闭窗口事件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#-*-coding:utf-8-*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Tkinter</span><br><span class="line"></span><br><span class="line">window = Tkinter.Tk()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">enable_text</span><span class="params">(button,text)</span>:</span></span><br><span class="line">    button.configure(text=<span class="string">u"禁用"</span>)</span><br><span class="line">    button.configure(command=<span class="keyword">lambda</span>:disable_text(button, text))</span><br><span class="line">    </span><br><span class="line">    text.configure(state=<span class="string">'normal'</span>)</span><br><span class="line">    text.insert(<span class="string">'end'</span>,<span class="string">'this is a test text'</span>)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">disable_text</span><span class="params">(button,text)</span>:</span></span><br><span class="line">    button.configure(text=<span class="string">u"启用"</span>)</span><br><span class="line">    button.configure(command=<span class="keyword">lambda</span>:enable_text(button, text))</span><br><span class="line">    text.configure(state=<span class="string">'disabled'</span>)</span><br><span class="line">    </span><br><span class="line">frame = Tkinter.Frame(window)</span><br><span class="line">frame.pack()</span><br><span class="line">text = Tkinter.Text(frame,state=<span class="string">"disabled"</span>,width=<span class="number">44</span>,height=<span class="number">5</span>)</span><br><span class="line">text.pack()</span><br><span class="line">button = Tkinter.Button(frame,text=<span class="string">u"启用"</span>,command=<span class="keyword">lambda</span>:enable_text(button,text))</span><br><span class="line">button.pack()</span><br><span class="line">window.mainloop()</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Tkinter</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Text</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/24/tkinter-text-disable-and-enable/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-tkinter-button-close-window" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/24/tkinter-button-close-window/">Tkinter点击按钮关闭窗口</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/24/tkinter-button-close-window/" class="archive-article-date">
+  	<time datetime="2019-07-24T03:21:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>点击Button触发关闭窗口事件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#-*-coding:utf-8-*-</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Tkinter</span><br><span class="line"></span><br><span class="line">window = Tkinter.Tk()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">close_window</span><span class="params">(root)</span>:</span></span><br><span class="line">    root.destroy()</span><br><span class="line">    </span><br><span class="line">frame = Tkinter.Frame(window)</span><br><span class="line">frame.pack()</span><br><span class="line"></span><br><span class="line">button = Tkinter.Button(frame,text=<span class="string">u"关闭"</span>,command=<span class="keyword">lambda</span>:close_window(window))</span><br><span class="line">button.pack()</span><br><span class="line">window.mainloop()</span><br></pre></td></tr></table></figure>
+
+<h2 id="如何向Button的command传递参数"><a href="#如何向Button的command传递参数" class="headerlink" title="如何向Button的command传递参数"></a>如何向Button的command传递参数</h2><p>默认的command后面跟着是无参的函数，如果需要传参，推荐的方式基本都是使用<strong>lambda</strong>函数</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Tkinter</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Button</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/24/tkinter-button-close-window/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-centos-7.0-install-ceph" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/07/17/centos-7.0-install-ceph/">CentOS 7 安装Ceph</a>
+    </h1>
+  
+
+        
+        <a href="/2019/07/17/centos-7.0-install-ceph/" class="archive-article-date">
+  	<time datetime="2019-07-17T02:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>按照官方的文档来安装Ceph的话，基本上处处都是坑，很多坑是因为网络的原因造成，所以最好的方法是使用国内的源来安装，这里使用网易的源来安装。</p>
+<h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><ul>
+<li>操作系统：CentOS Linux release 7.6.1810</li>
+<li>ceph-deploy：2.0.1<h2 id="Ceph版本"><a href="#Ceph版本" class="headerlink" title="Ceph版本"></a>Ceph版本</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>版本号</th>
+<th>发布日期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Argonaut</td>
+<td>0.48版本(LTS)</td>
+<td>2012年6月3日</td>
+</tr>
+<tr>
+<td>Bobtail</td>
+<td>0.56版本(LTS)</td>
+<td>2013年1月1日</td>
+</tr>
+<tr>
+<td>Cuttlefish</td>
+<td>0.61版本</td>
+<td>2013年5月7日</td>
+</tr>
+<tr>
+<td>Dumpling</td>
+<td>0.67版本(LTS)</td>
+<td>2013年8月14日</td>
+</tr>
+<tr>
+<td>Emperor</td>
+<td>0.72版本</td>
+<td>2013年11月9日</td>
+</tr>
+<tr>
+<td>Firefly</td>
+<td>0.80版本(LTS)</td>
+<td>2014年5月</td>
+</tr>
+<tr>
+<td>Giant</td>
+<td>Stable</td>
+<td>October 2014 - April 2015</td>
+</tr>
+<tr>
+<td>Hammer</td>
+<td>LTS</td>
+<td>April 2015 - November 2016</td>
+</tr>
+<tr>
+<td>Infernalis</td>
+<td>Stable</td>
+<td>November 2015 - June 2016</td>
+</tr>
+<tr>
+<td>Jewel</td>
+<td></td>
+<td>2016年4月</td>
+</tr>
+<tr>
+<td>Kraken</td>
+<td></td>
+<td>2017年10月</td>
+</tr>
+<tr>
+<td>Luminous</td>
+<td></td>
+<td>2017年10月</td>
+</tr>
+<tr>
+<td>mimic</td>
+<td></td>
+<td>2018年5月</td>
+</tr>
+<tr>
+<td>nautilus</td>
+<td></td>
+<td>2019年</td>
+</tr>
+</tbody></table>
+</li>
+</ul>
+        
+          <a class="article-more-a" href="/2019/07/17/centos-7.0-install-ceph/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/07/17/centos-7.0-install-ceph/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-centos-7.0-install-ceph-faq" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -598,249 +1163,9 @@ NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的�
 
 
   
-    <article id="post-enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/">Linux 中如何启用和禁用网卡？</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/" class="archive-article-date">
-  	<time datetime="2019-07-01T06:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>你可能会根据你的需要执行以下命令。我会在这里列举一些你会用到这些命令的例子。<br>当你添加一个网卡或者从一个物理网卡创建出一个虚拟网卡的时候，你可能需要使用这些命令将新网卡启用起来。另外，如果你对网卡做了某些修改或者网卡本身没有启用，那么你也需要使用以下的某个命令将网卡启用起来。<br>启用、禁用网卡有很多种方法。在这篇文章里，我们会介绍我们使用过的最好的 5 种方法。<br>启用禁用网卡可以使用以下 5 个方法来完成：<br>    * ifconfig 命令：用于配置网卡。它可以提供网卡的很多信息。<br>    * ifdown/up 命令：ifdown 命令用于禁用网卡，ifup 命令用于启用网卡。<br>    * ip 命令：用于管理网卡，用于替代老旧的、不推荐使用的 ifconfig 命令。它和 ifconfig 命令很相似，但是提供了很多 ifconfig 命令所不具有的强大的特性。<br>    * nmcli 命令：是一个控制 NetworkManager 并报告网络状态的命令行工具。<br>    * nmtui 命令：是一个与 NetworkManager 交互的、基于 curses 图形库的终端 UI 应用。</p>
-        
-          <a class="article-more-a" href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Network</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/01/enable-disable-up-down-nic-network-interface-port-linux-using-ifconfig-ifdown-ifup-ip-nmcli-nmtui/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-linux-bash-script-to-monitor-memory-utilization-usage-and-send-email" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/">用 Bash 脚本监控 Linux 上的内存使用情况</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/" class="archive-article-date">
-  	<time datetime="2019-06-26T06:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-26</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>目前市场上有许多开源监控工具可用于监控 Linux 系统的性能。当系统达到指定的阈值限制时，它可以发送电子邮件警报。它可以监视 CPU 利用率、内存利用率、交换利用率、磁盘空间利用率等所有内容。<br>如果你只有很少的系统并且想要监视它们，那么编写一个小的 shell 脚本可以使你的任务变得非常简单。<br>在本教程中，我们添加了两个 shell 脚本来监视 Linux 系统上的内存利用率。当系统达到给定阈值时，它将给特定电子邮件地址发邮件。</p>
-        
-          <a class="article-more-a" href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">运维</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/26/linux-bash-script-to-monitor-memory-utilization-usage-and-send-email/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-samba-config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/06/20/samba-config/">Samba 配置</a>
-    </h1>
-  
-
-        
-        <a href="/2019/06/20/samba-config/" class="archive-article-date">
-  	<time datetime="2019-06-20T10:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-20</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="smbd和nmbd"><a href="#smbd和nmbd" class="headerlink" title="smbd和nmbd"></a>smbd和nmbd</h2><p>Samba由两个主要程序组成，它们是smbd和nmbd。这两个守护进程在服务器启动到停止期间持续运行，功能各异。<br>smbd和nmbd使用的全部配置信息全都保存在smb.conf文件中。<br>smb.conf向smbd和nmbd两个守护进程说明输出什么以便共享，共享输出给谁及如何进行输出。<br>Samba提供了基于CIFS的四个服务：文件和打印服务、授权与被授权、名字解析、浏览服务。<br>前两项服务由smbd提供，后两项服务则由nmbd提供。<br>简单地说，smbd进程的作用是处理到来的SMB软件包，为使用该软件包的资源与Linux进行协商，nmbd进程使主机(或工作站)能浏览Linux服务器。</p>
-        
-          <a class="article-more-a" href="/2019/06/20/samba-config/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Samba</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/06/20/samba-config/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+      <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
     </nav>
   
 
@@ -951,15 +1276,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -975,30 +1300,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Javascript</a>
               </li>
              
@@ -1011,27 +1312,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">input</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1055,6 +1376,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
@@ -1064,6 +1393,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">REGEXP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1083,11 +1424,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">pip</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">devstack</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1100,14 +1465,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Button</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1131,15 +1488,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1148,6 +1497,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
             
             <div class="clearfix"></div>

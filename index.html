@@ -176,6 +176,441 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-python-create-local-pypi-source" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/13/python-create-local-pypi-source/">搭建本地pip源</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/13/python-create-local-pypi-source/" class="archive-article-date">
+  	<time datetime="2019-11-13T05:36:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="为什么要搭建本地pip源"><a href="#为什么要搭建本地pip源" class="headerlink" title="为什么要搭建本地pip源"></a>为什么要搭建本地pip源</h3><ol>
+<li>内网无法访问网络，搭建开发环境费时费力。</li>
+<li>网络很差，从网上下载费时费力。</li>
+</ol>
+<p>这种情况下，搭建本地pip源就是一个不错的选择。</p>
+<h3 id="搭建步骤"><a href="#搭建步骤" class="headerlink" title="搭建步骤"></a>搭建步骤</h3><ol>
+<li><p>安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">pip install pip2pi</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p>创建目录存放要下载的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir -p /data/pypi</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p>下载包</p>
+</li>
+</ol>
+<ul>
+<li>单独下载某个包<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path package</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>可以指定版本，默认是最新的包。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path package==1.0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>批量下载包<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```bash</span><br><span class="line">amqp==2.5.0</span><br><span class="line">aniso8601==6.0.0</span><br><span class="line">asn1crypto==0.24.0</span><br><span class="line">Babel==2.6.0</span><br><span class="line">backcall==0.1.0</span><br><span class="line">bcrypt==3.1.7</span><br><span class="line">billiard==3.6.0.0</span><br><span class="line">celery==4.3.0</span><br><span class="line">cffi==1.12.3</span><br><span class="line">Click==7.0</span><br><span class="line">cryptography==2.7</span><br><span class="line">decorator==4.4.0</span><br><span class="line">Flask==1.0.2</span><br><span class="line">Flask-Babel==0.12.2</span><br><span class="line">Flask-Cors==3.0.7</span><br><span class="line">Flask-HTTPAuth==3.3.0</span><br><span class="line">Flask-RESTful==0.3.7</span><br><span class="line">Flask-Script==2.0.6</span><br><span class="line">Flask-SQLAlchemy==2.4.0</span><br><span class="line">Flask-Uploads==0.2.1</span><br><span class="line">gobject==0.1.0</span><br><span class="line">ipython==7.6.1</span><br><span class="line">ipython-genutils==0.2.0</span><br><span class="line">itsdangerous==1.1.0</span><br><span class="line">jedi==0.13.3</span><br><span class="line">Jinja2==2.10.1</span><br><span class="line">kombu==4.6.3</span><br><span class="line">MarkupSafe==1.1.1</span><br><span class="line">paramiko==2.5.0</span><br><span class="line">parso==0.4.0</span><br><span class="line">passlib==1.7.1</span><br><span class="line">pexpect==4.7.0</span><br><span class="line">pickleshare==0.7.5</span><br><span class="line">prettytable==0.7.2</span><br><span class="line">prompt-toolkit==2.0.9</span><br><span class="line">psutil==5.6.3</span><br><span class="line">ptyprocess==0.6.0</span><br><span class="line">pycparser==2.19</span><br><span class="line">Pygments==2.4.0</span><br><span class="line">PyMySQL==0.9.3</span><br><span class="line">PyNaCl==1.3.0</span><br><span class="line">pytz==2019.1</span><br><span class="line">redis==3.2.1</span><br><span class="line">six==1.12.0</span><br><span class="line">SQLAlchemy==1.3.4</span><br><span class="line">traitlets==4.3.2</span><br><span class="line">vine==1.3.0</span><br><span class="line">wcwidth==0.1.7</span><br><span class="line">Werkzeug==0.15.2</span><br></pre></td></tr></table></figure>
+
+<p>这里批量下载安装包：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz /data/pypi -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>下载的时候可能比较慢，可以改为国内的源。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=mirrors.aliyun.com</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>建立索引<figure class="highlight plain"><figcaption><span>path```，会在```path```目录下创建```simple```目录，并生成索引。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">dir2pi /data/pypi</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="搭建服务器"><a href="#搭建服务器" class="headerlink" title="搭建服务器"></a>搭建服务器</h3><p>因为已经安装了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">chmod 755 /data/pypi/</span><br><span class="line">ln -s /data/pypi/simple /var/www/simple</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用搭建的"><a href="#使用搭建的" class="headerlink" title="使用搭建的"></a>使用搭建的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">pip install package -i http://host/simple --trusted-host host</span><br></pre></td></tr></table></figure></h3><p>如果不想每次都指定pip源，可以全局配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=host</span><br><span class="line">index-url=http://host/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></p>
+<p>这里的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=10.10.1.8</span><br><span class="line">index-url=http://10.10.1.8/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></p>
+<p>安装包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install Flask</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pip</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">源</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">本地</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/13/python-create-local-pypi-source/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-javascript-split-string" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/04/javascript-split-string/">Javascript 将一个字符串用逗号空格等分割成一个数组</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/04/javascript-split-string/" class="archive-article-date">
+  	<time datetime="2019-11-04T12:24:12.519Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="string">'a b c d'</span></span><br><span class="line">a.split(<span class="regexp">/[ |,]/</span>)</span><br><span class="line"><span class="comment">//console.log = ["a", "b", "c", "d"]</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="string">'a,b,c,d'</span></span><br><span class="line">b.split(<span class="regexp">/[ |,]/</span>)</span><br><span class="line"><span class="comment">//consoloe.log = ["a", "b", "c", "d"]</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="以任何非数字作为分隔符，并且不会出现空字符串"><a href="#以任何非数字作为分隔符，并且不会出现空字符串" class="headerlink" title="以任何非数字作为分隔符，并且不会出现空字符串"></a>以任何非数字作为分隔符，并且不会出现空字符串</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> str=<span class="string">"11 22 33, 44, 55 ,21 ,3"</span>;</span><br><span class="line"><span class="keyword">var</span> array=str.split(<span class="regexp">/\D+/</span>);</span><br><span class="line"><span class="built_in">console</span>.log(array);</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Javascript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">字符串</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">分割</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/04/javascript-split-string/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-javascript-disable-input-chinese" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/04/javascript-disable-input-chinese/">Javascript 禁止输入中文</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/04/javascript-disable-input-chinese/" class="archive-article-date">
+  	<time datetime="2019-11-04T11:55:51.738Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-04</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="方法一：禁止中文输入法"><a href="#方法一：禁止中文输入法" class="headerlink" title="方法一：禁止中文输入法"></a>方法一：禁止中文输入法</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">style</span>=<span class="string">"ime-mode:disabled"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="方法二：禁止黏贴，禁止拖拽，禁止中文输入法"><a href="#方法二：禁止黏贴，禁止拖拽，禁止中文输入法" class="headerlink" title="方法二：禁止黏贴，禁止拖拽，禁止中文输入法"></a>方法二：禁止黏贴，禁止拖拽，禁止中文输入法</h2><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">onpaste</span>=<span class="string">"return false"</span> <span class="attr">ondragenter</span>=<span class="string">"return false"</span> <span class="attr">oncontextmenu</span>=<span class="string">"return false;"</span> <span class="attr">style</span>=<span class="string">"ime-mode:disabled"</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Javascript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">input</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">禁止中文</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/04/javascript-disable-input-chinese/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-network-ethtool" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/26/network-ethtool/">网络之 ethtool</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/26/network-ethtool/" class="archive-article-date">
+  	<time datetime="2019-10-26T02:48:43.233Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-26</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ethtool 查看网口状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@storage ~]# ethtool enp5s0f0</span><br><span class="line">Settings for enp5s0f0:</span><br><span class="line">	Supported ports: [ TP ]</span><br><span class="line">	Supported link modes:   10baseT/Half 10baseT/Full </span><br><span class="line">	                        100baseT/Half 100baseT/Full </span><br><span class="line">	                        1000baseT/Full </span><br><span class="line">	Supported pause frame use: Symmetric</span><br><span class="line">	Supports auto-negotiation: Yes</span><br><span class="line">	Advertised link modes:  10baseT/Half 10baseT/Full </span><br><span class="line">	                        100baseT/Half 100baseT/Full </span><br><span class="line">	                        1000baseT/Full </span><br><span class="line">	Advertised pause frame use: Symmetric</span><br><span class="line">	Advertised auto-negotiation: Yes</span><br><span class="line">	Speed: 1000Mb/s        # 千兆网络  </span><br><span class="line">	Duplex: Full           # FULL表示全双工,若是半双工（Half），意味着同一时刻，该网卡要么只能收，要么只能发。</span><br><span class="line">	Port: Twisted Pair     # 双绞线，若是万兆，此处会显示FIBRE。</span><br><span class="line">	PHYAD: 1</span><br><span class="line">	Transceiver: internal</span><br><span class="line">	Auto-negotiation: on</span><br><span class="line">	MDI-X: off (auto)</span><br><span class="line">	Supports Wake-on: d</span><br><span class="line">	Wake-on: d</span><br><span class="line">	Current message level: 0x00000007 (7)</span><br><span class="line">			       drv probe link</span><br><span class="line">	Link detected: yes     # 表示网络是联通状态。</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Network</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">ethtool</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/26/network-ethtool/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-gerrit-import-exist-project" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh -p 29418 admin@localhost gerrit create-project Linux-Kernel-Stable</span><br></pre></td></tr></table></figure>
+
+<h1 id="进入gerrit管理界面，配置权限"><a href="#进入gerrit管理界面，配置权限" class="headerlink" title="进入gerrit管理界面，配置权限"></a>进入gerrit管理界面，配置权限</h1><p>Reference: refs/heads/*
+Push<br>Reference: refs/remotes/origin/*</p>
+<h1 id="导入已存在的项目"><a href="#导入已存在的项目" class="headerlink" title="导入已存在的项目"></a>导入已存在的项目</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push ssh://admin@localhost:29418/Linux-Kernel-Stable *:*</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/18/gerrit-import-exist-project/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-deploy-gerrit-on-centos7" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -606,496 +1041,9 @@
 
 
   
-    <article id="post-mysql-common-oper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/23/mysql-common-oper/">MySQL通用操作</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/23/mysql-common-oper/" class="archive-article-date">
-  	<time datetime="2019-09-23T01:18:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-23</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><p>CAST(字段名 AS 转换的类型)，其中类型可以为：</p>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th>释义</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>CHAR[(N)]</td>
-<td>字符型</td>
-</tr>
-<tr>
-<td>DATE</td>
-<td>日期型</td>
-</tr>
-<tr>
-<td>DATETIME</td>
-<td>日期和时间型</td>
-</tr>
-<tr>
-<td>DECIMAL</td>
-<td>浮点数(float)</td>
-</tr>
-<tr>
-<td>SIGNED</td>
-<td>整数(int)</td>
-</tr>
-<tr>
-<td>TIME</td>
-<td>时间型</td>
-</tr>
-</tbody></table>
-<p>示例：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CAST</span>(<span class="keyword">AVG</span>(clock) <span class="keyword">AS</span> SIGNED) <span class="keyword">AS</span> clock,<span class="keyword">AVG</span>(<span class="keyword">value</span>) <span class="keyword">AS</span> <span class="keyword">value</span> <span class="keyword">FROM</span> history <span class="keyword">WHERE</span> itemid=<span class="string">'28360'</span>;</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/09/23/mysql-common-oper/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/23/mysql-common-oper/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-jquery-validate-add-or-remove-rules" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/12/jquery-validate-add-or-remove-rules/">jquery.validate 动态增加或删除规则</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/12/jquery-validate-add-or-remove-rules/" class="archive-article-date">
-  	<time datetime="2019-09-12T08:20:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>按照官方的文档，可以通过rules函数来动态的添加和删除规则。<br>实际是如果执行了form.validate(validateoptions)后，才可以如此调用，否则直接修改定义的rules规则即可。</p>
-        
-          <a class="article-more-a" href="/2019/09/12/jquery-validate-add-or-remove-rules/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">jquery.validate</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">validator</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">动态增删</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">规则</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">rules</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/12/jquery-validate-add-or-remove-rules/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-regexp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/09/mysql-regexp/">MySQL正则</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/09/mysql-regexp/" class="archive-article-date">
-  	<time datetime="2019-09-09T01:33:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>正则表达式的引擎主要分为两类：DFA和NFA。NFA又分为传统型NFA和POSIX NFA两种。<br>DFA Deterministic finite automaton 确定型有穷自动机。<br>NFA Non-deterministic finite automaton　非确定型有穷自动机。</p>
-<ol>
-<li>DFA引擎因为不需要回溯，所以匹配快速，但不支持捕获组，所以也就不支持反向引用和$number这种引用方式，目前使用DFA引擎的语言和工具主要有：awk、MySQL、egrep、lex等。</li>
-<li>POSIX NFA主要指符合POSIX标准的NFA引擎，它的特点主要是提供longest-leftmost匹配，也就是在找到最左侧最长匹配之前，它将继续回溯。同DFA一样，非贪婪模式或者说忽略优先量词对于POSIX NFA同样是没有意义的。</li>
-<li>大多数语言和工具使用的是传统型的NFA引擎，常见的包含：GNU Emacs、vi、sed、less、more、Java、.NET Framework、PCRE library,、Perl、PHP、Python、Ruby等，它有一些DFA不支持的特性：<ul>
-<li>捕获组、反向引用和$number引用方式；</li>
-<li>环视(Lookaround，(?&lt;=…)、(?&lt;!…)、(?=…)、(?!…))，或者有的有文章叫做预搜索；</li>
-<li>忽略优化量词（??、*?、+?、{m,n}?、{m,}?），或者有的文章叫做非贪婪模式；</li>
-<li>占有优先量词（?+、*+、++、{m,n}+、{m,}+，目前仅Java和PCRE支持），固化分组(?&gt;…)。</li>
-</ul>
-</li>
-</ol>
-<p>MySQL采用Henry Spencer的正则表达式实施，其目标是符合POSIX 1003.2。MySQL采用了扩展的版本，以支持在SQL语句中与REGEXP操作符一起使用的模式匹配操作。</p>
-<p>在MySQL中，正则表达式是用来匹配查询的，关键字为“regexp”或“rlike”。 </p>
-        
-          <a class="article-more-a" href="/2019/09/09/mysql-regexp/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">REGEXP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">正则</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/09/mysql-regexp/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-search-null-or-not-null" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/07/mysql-search-null-or-not-null/">MySQL如何查询一个字段的值为NULL或不为NULL</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/07/mysql-search-null-or-not-null/" class="archive-article-date">
-  	<time datetime="2019-09-07T03:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>插入数据</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1990-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name2'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1991-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'myname1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1992-1-1'</span>);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NOT NULL</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/07/mysql-search-null-or-not-null/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-mysql-search-regexp-or-not-regexp" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/07/mysql-search-regexp-or-not-regexp/">MySQL如何查询一个字段的值包含或不包含某个字符</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/07/mysql-search-regexp-or-not-regexp/" class="archive-article-date">
-  	<time datetime="2019-09-07T03:39:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-07</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>创建一个名为test的表，包含三个字段t_name(名称)，t_password(密码)，t_birth(生日)。</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`test`</span> (</span><br><span class="line">  <span class="string">`t_id`</span> <span class="built_in">INT</span>(<span class="number">11</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT,</span><br><span class="line">  <span class="string">`t_name`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_password`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  <span class="string">`t_birth`</span> <span class="built_in">TEXT</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`t_id`</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>插入数据</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1990-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'name2'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1991-1-1'</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> <span class="string">`test`</span> (t_name,t_password,t_birth) <span class="keyword">VALUES</span> (<span class="string">'myname1'</span>,<span class="string">'12345678901234567890'</span>,<span class="string">'1992-1-1'</span>);</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/09/07/mysql-search-regexp-or-not-regexp/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">REGEXP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">NOT REGEXP</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/07/mysql-search-regexp-or-not-regexp/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
     </nav>
   
 
@@ -1206,15 +1154,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1230,30 +1178,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">CentOS</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Javascript</a>
               </li>
              
@@ -1266,27 +1190,47 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">input</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">民俗</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1310,6 +1254,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">联合国</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">趣谈</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">运维</a>
               </li>
              
@@ -1319,6 +1271,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">REGEXP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">正则</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1338,11 +1302,35 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">pip</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">源</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">本地</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">devstack</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1355,14 +1343,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Button</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Python</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1386,15 +1366,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">正则</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1403,6 +1375,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
             
             <div class="clearfix"></div>
