@@ -207,21 +207,16 @@
 <li><p>创建目录存放要下载的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir -p /data/pypi</span><br></pre></td></tr></table></figure></p>
 </li>
 <li><p>下载包</p>
-</li>
-</ol>
 <ul>
-<li>单独下载某个包<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path package</span><br></pre></td></tr></table></figure>
+<li><p>单独下载某个包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path package</span><br></pre></td></tr></table></figure>
 
-</li>
-</ul>
 <p>可以指定版本，默认是最新的包。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path package==1.0</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>批量下载包<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path -r requirements.txt</span><br></pre></td></tr></table></figure>
-
 </li>
-</ul>
+<li><p>批量下载包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip2tgz path -r requirements.txt</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```bash</span><br><span class="line">amqp==2.5.0</span><br><span class="line">aniso8601==6.0.0</span><br><span class="line">asn1crypto==0.24.0</span><br><span class="line">Babel==2.6.0</span><br><span class="line">backcall==0.1.0</span><br><span class="line">bcrypt==3.1.7</span><br><span class="line">billiard==3.6.0.0</span><br><span class="line">celery==4.3.0</span><br><span class="line">cffi==1.12.3</span><br><span class="line">Click==7.0</span><br><span class="line">cryptography==2.7</span><br><span class="line">decorator==4.4.0</span><br><span class="line">Flask==1.0.2</span><br><span class="line">Flask-Babel==0.12.2</span><br><span class="line">Flask-Cors==3.0.7</span><br><span class="line">Flask-HTTPAuth==3.3.0</span><br><span class="line">Flask-RESTful==0.3.7</span><br><span class="line">Flask-Script==2.0.6</span><br><span class="line">Flask-SQLAlchemy==2.4.0</span><br><span class="line">Flask-Uploads==0.2.1</span><br><span class="line">gobject==0.1.0</span><br><span class="line">ipython==7.6.1</span><br><span class="line">ipython-genutils==0.2.0</span><br><span class="line">itsdangerous==1.1.0</span><br><span class="line">jedi==0.13.3</span><br><span class="line">Jinja2==2.10.1</span><br><span class="line">kombu==4.6.3</span><br><span class="line">MarkupSafe==1.1.1</span><br><span class="line">paramiko==2.5.0</span><br><span class="line">parso==0.4.0</span><br><span class="line">passlib==1.7.1</span><br><span class="line">pexpect==4.7.0</span><br><span class="line">pickleshare==0.7.5</span><br><span class="line">prettytable==0.7.2</span><br><span class="line">prompt-toolkit==2.0.9</span><br><span class="line">psutil==5.6.3</span><br><span class="line">ptyprocess==0.6.0</span><br><span class="line">pycparser==2.19</span><br><span class="line">Pygments==2.4.0</span><br><span class="line">PyMySQL==0.9.3</span><br><span class="line">PyNaCl==1.3.0</span><br><span class="line">pytz==2019.1</span><br><span class="line">redis==3.2.1</span><br><span class="line">six==1.12.0</span><br><span class="line">SQLAlchemy==1.3.4</span><br><span class="line">traitlets==4.3.2</span><br><span class="line">vine==1.3.0</span><br><span class="line">wcwidth==0.1.7</span><br><span class="line">Werkzeug==0.15.2</span><br></pre></td></tr></table></figure>
 
 <p>这里批量下载安装包：</p>
@@ -229,13 +224,15 @@
 
 <p>下载的时候可能比较慢，可以改为国内的源。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=mirrors.aliyun.com</span><br><span class="line">index-url=http://mirrors.aliyun.com/pypi/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
-
-<ol start="4">
-<li>建立索引<figure class="highlight plain"><figcaption><span>path```，会在```path```目录下创建```simple```目录，并生成索引。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">dir2pi /data/pypi</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>建立索引</p>
+ <figure class="highlight plain"><figcaption><span>path```，会在```path```目录下创建```simple```目录，并生成索引。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```bash</span><br><span class="line">dir2pi /data/pypi</span><br></pre></td></tr></table></figure>
 
 </li>
 </ol>
-<h3 id="搭建服务器"><a href="#搭建服务器" class="headerlink" title="搭建服务器"></a>搭建服务器</h3><p>因为已经安装了<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">chmod 755 /data/pypi/</span><br><span class="line">ln -s /data/pypi/simple /var/www/simple</span><br></pre></td></tr></table></figure></p>
+<h3 id="搭建服务器"><a href="#搭建服务器" class="headerlink" title="搭建服务器"></a>搭建服务器</h3><p>因为已经安装了<figure class="highlight plain"><figcaption><span>"/var/www"```（/etc/httpd/conf/httpd.conf），这里只是简单的建立一个软连接指向```simple```目录。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">chmod 755 /data/pypi/</span><br><span class="line">ln -s /data/pypi/simple /var/www/simple</span><br></pre></td></tr></table></figure></p>
 <h3 id="使用搭建的"><a href="#使用搭建的" class="headerlink" title="使用搭建的"></a>使用搭建的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">pip install package -i http://host/simple --trusted-host host</span><br></pre></td></tr></table></figure></h3><p>如果不想每次都指定pip源，可以全局配置<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=host</span><br><span class="line">index-url=http://host/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></p>
 <p>这里的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=10.10.1.8</span><br><span class="line">index-url=http://10.10.1.8/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></p>
 <p>安装包</p>
@@ -1158,11 +1155,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph FAQs</a>
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1178,6 +1187,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Javascript</a>
               </li>
              
@@ -1187,18 +1208,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">数组</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1226,14 +1235,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">jquery.validate</a>
               </li>
              
@@ -1254,6 +1255,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">jQuery UI</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -1262,11 +1275,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1278,15 +1291,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1302,11 +1315,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
+                <a href="javascript:void(0)" class="js-tag color4">devstack</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1326,10 +1335,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">devstack</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
@@ -1343,6 +1348,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Button</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Text</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1366,23 +1375,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Text</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">web.py</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">NTP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">NTP客户端</a>
               </li>
             
             <div class="clearfix"></div>
