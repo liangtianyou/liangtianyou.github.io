@@ -176,6 +176,259 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-openstack-cinder-dirver-implement" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/09/openstack-cinder-dirver-implement/">openstack cinder 之 driver 实现</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/09/openstack-cinder-dirver-implement/" class="archive-article-date">
+  	<time datetime="2019-10-09T07:29:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>自定义driver 首先按照类型实现实现接口：如下是iSCSI的驱动实现接口：<br>这些接口调用参考VolumeManager，选择所需要的接口重载。</p>
+<figure class="highlight plain"><figcaption><span>NECISCSIDriver(ISCSIDriver):</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br></pre></td><td class="code"><pre><span class="line">    &quot;&quot;&quot;Any initialization the volume driver does while starting.&quot;&quot;&quot;</span><br><span class="line">    def check_for_setup_error(self):</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_volume(self, volume):</span><br><span class="line">        &quot;&quot;&quot;Creates a volume. Can optionally return a Dictionary of</span><br><span class="line">        changes to the volume object to be persisted.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_volume_from_snapshot(self, volume, snapshot):</span><br><span class="line">        &quot;&quot;&quot;Creates a volume from a snapshot.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_cloned_volume(self, volume, src_vref):</span><br><span class="line">        &quot;&quot;&quot;Creates a clone of the specified volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def delete_volume(self, volume):</span><br><span class="line">        &quot;&quot;&quot;Deletes a volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_snapshot(self, snapshot):</span><br><span class="line">        &quot;&quot;&quot;Creates a snapshot.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def delete_snapshot(self, snapshot):</span><br><span class="line">        &quot;&quot;&quot;Deletes a snapshot.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">X    def local_path(self, volume):</span><br><span class="line">		&quot;&quot;&quot;Return the local path for the specified volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def ensure_export(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Synchronously recreates an export for a volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_export(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Exports the volume. Can optionally return a Dictionary of changes</span><br><span class="line">        to the volume object to be persisted.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def remove_export(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Removes an export for a volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">X    def initialize_connection(self, volume, connector):</span><br><span class="line">        &quot;&quot;&quot;Allow connection to connector and return connection info.&quot;&quot;&quot;</span><br><span class="line">	#iscsi has defult handler</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def terminate_connection(self, volume, connector, **kwargs):</span><br><span class="line">        &quot;&quot;&quot;Disallow connection from connector&quot;&quot;&quot;</span><br><span class="line">	#iscsi has defult handler</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line">    </span><br><span class="line">    def validate_connector(self, connector):</span><br><span class="line">        &quot;&quot;&quot;Fail if connector doesn&apos;t contain all the data needed by driver.&quot;&quot;&quot;</span><br><span class="line">	#iscsi has defult handler</span><br><span class="line">        pass</span><br><span class="line">    </span><br><span class="line"> </span><br><span class="line">X    def attach_volume(self, context, volume, instance_uuid, host_name,</span><br><span class="line">                      mountpoint):</span><br><span class="line">        &quot;&quot;&quot;Callback for volume attached to instance or host.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">X    def detach_volume(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Callback for volume detached.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def get_volume_stats(self, refresh=False):</span><br><span class="line">        &quot;&quot;&quot;Return the current state of the volume service. If &apos;refresh&apos; is</span><br><span class="line">           True, run the update first.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">	#iscsi has default handler</span><br><span class="line">        return None</span><br><span class="line"> </span><br><span class="line">    def do_setup(self, context):</span><br><span class="line">        &quot;&quot;&quot;Any initialization the volume driver does while starting.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def copy_volume_data(self, context, src_vol, dest_vol, remote=None):</span><br><span class="line">        &quot;&quot;&quot;Copy data from src_vol to dest_vol.&quot;&quot;&quot;    </span><br><span class="line">	pass#has default handler</span><br><span class="line"> </span><br><span class="line">    def copy_image_to_volume(self, context, volume, image_service, image_id):</span><br><span class="line">	&quot;&quot;&quot;Fetch the image from image_service and write it to the volume.&quot;&quot;&quot;</span><br><span class="line">	pass#has default handler</span><br><span class="line">    </span><br><span class="line">    def copy_volume_to_image(self, context, volume, image_service, image_meta):</span><br><span class="line">	&quot;&quot;&quot;Copy the volume to the specified image.&quot;&quot;&quot;    </span><br><span class="line">	pass#has default handler</span><br><span class="line"> </span><br><span class="line">    def clone_image(self, volume, image_location, image_id, image_meta):</span><br><span class="line">        &quot;&quot;&quot;Create a volume efficiently from an existing image.</span><br><span class="line">        image_location is a string whose format depends on the</span><br><span class="line">        image service backend in use. The driver should use it</span><br><span class="line">        to determine whether cloning is possible.</span><br><span class="line">        image_id is a string which represents id of the image.</span><br><span class="line">        It can be used by the driver to introspect internal</span><br><span class="line">        stores or registry to do an efficient image clone.</span><br><span class="line">        image_meta is a dictionary that includes &apos;disk_format&apos; (e.g.</span><br><span class="line">        raw, qcow2) and other image attributes that allow drivers to</span><br><span class="line">        decide whether they can clone the image without first requiring</span><br><span class="line">        conversion.</span><br><span class="line">        Returns a dict of volume properties eg. provider_location,</span><br><span class="line">        boolean indicating whether cloning occurred</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return None, False</span><br><span class="line"> </span><br><span class="line">    def backup_volume(self, context, backup, backup_service):</span><br><span class="line">        &quot;&quot;&quot;Create a new backup from an existing volume.&quot;&quot;&quot;</span><br><span class="line">	pass#has default handler</span><br><span class="line"> </span><br><span class="line">    def restore_backup(self, context, backup, volume, backup_service):</span><br><span class="line">        &quot;&quot;&quot;Restore an existing backup to a new or existing volume.&quot;&quot;&quot;</span><br><span class="line">	pass#has default handler</span><br><span class="line">	</span><br><span class="line"> </span><br><span class="line">    def clear_download(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Clean up after an interrupted image copy.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def extend_volume(self, volume, new_size):</span><br><span class="line">        msg = _(&quot;Extend volume not implemented&quot;)</span><br><span class="line">        raise NotImplementedError(msg)</span><br><span class="line"> </span><br><span class="line">    def migrate_volume(self, context, volume, host):</span><br><span class="line">        &quot;&quot;&quot;Migrate the volume to the specified host.</span><br><span class="line">        Returns a boolean indicating whether the migration occurred, as well as</span><br><span class="line">        model_update.</span><br><span class="line">        :param ctxt: Context</span><br><span class="line">        :param volume: A dictionary describing the volume to migrate</span><br><span class="line">        :param host: A dictionary describing the host to migrate to, where</span><br><span class="line">                     host[&apos;host&apos;] is its name, and host[&apos;capabilities&apos;] is a</span><br><span class="line">                     dictionary of its reported capabilities.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return (False, None)</span><br><span class="line"> </span><br><span class="line">    def retype(self, context, volume, new_type, diff, host):</span><br><span class="line">        &quot;&quot;&quot;Convert the volume to be of the new type.</span><br><span class="line">        Returns a boolean indicating whether the retype occurred.</span><br><span class="line">        :param ctxt: Context</span><br><span class="line">        :param volume: A dictionary describing the volume to migrate</span><br><span class="line">        :param new_type: A dictionary describing the volume type to convert to</span><br><span class="line">        :param diff: A dictionary with the difference between the two types</span><br><span class="line">        :param host: A dictionary describing the host to migrate to, where</span><br><span class="line">                     host[&apos;host&apos;] is its name, and host[&apos;capabilities&apos;] is a</span><br><span class="line">                     dictionary of its reported capabilities.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return False</span><br><span class="line"> </span><br><span class="line">    def accept_transfer(self, context, volume, new_user, new_project):</span><br><span class="line">        &quot;&quot;&quot;Accept the transfer of a volume for a new user/project.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def manage_existing(self, volume, existing_ref):</span><br><span class="line">        &quot;&quot;&quot;Brings an existing backend storage object under Cinder management.</span><br><span class="line">        existing_ref is passed straight through from the API request&apos;s</span><br><span class="line">        manage_existing_ref value, and it is up to the driver how this should</span><br><span class="line">        be interpreted.  It should be sufficient to identify a storage object</span><br><span class="line">        that the driver should somehow associate with the newly-created cinder</span><br><span class="line">        volume structure.</span><br><span class="line">        There are two ways to do this:</span><br><span class="line">        1. Rename the backend storage object so that it matches the,</span><br><span class="line">           volume[&apos;name&apos;] which is how drivers traditionally map between a</span><br><span class="line">           cinder volume and the associated backend storage object.</span><br><span class="line">        2. Place some metadata on the volume, or somewhere in the backend, that</span><br><span class="line">           allows other driver requests (e.g. delete, clone, attach, detach...)</span><br><span class="line">           to locate the backend storage object when required.</span><br><span class="line">        If the existing_ref doesn&apos;t make sense, or doesn&apos;t refer to an existing</span><br><span class="line">        backend storage object, raise a ManageExistingInvalidReference</span><br><span class="line">        exception.</span><br><span class="line">        The volume may have a volume_type, and the driver can inspect that and</span><br><span class="line">        compare against the properties of the referenced backend storage</span><br><span class="line">        object.  If they are incompatible, raise a</span><br><span class="line">        ManageExistingVolumeTypeMismatch, specifying a reason for the failure.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        msg = _(&quot;Manage existing volume not implemented.&quot;)</span><br><span class="line">        raise NotImplementedError(msg)</span><br><span class="line"> </span><br><span class="line">    def manage_existing_get_size(self, volume, existing_ref):</span><br><span class="line">        &quot;&quot;&quot;Return size of volume to be managed by manage_existing.</span><br><span class="line">        When calculating the size, round up to the next GB.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        msg = _(&quot;Manage existing volume not implemented.&quot;)</span><br><span class="line">        raise NotImplementedError(msg)</span><br><span class="line"> </span><br><span class="line">    def unmanage(self, volume):</span><br><span class="line">	&quot;&quot;&quot;Removes the specified volume from Cinder management.</span><br><span class="line">	Does not delete the underlying backend storage object.</span><br><span class="line">	For most drivers, this will not need to do anything.  However, some</span><br><span class="line">	drivers might use this call as an opportunity to clean up any</span><br><span class="line">	Cinder-specific configuration that they have associated with the</span><br><span class="line">	backend storage object.</span><br><span class="line">	&quot;&quot;&quot;</span><br><span class="line">	pass	</span><br><span class="line">    </span><br><span class="line">##############################################################################</span><br><span class="line">    def _do_iscsi_discovery(self, volume):</span><br><span class="line">	pass #has default handler</span><br><span class="line">    </span><br><span class="line">    def _get_iscsi_properties(self, volume):</span><br><span class="line">	&quot;&quot;&quot;Gets iscsi configuration</span><br><span class="line">	We ideally get saved information in the volume entity, but fall back</span><br><span class="line">	to discovery if need be. Discovery may be completely removed in future</span><br><span class="line">	The properties are:</span><br><span class="line">	    :target_discovered:    boolean indicating whether discovery was used </span><br><span class="line">	    :target_iqn:    the IQN of the iSCSI target</span><br><span class="line">	    :target_portal:    the portal of the iSCSI target</span><br><span class="line">	    :target_lun:    the lun of the iSCSI target</span><br><span class="line">	    :volume_id:    the id of the volume (currently used by xen)</span><br><span class="line">	    :auth_method:, :auth_username:, :auth_password:</span><br><span class="line">       </span><br><span class="line">	the authentication details. Right now, either auth_method is not</span><br><span class="line">	present meaning no authentication, or auth_method == `CHAP`</span><br><span class="line">	meaning use CHAP with the specified credentials.</span><br><span class="line">       </span><br><span class="line">	    :access_mode:    the volume access mode allow client used</span><br><span class="line">				(&apos;rw&apos; or &apos;ro&apos; currently supported)</span><br><span class="line">	&quot;&quot;&quot;    </span><br><span class="line">	pass #has default handler</span><br><span class="line">    </span><br><span class="line">    def get_target_helper(self, db):</span><br><span class="line">	pass #has default handler</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-implement/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-openstack-cinder-dirver-volume-attach-detach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">openstack cinder 之 卷挂载/卸载工作流程</a>
+    </h1>
+  
+
+        
+        <a href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" class="archive-article-date">
+  	<time datetime="2019-10-09T07:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。</p>
+<h2 id="挂载-卸载操作是有多条命令组成"><a href="#挂载-卸载操作是有多条命令组成" class="headerlink" title="挂载/卸载操作是有多条命令组成"></a>挂载/卸载操作是有多条命令组成</h2><p>在挂载/卸载调用的工作流程中，发生了三类事情<br>1)更新数据库中卷的状态(例如：attaching/detaching状态)<br>对于挂载操作，对应的方法为cinder.volume.api.reserve_volume<br>对于卸载操作，对应的方法为cinder.volume.api.begin_detaching</p>
+<p>2)处理需要在卷上执行的连接操作<br>对于挂载操作,对应的方法为cinder.volume.api.initialize_connection<br>对于卸载操作，对应的方法为cinder.volume.api.terminate_connection</p>
+<p>3)确定卷的状态并释放资源<br>对于挂载操作，对应的方法为cinder.volume.api.attach<br>对于卸载操作，对应的方法为cinder.volume.api.detach</p>
+        
+          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-snmp-common-oper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/25/snmp-common-oper/">SNMP通用操作</a>
+    </h1>
+  
+
+        
+        <a href="/2019/09/25/snmp-common-oper/" class="archive-article-date">
+  	<time datetime="2019-09-25T09:16:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-25</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="snmp查看DEBUG信息"><a href="#snmp查看DEBUG信息" class="headerlink" title="snmp查看DEBUG信息"></a>snmp查看DEBUG信息</h2><p>snmpd -f -Lo -Ducd-snmp/pass</p>
+<h2 id="snmptrap查看DEBUG信息"><a href="#snmptrap查看DEBUG信息" class="headerlink" title="snmptrap查看DEBUG信息"></a>snmptrap查看DEBUG信息</h2><p>snmptrapd -d -f -Lo</p>
+<h2 id="查看mib信息"><a href="#查看mib信息" class="headerlink" title="查看mib信息"></a>查看mib信息</h2><p>snmptranslate -Tp -IR hacking</p>
+<h2 id="获取信息"><a href="#获取信息" class="headerlink" title="获取信息"></a>获取信息</h2><h2 id="系统相关"><a href="#系统相关" class="headerlink" title="系统相关"></a>系统相关</h2><h3 id="获取操作系统"><a href="#获取操作系统" class="headerlink" title="获取操作系统"></a>获取操作系统</h3><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.1</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v 2c -c public 10.10.10.15 1.3.6.1.2.1.1.1</span></span><br><span class="line">SNMPv2-SMI::mib-2.1.1.0 = STRING: <span class="string">"Linux controller-1 4.4.163 #2 SMP Fri Aug 9 14:25:35 CST 2019 aarch64"</span></span><br></pre></td></tr></table></figure>
+        
+          <a class="article-more-a" href="/2019/09/25/snmp-common-oper/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">snmp</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/09/25/snmp-common-oper/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-mysql-common-oper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -829,278 +1082,6 @@
 
 
   
-    <article id="post-vue-elementui-table" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/15/vue-elementui-table/">Vue ElementUI Table相关</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/15/vue-elementui-table/" class="archive-article-date">
-  	<time datetime="2019-08-15T06:47:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="多选，批量处理"><a href="#多选，批量处理" class="headerlink" title="多选，批量处理"></a>多选，批量处理</h2><p><strong>需求</strong>: 选择多行，批量删除<br>传入的数据源是数组，单个删除时使用的是slice()方法，增加多选后，通过@selection-change传入的row对象的index参数是选中项的索引，并非其在整个数组内的索引，这样一来无法使用slice()方法，需要遍历数组来实现删除。<br><strong>解决办法</strong>:
-在el-table中加入:row-class-name=”tableRowClassName”[^1]，利用tableRowClassName方法将rowIndex赋值给row对象。</p>
-<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"el-row"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-button</span> <span class="attr">class</span>=<span class="string">"el-icon-delete"</span> @<span class="attr">click</span>=<span class="string">"batchDeletePerson"</span>&gt;</span>批量删除<span class="tag">&lt;/<span class="name">el-button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">el-table</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">border</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">:data</span>=<span class="string">"people"</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">"addrss-book"</span> </span></span><br><span class="line"><span class="tag">        @<span class="attr">selection-change</span>=<span class="string">"handleSelectionChange"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:row-class-name</span>=<span class="string">"tableRowClassName"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">type</span>=<span class="string">"selection"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">prop</span>=<span class="string">"name"</span> <span class="attr">label</span>=<span class="string">"姓名"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">prop</span>=<span class="string">"phone"</span> <span class="attr">label</span>=<span class="string">"手机"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">prop</span>=<span class="string">"email"</span> <span class="attr">label</span>=<span class="string">"邮箱"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">label</span>=<span class="string">"操作"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">template</span> <span class="attr">slot-scope</span>=<span class="string">"scope"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">el-button</span> <span class="attr">size</span>=<span class="string">"mini"</span> @<span class="attr">click</span>=<span class="string">"deletePerson(scope.$index,scope.row)"</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">el-button</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">el-table</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="Javascript"><a href="#Javascript" class="headerlink" title="Javascript"></a>Javascript</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> store = &#123;</span><br><span class="line">    save(key,value)&#123;</span><br><span class="line">        <span class="built_in">window</span>.localStorage.setItem(key,<span class="built_in">JSON</span>.stringify(value));</span><br><span class="line">    &#125;,</span><br><span class="line">    fetch(key)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(<span class="built_in">window</span>.localStorage.getItem(key))||[];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;    </span><br><span class="line"><span class="keyword">var</span> storeKey = <span class="string">"addressBook"</span>;</span><br><span class="line"><span class="keyword">var</span> people = store.fetch(storeKey);</span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    el: <span class="string">'#app'</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        people,</span><br><span class="line">        userSelection: []</span><br><span class="line">    &#125;,</span><br><span class="line">    watch:&#123;</span><br><span class="line">        people:&#123;</span><br><span class="line">            handler:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">                store.save(storeKey,<span class="keyword">this</span>.people);</span><br><span class="line">            &#125;,</span><br><span class="line">            deep:<span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">        deletePerson: <span class="function"><span class="keyword">function</span>(<span class="params">index,row</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.$confirm(<span class="string">`此操作将删除通讯录 “<span class="subst">$&#123;row.name&#125;</span>”，是否继续?`</span>, <span class="string">'提示'</span>, &#123;</span><br><span class="line">                confirmButtonText: <span class="string">'确定'</span>,</span><br><span class="line">                cancelButtonText: <span class="string">'取消'</span>,</span><br><span class="line">                type: <span class="string">'warning'</span></span><br><span class="line">            &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.people.splice(index,<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                    type: <span class="string">'success'</span>,</span><br><span class="line">                    message: <span class="string">'删除成功!'</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                    type: <span class="string">'info'</span>,</span><br><span class="line">                    message: <span class="string">'已取消删除'</span></span><br><span class="line">                &#125;);          </span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;,</span><br><span class="line">        tableRowClassName(row)&#123;</span><br><span class="line">            row.row.index = row.rowIndex;</span><br><span class="line">        &#125;,</span><br><span class="line">        handleSelectionChange(val) &#123;</span><br><span class="line">            <span class="keyword">this</span>.userSelection = val;</span><br><span class="line">        &#125;,</span><br><span class="line">        batchDeletePerson: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.userSelection.length)&#123;</span><br><span class="line">                <span class="keyword">this</span>.$confirm(<span class="string">'此操作将删除选中的通讯录，是否继续?'</span>, <span class="string">'提示'</span>, &#123;</span><br><span class="line">                    confirmButtonText: <span class="string">'确定'</span>,</span><br><span class="line">                    cancelButtonText: <span class="string">'取消'</span>,</span><br><span class="line">                    type: <span class="string">'warning'</span></span><br><span class="line">                &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> selectionIndexs = [];</span><br><span class="line">                    <span class="keyword">this</span>.userSelection.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">                        selectionIndexs.push(<span class="built_in">parseInt</span>(item.index))</span><br><span class="line">                    &#125;);</span><br><span class="line">                    <span class="comment">//纯数字数组排序</span></span><br><span class="line">                    selectionIndexs.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> a-b;</span><br><span class="line">                    &#125;);</span><br><span class="line">                    <span class="comment">//从大到小删，否则异常</span></span><br><span class="line">                    selectionIndexs.reverse();</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">let</span> selectionIndex <span class="keyword">of</span> selectionIndexs)&#123;</span><br><span class="line">                        <span class="keyword">this</span>.people.splice(selectionIndex,<span class="number">1</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                        type: <span class="string">'success'</span>,</span><br><span class="line">                        message: <span class="string">'删除成功!'</span></span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                    <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                        type: <span class="string">'info'</span>,</span><br><span class="line">                        message: <span class="string">'已取消删除'</span></span><br><span class="line">                    &#125;);          </span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>[^1] <a href="https://www.im050.com/posts/410" target="_blank" rel="noopener">!ElementUI Selection Table 中获取被勾选的index</a></p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Vue.js</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">ElementUI</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Table</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/15/vue-elementui-table/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-javascript-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/15/javascript-array/">Javascript 数组相关</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/15/javascript-array/" class="archive-article-date">
-  	<time datetime="2019-08-15T06:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="1-indexOf-方法"><a href="#1-indexOf-方法" class="headerlink" title="1. indexOf() 方法"></a>1. indexOf() 方法</h2><p><strong>功能</strong>: 在数组中查找某个元素<br><strong>浏览器支持</strong>: 所有主要浏览器都支持 indexOf() 方法，但是 Internet Explorer 8 及 更早IE版本不支持该方法。<br><strong>IE8以下版本Hack</strong>:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!<span class="built_in">Array</span>.prototype.indexOf)&#123;</span><br><span class="line">    <span class="built_in">Array</span>.prototype.indexOf=<span class="function"><span class="keyword">function</span>(<span class="params">item,i</span>)</span>&#123;</span><br><span class="line">        i || (i=<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">var</span> length=<span class="keyword">this</span>.length;</span><br><span class="line">        <span class="keyword">if</span>(i&lt;<span class="number">0</span>)&#123;</span><br><span class="line">            i = length;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(;i&lt;length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>[i] === item)&#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-纯数字排序错误"><a href="#2-纯数字排序错误" class="headerlink" title="2. 纯数字排序错误"></a>2. 纯数字排序错误</h2><p>在js中对纯数字的的数组用sort()函数排序时，会发现的他的排序是错误的，这是因为它采用的unicode编码导致的。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">arr = [<span class="number">1</span>,<span class="number">11</span>,<span class="number">22</span>,<span class="number">2</span>]</span><br><span class="line">arr.sort()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line">[ <span class="number">1</span>, <span class="number">11</span>, <span class="number">2</span>, <span class="number">22</span> ]</span><br></pre></td></tr></table></figure>
-
-<p><strong>解决方法</strong>:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">arr.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a-b;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(arr);</span><br><span class="line">[ <span class="number">1</span>, <span class="number">2</span>, <span class="number">11</span>, <span class="number">22</span> ]</span><br></pre></td></tr></table></figure>
-
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Javascript</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Array</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">数组</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/15/javascript-array/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-ubuntu18.04-install-wps" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/12/ubuntu18.04-install-wps/">Ubuntu 18.04 安装WPS For Linux</a>
-    </h1>
-  
-
-        
-        <a href="/2019/08/12/ubuntu18.04-install-wps/" class="archive-article-date">
-  	<time datetime="2019-08-12T03:43:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-12</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="到官网下载WPS-For-Linux"><a href="#到官网下载WPS-For-Linux" class="headerlink" title="到官网下载WPS For Linux"></a>到官网下载WPS For Linux</h3><p><a href="http://community.wps.cn/download/" target="_blank" rel="noopener">WPS For Linux 官网</a></p>
-<h3 id="安装WPS-For-Linux"><a href="#安装WPS-For-Linux" class="headerlink" title="安装WPS For Linux"></a>安装WPS For Linux</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i wps-office_10.1.0.6757_amd64</span><br></pre></td></tr></table></figure>
-
-<h3 id="安装缺失字体"><a href="#安装缺失字体" class="headerlink" title="安装缺失字体"></a>安装缺失字体</h3><ul>
-<li><p>下载缺失字体<br><a href="/assets/blogFile/wps_symbol_fonts.zip">WPS For Linux缺失字体</a></p>
-</li>
-<li><p>建立字体文件夹</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /usr/share/fonts/wps-office</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>把字体解压拷贝到/usr/share/fonts/wps-office，如果还有缺失，去Windows下面拷过来。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp * /usr/share/fonts/wps-office</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>消除一下缓存和生成新的缓存</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/share/fonts/wps-office</span><br><span class="line">sudo mkfontscale</span><br><span class="line">sudo mkfontdir</span><br><span class="line">sudo <span class="built_in">fc</span>-cache</span><br></pre></td></tr></table></figure>
-
-</li>
-</ul>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Ubuntu 18.04</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">WPS</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/08/12/ubuntu18.04-install-wps/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
@@ -1115,7 +1096,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 liangtianyou
+    		&copy; 2020 liangtianyou
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1198,15 +1179,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+                <a href="javascript:void(0)" class="js-tag color3">iSCSI网关</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">string</a>
+                <a href="javascript:void(0)" class="js-tag color4">iSCSI gateway</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">对象网关</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">object gateway</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1222,19 +1211,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1250,7 +1227,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">string</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1274,22 +1259,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">input</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">分割</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
               </li>
              
@@ -1303,6 +1272,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1326,10 +1307,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -1338,11 +1315,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1354,15 +1339,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1390,15 +1375,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">使用</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">源</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">本地</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1415,14 +1408,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1443,6 +1428,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">input</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
               </li>
             
             <div class="clearfix"></div>

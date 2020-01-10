@@ -176,6 +176,337 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ceph-object-gateway-config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/10/ceph-object-gateway-config/">Ceph对象网关搭建</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/10/ceph-object-gateway-config/" class="archive-article-date">
+  	<time datetime="2020-01-10T02:53:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Ceph对象网关搭建"><a href="#Ceph对象网关搭建" class="headerlink" title="Ceph对象网关搭建"></a>Ceph对象网关搭建</h1><h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><ol>
+<li>Ceph版本：ceph version 14.2.5 (ad5bd132e1492173c85fda2cc863152730b16a92) nautilus (stable)</li>
+<li>操作系统版本：CentOS Linux release 7.7.1908 (Core)</li>
+<li>节点IP：10.10.15.50</li>
+<li>主机名称： node1</li>
+</ol>
+<h2 id="生成对象网关实例秘钥"><a href="#生成对象网关实例秘钥" class="headerlink" title="生成对象网关实例秘钥"></a>生成对象网关实例秘钥</h2><p>实例名称：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.rgw + 主机名称</span><br></pre></td></tr></table></figure>
+
+<p>这里就是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client.rgw.node1</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>: 如果不在配置文件里指定秘钥，默认需要秘钥名称和实例名称相同。<br>创建秘钥：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hostname=`hostname -s`</span><br><span class="line">ceph --cluster ceph auth get-or-create client.rgw.$hostname osd &apos;allow rwx&apos; mon &apos;allow rwx&apos; -o /etc/ceph/ceph.client.rgw.$hostname.keyring</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建对象网关池"><a href="#创建对象网关池" class="headerlink" title="创建对象网关池"></a>创建对象网关池</h2><p>如果权限正确，默认是会创建这些池的，因为是测试环境，PG数量有限，所以手动创建。<br>参考内容：<a href="https://documentation.suse.com/ses/6/html/ses-all/cha-ceph-additional-software-installation.html" target="_blank" rel="noopener">https://documentation.suse.com/ses/6/html/ses-all/cha-ceph-additional-software-installation.html</a></p>
+<pre><code>Ceph Object Gateways require Ceph Storage Cluster pools to store specific gateway data. If the user you created has proper permissions, the gateway will create the pools automatically. However, ensure that you have set an appropriate default number of placement groups per pool in the Ceph configuration file.
+
+The pool names follow the ZONE_NAME.POOL_NAME syntax. When configuring a gateway with the default region and zone, the default zone name is &apos;default&apos; as in our example:</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.rgw.root</span><br><span class="line">default.rgw.control</span><br><span class="line">default.rgw.meta</span><br><span class="line">default.rgw.log</span><br><span class="line">default.rgw.buckets.index</span><br><span class="line">default.rgw.buckets.data</span><br></pre></td></tr></table></figure>
+
+<p>这里指定pg数量为8，请根据实际pg数量自行修改。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool create .rgw.root 8 8 replicated</span><br><span class="line">ceph osd pool create .rgw.control 8 8 replicated</span><br><span class="line">ceph osd pool create default.rgw.meta 8 8 replicated</span><br><span class="line">ceph osd pool create default.rgw.log 8 8 replicated</span><br><span class="line">ceph osd pool create default.rgw.buckets.index 8 8 replicated</span><br><span class="line">ceph osd pool create default.rgw.buckets.data 8 8 erasure</span><br></pre></td></tr></table></figure>
+
+<h2 id="写入配置文件"><a href="#写入配置文件" class="headerlink" title="写入配置文件"></a>写入配置文件</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cluster_name=ceph</span><br><span class="line">hostname=`hostname -s`</span><br><span class="line">rgw_ip=10.10.15.50</span><br><span class="line">rgw_port=7480</span><br><span class="line">cat &gt;&gt; /etc/ceph/<span class="variable">$cluster_name</span>.conf &lt;&lt; EOF</span><br><span class="line">[client.rgw.<span class="variable">$hostname</span>]</span><br><span class="line">host = <span class="variable">$hostname</span></span><br><span class="line">keyring = /etc/ceph/ceph.client.rgw.<span class="variable">$hostname</span>.keyring</span><br><span class="line"><span class="built_in">log</span> file = /var/<span class="built_in">log</span>/radosgw/client.rgw.<span class="variable">$hostname</span>.<span class="built_in">log</span></span><br><span class="line">rgw_frontends = <span class="string">"civetweb port=<span class="variable">$rgw_port</span>"</span></span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>: 如果配置文件里未指定<strong>keyring</strong>，则需要在 /etc/ceph/ 目录下，或者在 /var/lib/ceph/radosgw/ 目录下有对应名称的 keyring 。</p>
+<p>这个错误的验证可以通过启动 radosgw 服务来验证，假设条件如下：</p>
+<p><strong>集群名称</strong>：ceph</p>
+<p><strong>实例名称</strong>：client.rgw.node1</p>
+<p><strong>启动 radosgw 服务命令</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/radosgw -f --cluster ceph --name client.rgw.node1 --setuser ceph --setgroup ceph</span><br></pre></td></tr></table></figure>
+
+<p>查看启动过程中的报错信息获取详情。</p>
+<h2 id="启动实例"><a href="#启动实例" class="headerlink" title="启动实例"></a>启动实例</h2><p><strong>注意</strong>：启动服务时实例名称不包含<strong>client</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable ceph-radosgw@rgw.$hostname</span><br><span class="line">systemctl start ceph-radosgw@rgw.$hostname &amp;&amp; systemctl status ceph-radosgw@rgw.$hostname</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建dashboard访问对象网关用户"><a href="#创建dashboard访问对象网关用户" class="headerlink" title="创建dashboard访问对象网关用户"></a>创建dashboard访问对象网关用户</h2><p>这里指定用户 uid 为 admin。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dashboard_rgw_user=admin</span><br><span class="line">radosgw-admin user create --uid=<span class="variable">$dashboard_rgw_user</span> --display-name=<span class="variable">$dashboard_rgw_user</span> --system</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取dashboard访问对象网关用户信息"><a href="#获取dashboard访问对象网关用户信息" class="headerlink" title="获取dashboard访问对象网关用户信息"></a>获取dashboard访问对象网关用户信息</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dashboard_rgw_user_info=`radosgw-admin user info --uid=<span class="variable">$dashboard_rgw_user</span>`</span><br><span class="line">access_key=`<span class="built_in">echo</span> <span class="variable">$dashboard_rgw_user_info</span> | jq <span class="string">'.keys[0].access_key'</span> | sed <span class="string">'s/\"//g'</span> | sed <span class="string">"s/\'//g"</span>`</span><br><span class="line">secret_key=`<span class="built_in">echo</span> <span class="variable">$dashboard_rgw_user_info</span> | jq <span class="string">'.keys[0].secret_key'</span> | sed <span class="string">'s/\"//g'</span> | sed <span class="string">"s/\'//g"</span>`</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置dashboard访问对象网关key"><a href="#设置dashboard访问对象网关key" class="headerlink" title="设置dashboard访问对象网关key"></a>设置dashboard访问对象网关key</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph dashboard <span class="built_in">set</span>-rgw-api-access-key <span class="variable">$access_key</span></span><br><span class="line">ceph dashboard <span class="built_in">set</span>-rgw-api-secret-key <span class="variable">$secret_key</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="多个实例时，需要设置dashboard访问对象网关IP和端口"><a href="#多个实例时，需要设置dashboard访问对象网关IP和端口" class="headerlink" title="多个实例时，需要设置dashboard访问对象网关IP和端口"></a>多个实例时，需要设置dashboard访问对象网关IP和端口</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rgw_ip=10.10.15.50</span><br><span class="line">rgw_port=7480</span><br><span class="line">ceph dashboard <span class="built_in">set</span>-rgw-api-host <span class="variable">$rgw_ip</span></span><br><span class="line">ceph dashboard <span class="built_in">set</span>-rgw-api-port <span class="variable">$rgw_port</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="启动实例时如果失败，可以查看日志分析原因。"><a href="#启动实例时如果失败，可以查看日志分析原因。" class="headerlink" title="启动实例时如果失败，可以查看日志分析原因。"></a>启动实例时如果失败，可以查看日志分析原因。</h2><h3 id="原因一-创建默认池时pg数量不足"><a href="#原因一-创建默认池时pg数量不足" class="headerlink" title="原因一 创建默认池时pg数量不足"></a>原因一 创建默认池时pg数量不足</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl start ceph-radosgw@rgw.node1</span><br><span class="line">systemctl status ceph-radosgw@rgw.node1</span><br><span class="line"></span><br><span class="line"><span class="comment"># tailf /var/log/radosgw/client.rgw.node1.log</span></span><br><span class="line">2020-01-07 18:45:05.660 7f356025e780  0 rgw_init_ioctx ERROR: librados::Rados::pool_create returned (34) Numerical result out of range (this can be due to a pool or placement group misconfiguration, e.g. pg_num &lt; pgp_num or mon_max_pg_per_osd exceeded)</span><br></pre></td></tr></table></figure>
+
+<p>完整日志如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br></pre></td><td class="code"><pre><span class="line">2020-01-07 18:45:04.859 7f356025e780  0 framework: civetweb</span><br><span class="line">2020-01-07 18:45:04.859 7f356025e780  0 framework conf key: port, val: 7480</span><br><span class="line">2020-01-07 18:45:04.859 7f356025e780  0 deferred <span class="built_in">set</span> uid:gid to 167:167 (ceph:ceph)</span><br><span class="line">2020-01-07 18:45:04.859 7f356025e780  0 ceph version 14.2.5 (ad5bd132e1492173c85fda2cc863152730b16a92) nautilus (stable), process radosgw, pid 1580517</span><br><span class="line">2020-01-07 18:45:05.660 7f356025e780  0 rgw_init_ioctx ERROR: librados::Rados::pool_create returned (34) Numerical result out of range (this can be due to a pool or placement group misconfiguration, e.g. pg_num &lt; pgp_num or mon_max_pg_per_osd exceeded)</span><br><span class="line">2020-01-07 18:45:05.660 7f356025e780  0 ERROR: notify_obj.open() returned r=-34</span><br><span class="line">2020-01-07 18:45:05.660 7f356025e780 -1 ERROR: failed to initialize watch: (34) Numerical result out of range</span><br><span class="line">2020-01-07 18:45:05.660 7f356025e780  0 ERROR: failed to start notify service ((34) Numerical result out of range</span><br><span class="line">2020-01-07 18:45:05.660 7f356025e780  0 ERROR: failed to init services (ret=(34) Numerical result out of range)</span><br><span class="line">2020-01-07 18:45:05.665 7f356025e780 -1 *** Caught signal (Segmentation fault) **</span><br><span class="line"> <span class="keyword">in</span> thread 7f356025e780 thread_name:radosgw</span><br><span class="line"></span><br><span class="line"> ceph version 14.2.5 (ad5bd132e1492173c85fda2cc863152730b16a92) nautilus (stable)</span><br><span class="line"> 1: (()+0xf5f0) [0x7f35534595f0]</span><br><span class="line"> 2: (()+0x8994b) [0x7f355f0c494b]</span><br><span class="line"> 3: (RGWSI_Notify::unwatch(RGWSI_RADOS::Obj&amp;, unsigned long)+0x2a) [0x555b3edb492a]</span><br><span class="line"> 4: (RGWSI_Notify::finalize_watch()+0x35) [0x555b3edb5eb5]</span><br><span class="line"> 5: (RGWSI_Notify::shutdown()+0x1e) [0x555b3edb5f1e]</span><br><span class="line"> 6: (RGWServices_Def::shutdown()+0x4e) [0x555b3eaaa3ee]</span><br><span class="line"> 7: (RGWServices_Def::~RGWServices_Def()+0x9) [0x555b3eaaa499]</span><br><span class="line"> 8: (RGWRados::~RGWRados()+0x7f) [0x555b3ecf58cf]</span><br><span class="line"> 9: (RGWStoreManager::init_storage_provider(CephContext*, bool, bool, bool, bool, bool, bool)+0xa0) [0x555b3ecdeff0]</span><br><span class="line"> 10: (main()+0xbed) [0x555b3e92cdad]</span><br><span class="line"> 11: (__libc_start_main()+0xf5) [0x7f355287f505]</span><br><span class="line"> 12: (()+0x2b6e57) [0x555b3e957e57]</span><br><span class="line"> NOTE: a copy of the executable, or `objdump -rdS &lt;executable&gt;` is needed to interpret this.</span><br><span class="line"></span><br><span class="line">--- begin dump of recent events ---</span><br><span class="line">  -235&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command assert hook 0x555b4168e480</span><br><span class="line">  -234&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command abort hook 0x555b4168e480</span><br><span class="line">  -233&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perfcounters_dump hook 0x555b4168e480</span><br><span class="line">  -232&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command 1 hook 0x555b4168e480</span><br><span class="line">  -231&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perf dump hook 0x555b4168e480</span><br><span class="line">  -230&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perfcounters_schema hook 0x555b4168e480</span><br><span class="line">  -229&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perf histogram dump hook 0x555b4168e480</span><br><span class="line">  -228&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command 2 hook 0x555b4168e480</span><br><span class="line">  -227&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perf schema hook 0x555b4168e480</span><br><span class="line">  -226&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perf histogram schema hook 0x555b4168e480</span><br><span class="line">  -225&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command perf reset hook 0x555b4168e480</span><br><span class="line">  -224&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config show hook 0x555b4168e480</span><br><span class="line">  -223&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config <span class="built_in">help</span> hook 0x555b4168e480</span><br><span class="line">  -222&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config <span class="built_in">set</span> hook 0x555b4168e480</span><br><span class="line">  -221&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config <span class="built_in">unset</span> hook 0x555b4168e480</span><br><span class="line">  -220&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config get hook 0x555b4168e480</span><br><span class="line">  -219&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config diff hook 0x555b4168e480</span><br><span class="line">  -218&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command config diff get hook 0x555b4168e480</span><br><span class="line">  -217&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command <span class="built_in">log</span> flush hook 0x555b4168e480</span><br><span class="line">  -216&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command <span class="built_in">log</span> dump hook 0x555b4168e480</span><br><span class="line">  -215&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command <span class="built_in">log</span> reopen hook 0x555b4168e480</span><br><span class="line">  -214&gt; 2020-01-07 18:45:04.807 7f356025e780  5 asok(0x555b41718000) register_command dump_mempools hook 0x555b416d42c8</span><br><span class="line">  -213&gt; 2020-01-07 18:45:04.816 7f356025e780 10 monclient: get_monmap_and_config</span><br><span class="line">  -212&gt; 2020-01-07 18:45:04.853 7f356025e780 10 monclient: build_initial_monmap</span><br><span class="line">  -211&gt; 2020-01-07 18:45:04.853 7f356025e780 10 monclient: monmap:</span><br><span class="line">epoch 0</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:45:04.854983</span><br><span class="line">created 2020-01-07 18:45:04.854983</span><br><span class="line">min_mon_release 0 (unknown)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.noname<span class="_">-a</span>-legacy</span><br><span class="line">1: v2:10.10.15.50:3300/0 mon.noname<span class="_">-a</span></span><br><span class="line"></span><br><span class="line">  -210&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">  -209&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">  -208&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">  -207&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -206&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -205&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -204&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -203&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -202&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -201&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -200&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -199&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -198&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -197&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -196&gt; 2020-01-07 18:45:04.853 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -195&gt; 2020-01-07 18:45:04.853 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">  -194&gt; 2020-01-07 18:45:04.854 7f356025e780 10 monclient: init</span><br><span class="line">  -193&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding auth protocol: cephx</span><br><span class="line">  -192&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding auth protocol: cephx</span><br><span class="line">  -191&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding auth protocol: cephx</span><br><span class="line">  -190&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: secure</span><br><span class="line">  -189&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: crc</span><br><span class="line">  -188&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: secure</span><br><span class="line">  -187&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: crc</span><br><span class="line">  -186&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: secure</span><br><span class="line">  -185&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: crc</span><br><span class="line">  -184&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: crc</span><br><span class="line">  -183&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: secure</span><br><span class="line">  -182&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: crc</span><br><span class="line">  -181&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: secure</span><br><span class="line">  -180&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: crc</span><br><span class="line">  -179&gt; 2020-01-07 18:45:04.854 7f356025e780  5 AuthRegistry(0x7ffd4b3fc058) adding con mode: secure</span><br><span class="line">  -178&gt; 2020-01-07 18:45:04.854 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">  -177&gt; 2020-01-07 18:45:04.854 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">  -176&gt; 2020-01-07 18:45:04.854 7f356025e780 10 monclient: _reopen_session rank -1</span><br><span class="line">  -175&gt; 2020-01-07 18:45:04.855 7f356025e780 10 monclient(hunting): picked mon.noname<span class="_">-a</span> con 0x555b422e4000 addr v2:10.10.15.50:3300/0</span><br><span class="line">  -174&gt; 2020-01-07 18:45:04.855 7f356025e780 10 monclient(hunting): picked mon.noname<span class="_">-a</span>-legacy con 0x555b422e4800 addr v1:10.10.15.50:6789/0</span><br><span class="line">  -173&gt; 2020-01-07 18:45:04.855 7f356025e780 10 monclient(hunting): start opening mon connection</span><br><span class="line">  -172&gt; 2020-01-07 18:45:04.855 7f356025e780 10 monclient(hunting): _renew_subs</span><br><span class="line">  -171&gt; 2020-01-07 18:45:04.855 7f356025e780 10 monclient(hunting): authenticate will time out at 2020-01-07 18:50:04.856374</span><br><span class="line">  -170&gt; 2020-01-07 18:45:04.855 7f354d0af700 10 monclient(hunting): _init_auth method 2</span><br><span class="line">  -169&gt; 2020-01-07 18:45:04.855 7f354d0af700 10 monclient(hunting): my global_id is 4164</span><br><span class="line">  -168&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: _finish_hunting 0</span><br><span class="line">  -167&gt; 2020-01-07 18:45:04.856 7f354d0af700  1 monclient: found mon.noname<span class="_">-a</span>-legacy</span><br><span class="line">  -166&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: _send_mon_message to mon.noname<span class="_">-a</span>-legacy at v1:10.10.15.50:6789/0</span><br><span class="line">  -165&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: _finish_auth 0</span><br><span class="line">  -164&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: handle_monmap mon_map magic: 0 v1</span><br><span class="line">  -163&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient:  got monmap 1 from mon.noname<span class="_">-a</span>-legacy (according to old e1)</span><br><span class="line">  -162&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: dump:</span><br><span class="line">epoch 1</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:08:19.836502</span><br><span class="line">created 2020-01-07 18:08:19.836502</span><br><span class="line">min_mon_release 14 (nautilus)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.node1</span><br><span class="line"></span><br><span class="line">  -161&gt; 2020-01-07 18:45:04.856 7f356025e780  5 monclient: authenticate success, global_id 4164</span><br><span class="line">  -160&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: handle_config config(0 keys) v1</span><br><span class="line">  -159&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: handle_monmap mon_map magic: 0 v1</span><br><span class="line">  -158&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient:  got monmap 1 from mon.node1 (according to old e1)</span><br><span class="line">  -157&gt; 2020-01-07 18:45:04.856 7f354b8ac700  4 set_mon_vals no callback <span class="built_in">set</span></span><br><span class="line">  -156&gt; 2020-01-07 18:45:04.856 7f354d0af700 10 monclient: dump:</span><br><span class="line">epoch 1</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:08:19.836502</span><br><span class="line">created 2020-01-07 18:08:19.836502</span><br><span class="line">min_mon_release 14 (nautilus)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.node1</span><br><span class="line"></span><br><span class="line">  -155&gt; 2020-01-07 18:45:04.856 7f356025e780 10 monclient: get_monmap_and_config success</span><br><span class="line">  -154&gt; 2020-01-07 18:45:04.856 7f356025e780 10 monclient: shutdown</span><br><span class="line">  -153&gt; 2020-01-07 18:45:04.859 7f356025e780  0 framework: civetweb</span><br><span class="line">  -152&gt; 2020-01-07 18:45:04.859 7f356025e780  0 framework conf key: port, val: 7480</span><br><span class="line">  -151&gt; 2020-01-07 18:45:04.859 7f356025e780  0 deferred <span class="built_in">set</span> uid:gid to 167:167 (ceph:ceph)</span><br><span class="line">  -150&gt; 2020-01-07 18:45:04.859 7f356025e780  0 ceph version 14.2.5 (ad5bd132e1492173c85fda2cc863152730b16a92) nautilus (stable), process radosgw, pid 1580517</span><br><span class="line">  -149&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) init /var/run/ceph/ceph-client.radosgw.gateway.1580517.93850428351096.asok</span><br><span class="line">  -148&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) bind_and_listen /var/run/ceph/ceph-client.radosgw.gateway.1580517.93850428351096.asok</span><br><span class="line">  -147&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) register_command 0 hook 0x555b41693190</span><br><span class="line">  -146&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) register_command version hook 0x555b41693190</span><br><span class="line">  -145&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) register_command git_version hook 0x555b41693190</span><br><span class="line">  -144&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) register_command <span class="built_in">help</span> hook 0x555b4168e2f0</span><br><span class="line">  -143&gt; 2020-01-07 18:45:04.889 7f356025e780  5 asok(0x555b41718000) register_command get_command_descriptions hook 0x555b4168e040</span><br><span class="line">  -142&gt; 2020-01-07 18:45:04.889 7f354b8ac700  5 asok(0x555b41718000) entry start</span><br><span class="line">  -141&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient: get_monmap_and_config</span><br><span class="line">  -140&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient: build_initial_monmap</span><br><span class="line">  -139&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient: monmap:</span><br><span class="line">epoch 0</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:45:04.892534</span><br><span class="line">created 2020-01-07 18:45:04.892534</span><br><span class="line">min_mon_release 0 (unknown)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.noname<span class="_">-a</span>-legacy</span><br><span class="line">1: v2:10.10.15.50:3300/0 mon.noname<span class="_">-a</span></span><br><span class="line"></span><br><span class="line">  -138&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">  -137&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">  -136&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">  -135&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -134&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -133&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -132&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -131&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -130&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -129&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -128&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -127&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -126&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -125&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">  -124&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">  -123&gt; 2020-01-07 18:45:04.891 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">  -122&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient: init</span><br><span class="line">  -121&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding auth protocol: cephx</span><br><span class="line">  -120&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding auth protocol: cephx</span><br><span class="line">  -119&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding auth protocol: cephx</span><br><span class="line">  -118&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: secure</span><br><span class="line">  -117&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: crc</span><br><span class="line">  -116&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: secure</span><br><span class="line">  -115&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: crc</span><br><span class="line">  -114&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: secure</span><br><span class="line">  -113&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: crc</span><br><span class="line">  -112&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: crc</span><br><span class="line">  -111&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: secure</span><br><span class="line">  -110&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: crc</span><br><span class="line">  -109&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: secure</span><br><span class="line">  -108&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: crc</span><br><span class="line">  -107&gt; 2020-01-07 18:45:04.891 7f356025e780  5 AuthRegistry(0x7ffd4b3fbcc8) adding con mode: secure</span><br><span class="line">  -106&gt; 2020-01-07 18:45:04.891 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">  -105&gt; 2020-01-07 18:45:04.891 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">  -104&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient: _reopen_session rank -1</span><br><span class="line">  -103&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient(hunting): picked mon.noname<span class="_">-a</span> con 0x555b422e4800 addr v2:10.10.15.50:3300/0</span><br><span class="line">  -102&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient(hunting): picked mon.noname<span class="_">-a</span>-legacy con 0x555b422e5400 addr v1:10.10.15.50:6789/0</span><br><span class="line">  -101&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient(hunting): start opening mon connection</span><br><span class="line">  -100&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient(hunting): _renew_subs</span><br><span class="line">   -99&gt; 2020-01-07 18:45:04.891 7f356025e780 10 monclient(hunting): authenticate will time out at 2020-01-07 18:50:04.892948</span><br><span class="line">   -98&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient(hunting): _init_auth method 2</span><br><span class="line">   -97&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient(hunting): my global_id is 4165</span><br><span class="line">   -96&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: _finish_hunting 0</span><br><span class="line">   -95&gt; 2020-01-07 18:45:04.892 7f3548e1d700  1 monclient: found mon.noname<span class="_">-a</span>-legacy</span><br><span class="line">   -94&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: _send_mon_message to mon.noname<span class="_">-a</span>-legacy at v1:10.10.15.50:6789/0</span><br><span class="line">   -93&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: _finish_auth 0</span><br><span class="line">   -92&gt; 2020-01-07 18:45:04.892 7f356025e780  5 monclient: authenticate success, global_id 4165</span><br><span class="line">   -91&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: handle_monmap mon_map magic: 0 v1</span><br><span class="line">   -90&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient:  got monmap 1 from mon.noname<span class="_">-a</span>-legacy (according to old e1)</span><br><span class="line">   -89&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: dump:</span><br><span class="line">epoch 1</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:08:19.836502</span><br><span class="line">created 2020-01-07 18:08:19.836502</span><br><span class="line">min_mon_release 14 (nautilus)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.node1</span><br><span class="line"></span><br><span class="line">   -88&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: handle_config config(0 keys) v1</span><br><span class="line">   -87&gt; 2020-01-07 18:45:04.892 7f356025e780 10 monclient: get_monmap_and_config success</span><br><span class="line">   -86&gt; 2020-01-07 18:45:04.892 7f356025e780 10 monclient: shutdown</span><br><span class="line">   -85&gt; 2020-01-07 18:45:04.892 7f354761a700  4 set_mon_vals no callback <span class="built_in">set</span></span><br><span class="line">   -84&gt; 2020-01-07 18:45:04.892 7f3548e1d700 10 monclient: discarding stray monitor message mon_map magic: 0 v1</span><br><span class="line">   -83&gt; 2020-01-07 18:45:04.894 7f356025e780 10 monclient: build_initial_monmap</span><br><span class="line">   -82&gt; 2020-01-07 18:45:04.894 7f356025e780 10 monclient: monmap:</span><br><span class="line">epoch 0</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:45:04.895817</span><br><span class="line">created 2020-01-07 18:45:04.895817</span><br><span class="line">min_mon_release 0 (unknown)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.noname<span class="_">-a</span>-legacy</span><br><span class="line">1: v2:10.10.15.50:3300/0 mon.noname<span class="_">-a</span></span><br><span class="line"></span><br><span class="line">   -81&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">   -80&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">   -79&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding auth protocol: cephx</span><br><span class="line">   -78&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">   -77&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">   -76&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">   -75&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">   -74&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">   -73&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">   -72&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">   -71&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">   -70&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">   -69&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">   -68&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: crc</span><br><span class="line">   -67&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b0138) adding con mode: secure</span><br><span class="line">   -66&gt; 2020-01-07 18:45:04.894 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">   -65&gt; 2020-01-07 18:45:04.894 7f356025e780  1 librados: starting msgr at </span><br><span class="line">   -64&gt; 2020-01-07 18:45:04.894 7f356025e780  1 librados: starting objecter</span><br><span class="line">   -63&gt; 2020-01-07 18:45:04.894 7f356025e780  5 asok(0x555b41718000) register_command objecter_requests hook 0x555b4168e7b0</span><br><span class="line">   -62&gt; 2020-01-07 18:45:04.894 7f356025e780  1 librados: setting wanted keys</span><br><span class="line">   -61&gt; 2020-01-07 18:45:04.894 7f356025e780  1 librados: calling monclient init</span><br><span class="line">   -60&gt; 2020-01-07 18:45:04.894 7f356025e780 10 monclient: init</span><br><span class="line">   -59&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding auth protocol: cephx</span><br><span class="line">   -58&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding auth protocol: cephx</span><br><span class="line">   -57&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding auth protocol: cephx</span><br><span class="line">   -56&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: secure</span><br><span class="line">   -55&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: crc</span><br><span class="line">   -54&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: secure</span><br><span class="line">   -53&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: crc</span><br><span class="line">   -52&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: secure</span><br><span class="line">   -51&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: crc</span><br><span class="line">   -50&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: crc</span><br><span class="line">   -49&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: secure</span><br><span class="line">   -48&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: crc</span><br><span class="line">   -47&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: secure</span><br><span class="line">   -46&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: crc</span><br><span class="line">   -45&gt; 2020-01-07 18:45:04.894 7f356025e780  5 AuthRegistry(0x555b422b6078) adding con mode: secure</span><br><span class="line">   -44&gt; 2020-01-07 18:45:04.894 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">   -43&gt; 2020-01-07 18:45:04.894 7f356025e780  2 auth: KeyRing::load: loaded key file /etc/ceph/keyring.radosgw.gateway</span><br><span class="line">   -42&gt; 2020-01-07 18:45:04.895 7f356025e780 10 monclient: _reopen_session rank -1</span><br><span class="line">   -41&gt; 2020-01-07 18:45:04.895 7f356025e780 10 monclient(hunting): picked mon.noname<span class="_">-a</span> con 0x555b422e4800 addr v2:10.10.15.50:3300/0</span><br><span class="line">   -40&gt; 2020-01-07 18:45:04.895 7f356025e780 10 monclient(hunting): picked mon.noname<span class="_">-a</span>-legacy con 0x555b422e4000 addr v1:10.10.15.50:6789/0</span><br><span class="line">   -39&gt; 2020-01-07 18:45:04.895 7f356025e780 10 monclient(hunting): start opening mon connection</span><br><span class="line">   -38&gt; 2020-01-07 18:45:04.895 7f356025e780 10 monclient(hunting): _renew_subs</span><br><span class="line">   -37&gt; 2020-01-07 18:45:04.895 7f356025e780 10 monclient(hunting): authenticate will time out at 2020-01-07 18:50:04.896391</span><br><span class="line">   -36&gt; 2020-01-07 18:45:04.895 7f354861c700 10 monclient(hunting): _init_auth method 2</span><br><span class="line">   -35&gt; 2020-01-07 18:45:04.895 7f354861c700 10 monclient(hunting): my global_id is 4166</span><br><span class="line">   -34&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient(hunting): handle_monmap mon_map magic: 0 v1</span><br><span class="line">   -33&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient(hunting):  got monmap 1 from mon.noname<span class="_">-a</span>-legacy (according to old e1)</span><br><span class="line">   -32&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient(hunting): dump:</span><br><span class="line">epoch 1</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:08:19.836502</span><br><span class="line">created 2020-01-07 18:08:19.836502</span><br><span class="line">min_mon_release 14 (nautilus)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.node1</span><br><span class="line"></span><br><span class="line">   -31&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient(hunting): _finish_auth 0</span><br><span class="line">   -30&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient: _finish_hunting 0</span><br><span class="line">   -29&gt; 2020-01-07 18:45:04.896 7f354861c700  1 monclient: found mon.node1</span><br><span class="line">   -28&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient: _send_mon_message to mon.node1 at v1:10.10.15.50:6789/0</span><br><span class="line">   -27&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient: _finish_auth 0</span><br><span class="line">   -26&gt; 2020-01-07 18:45:04.896 7f356025e780  5 monclient: authenticate success, global_id 4166</span><br><span class="line">   -25&gt; 2020-01-07 18:45:04.896 7f356025e780 10 monclient: _renew_subs</span><br><span class="line">   -24&gt; 2020-01-07 18:45:04.896 7f356025e780 10 monclient: _send_mon_message to mon.node1 at v1:10.10.15.50:6789/0</span><br><span class="line">   -23&gt; 2020-01-07 18:45:04.896 7f356025e780 10 monclient: _renew_subs</span><br><span class="line">   -22&gt; 2020-01-07 18:45:04.896 7f356025e780 10 monclient: _send_mon_message to mon.node1 at v1:10.10.15.50:6789/0</span><br><span class="line">   -21&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient: handle_config config(0 keys) v1</span><br><span class="line">   -20&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient: handle_monmap mon_map magic: 0 v1</span><br><span class="line">   -19&gt; 2020-01-07 18:45:04.896 7f356025e780  1 librados: init <span class="keyword">done</span></span><br><span class="line">   -18&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient:  got monmap 1 from mon.node1 (according to old e1)</span><br><span class="line">   -17&gt; 2020-01-07 18:45:04.896 7f354861c700 10 monclient: dump:</span><br><span class="line">epoch 1</span><br><span class="line">fsid 130393da-880c-45b4-95c8-8945f144d6ac</span><br><span class="line">last_changed 2020-01-07 18:08:19.836502</span><br><span class="line">created 2020-01-07 18:08:19.836502</span><br><span class="line">min_mon_release 14 (nautilus)</span><br><span class="line">0: v1:10.10.15.50:6789/0 mon.node1</span><br><span class="line"></span><br><span class="line">   -16&gt; 2020-01-07 18:45:04.896 7f3546e19700  4 set_mon_vals no callback <span class="built_in">set</span></span><br><span class="line">   -15&gt; 2020-01-07 18:45:04.897 7f354861c700  4 mgrc handle_mgr_map Got map version 7</span><br><span class="line">   -14&gt; 2020-01-07 18:45:04.897 7f354861c700  4 mgrc handle_mgr_map Active mgr is now [v2:10.10.15.50:6800/1576238,v1:10.10.15.50:6801/1576238]</span><br><span class="line">   -13&gt; 2020-01-07 18:45:04.897 7f354861c700  4 mgrc reconnect Starting new session with [v2:10.10.15.50:6800/1576238,v1:10.10.15.50:6801/1576238]</span><br><span class="line">   -12&gt; 2020-01-07 18:45:04.897 7f354e0b1700 10 monclient: get_auth_request con 0x555b4175d800 auth_method 0</span><br><span class="line">   -11&gt; 2020-01-07 18:45:04.996 7f356025e780 10 monclient: get_version osdmap req 0x555b42457520</span><br><span class="line">   -10&gt; 2020-01-07 18:45:04.997 7f356025e780 10 monclient: _send_mon_message to mon.node1 at v1:10.10.15.50:6789/0</span><br><span class="line">    -9&gt; 2020-01-07 18:45:04.997 7f354861c700 10 monclient: handle_get_version_reply finishing 0x555b42457520 version 24</span><br><span class="line">    -8&gt; 2020-01-07 18:45:04.997 7f356025e780 10 monclient: _send_mon_message to mon.node1 at v1:10.10.15.50:6789/0</span><br><span class="line">    -7&gt; 2020-01-07 18:45:05.653 7f354861c700 10 monclient: _renew_subs</span><br><span class="line">    -6&gt; 2020-01-07 18:45:05.653 7f354861c700 10 monclient: _send_mon_message to mon.node1 at v1:10.10.15.50:6789/0</span><br><span class="line">    -5&gt; 2020-01-07 18:45:05.660 7f356025e780  0 rgw_init_ioctx ERROR: librados::Rados::pool_create returned (34) Numerical result out of range (this can be due to a pool or placement group misconfiguration, e.g. pg_num &lt; pgp_num or mon_max_pg_per_osd exceeded)</span><br><span class="line">    -4&gt; 2020-01-07 18:45:05.660 7f356025e780  0 ERROR: notify_obj.open() returned r=-34</span><br><span class="line">    -3&gt; 2020-01-07 18:45:05.660 7f356025e780 -1 ERROR: failed to initialize watch: (34) Numerical result out of range</span><br><span class="line">    -2&gt; 2020-01-07 18:45:05.660 7f356025e780  0 ERROR: failed to start notify service ((34) Numerical result out of range</span><br><span class="line">    -1&gt; 2020-01-07 18:45:05.660 7f356025e780  0 ERROR: failed to init services (ret=(34) Numerical result out of range)</span><br><span class="line">     0&gt; 2020-01-07 18:45:05.665 7f356025e780 -1 *** Caught signal (Segmentation fault) **</span><br><span class="line"> <span class="keyword">in</span> thread 7f356025e780 thread_name:radosgw</span><br><span class="line"></span><br><span class="line"> ceph version 14.2.5 (ad5bd132e1492173c85fda2cc863152730b16a92) nautilus (stable)</span><br><span class="line"> 1: (()+0xf5f0) [0x7f35534595f0]</span><br><span class="line"> 2: (()+0x8994b) [0x7f355f0c494b]</span><br><span class="line"> 3: (RGWSI_Notify::unwatch(RGWSI_RADOS::Obj&amp;, unsigned long)+0x2a) [0x555b3edb492a]</span><br><span class="line"> 4: (RGWSI_Notify::finalize_watch()+0x35) [0x555b3edb5eb5]</span><br><span class="line"> 5: (RGWSI_Notify::shutdown()+0x1e) [0x555b3edb5f1e]</span><br><span class="line"> 6: (RGWServices_Def::shutdown()+0x4e) [0x555b3eaaa3ee]</span><br><span class="line"> 7: (RGWServices_Def::~RGWServices_Def()+0x9) [0x555b3eaaa499]</span><br><span class="line"> 8: (RGWRados::~RGWRados()+0x7f) [0x555b3ecf58cf]</span><br><span class="line"> 9: (RGWStoreManager::init_storage_provider(CephContext*, bool, bool, bool, bool, bool, bool)+0xa0) [0x555b3ecdeff0]</span><br><span class="line"> 10: (main()+0xbed) [0x555b3e92cdad]</span><br><span class="line"> 11: (__libc_start_main()+0xf5) [0x7f355287f505]</span><br><span class="line"> 12: (()+0x2b6e57) [0x555b3e957e57]</span><br><span class="line"> NOTE: a copy of the executable, or `objdump -rdS &lt;executable&gt;` is needed to interpret this.</span><br><span class="line"></span><br><span class="line">--- logging levels ---</span><br><span class="line">   0/ 5 none</span><br><span class="line">   0/ 1 lockdep</span><br><span class="line">   0/ 1 context</span><br><span class="line">   1/ 1 crush</span><br><span class="line">   1/ 5 mds</span><br><span class="line">   1/ 5 mds_balancer</span><br><span class="line">   1/ 5 mds_locker</span><br><span class="line">   1/ 5 mds_log</span><br><span class="line">   1/ 5 mds_log_expire</span><br><span class="line">   1/ 5 mds_migrator</span><br><span class="line">   0/ 1 buffer</span><br><span class="line">   0/ 1 timer</span><br><span class="line">   0/ 1 filer</span><br><span class="line">   0/ 1 striper</span><br><span class="line">   0/ 1 objecter</span><br><span class="line">   0/ 5 rados</span><br><span class="line">   0/ 5 rbd</span><br><span class="line">   0/ 5 rbd_mirror</span><br><span class="line">   0/ 5 rbd_replay</span><br><span class="line">   0/ 5 journaler</span><br><span class="line">   0/ 5 objectcacher</span><br><span class="line">   0/ 5 client</span><br><span class="line">   1/ 5 osd</span><br><span class="line">   0/ 5 optracker</span><br><span class="line">   0/ 5 objclass</span><br><span class="line">   1/ 3 filestore</span><br><span class="line">   1/ 3 journal</span><br><span class="line">   0/ 0 ms</span><br><span class="line">   1/ 5 mon</span><br><span class="line">   0/10 monc</span><br><span class="line">   1/ 5 paxos</span><br><span class="line">   0/ 5 tp</span><br><span class="line">   1/ 5 auth</span><br><span class="line">   1/ 5 crypto</span><br><span class="line">   1/ 1 finisher</span><br><span class="line">   1/ 1 reserver</span><br><span class="line">   1/ 5 heartbeatmap</span><br><span class="line">   1/ 5 perfcounter</span><br><span class="line">   1/ 5 rgw</span><br><span class="line">   1/ 5 rgw_sync</span><br><span class="line">   1/10 civetweb</span><br><span class="line">   1/ 5 javaclient</span><br><span class="line">   1/ 5 asok</span><br><span class="line">   1/ 1 throttle</span><br><span class="line">   0/ 0 refs</span><br><span class="line">   1/ 5 xio</span><br><span class="line">   1/ 5 compressor</span><br><span class="line">   1/ 5 bluestore</span><br><span class="line">   1/ 5 bluefs</span><br><span class="line">   1/ 3 bdev</span><br><span class="line">   1/ 5 kstore</span><br><span class="line">   4/ 5 rocksdb</span><br><span class="line">   4/ 5 leveldb</span><br><span class="line">   4/ 5 memdb</span><br><span class="line">   1/ 5 kinetic</span><br><span class="line">   1/ 5 fuse</span><br><span class="line">   1/ 5 mgr</span><br><span class="line">   1/ 5 mgrc</span><br><span class="line">   1/ 5 dpdk</span><br><span class="line">   1/ 5 eventtrace</span><br><span class="line">   1/ 5 prioritycache</span><br><span class="line">  -2/-2 (syslog threshold)</span><br><span class="line">  -1/-1 (stderr threshold)</span><br><span class="line">  max_recent     10000</span><br><span class="line">  max_new         1000</span><br><span class="line">  log_file /var/<span class="built_in">log</span>/radosgw/client.radosgw.gateway.log</span><br><span class="line">--- end dump of recent events ---</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">对象网关</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">object gateway</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/10/ceph-object-gateway-config/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-ceph-iscsi-gateway-config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/01/10/ceph-iscsi-gateway-config/">Ceph iSCSI网关搭建</a>
+    </h1>
+  
+
+        
+        <a href="/2020/01/10/ceph-iscsi-gateway-config/" class="archive-article-date">
+  	<time datetime="2020-01-10T02:50:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-01-10</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="Ceph-iSCSI网关搭建"><a href="#Ceph-iSCSI网关搭建" class="headerlink" title="Ceph iSCSI网关搭建"></a>Ceph iSCSI网关搭建</h1><h2 id="系统环境"><a href="#系统环境" class="headerlink" title="系统环境"></a>系统环境</h2><ol>
+<li>Ceph版本：ceph version 14.2.5 (ad5bd132e1492173c85fda2cc863152730b16a92) nautilus (stable)</li>
+<li>操作系统版本：CentOS Linux release 7.7.1908 (Core)</li>
+<li>节点IP：10.10.15.60</li>
+</ol>
+<h2 id="配置iSCSI网关"><a href="#配置iSCSI网关" class="headerlink" title="配置iSCSI网关"></a>配置iSCSI网关</h2><h3 id="安装ceph-iscsi-tcmu-runner"><a href="#安装ceph-iscsi-tcmu-runner" class="headerlink" title="安装ceph-iscsi tcmu-runner"></a>安装ceph-iscsi tcmu-runner</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install ceph-iscsi</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建iscsi网关配置"><a href="#创建iscsi网关配置" class="headerlink" title="创建iscsi网关配置"></a>创建iscsi网关配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/ceph/iscsi-gateway.cfg</span><br><span class="line">[config]</span><br><span class="line">cluster_name = ceph</span><br><span class="line">api_secure = <span class="literal">false</span></span><br><span class="line">trusted_ip_list = 10.10.15.60</span><br><span class="line"></span><br><span class="line">api_port = 5000</span><br><span class="line">api_user = admin</span><br><span class="line">api_password = admin</span><br><span class="line">api_secure = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Log level</span></span><br><span class="line">logger_level = WARNING</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建-rbd-pool"><a href="#创建-rbd-pool" class="headerlink" title="创建 rbd pool"></a>创建 rbd pool</h3><p>两种处理方式：</p>
+<ol>
+<li>需要用到rbd存储池，用来存储iscsi的配置文件，提前创建好一个名字是rbd的存储池。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool create rbd 64</span><br><span class="line">ceph osd pool application <span class="built_in">enable</span> rbd rbd</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Suse的文档里明确该参数可以在配置文件里设置。<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">ceph osd pool create iscsi-images 128 128 replicated</span><br><span class="line">ceph osd pool application <span class="built_in">enable</span> iscsi-images rbd</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/ceph/iscsi-gateway.cfg &lt;&lt; EOF</span><br><span class="line">[config]</span><br><span class="line">cluster_name = ceph</span><br><span class="line">cluster_client_name = client.igw.node1</span><br><span class="line">pool = iscsi-images</span><br><span class="line">api_secure = <span class="literal">false</span> <span class="comment"># 该选项应该是设置不使用ssl</span></span><br><span class="line">trusted_ip_list = 10.10.15.60</span><br><span class="line"></span><br><span class="line">api_port = 5000</span><br><span class="line">api_user = admin</span><br><span class="line">api_password = admin</span><br><span class="line">api_secure = <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Log level</span></span><br><span class="line">logger_level = WARNING</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>两种方式都可以，这里使用的第一种创建默认的rbd池来实现。</p>
+<h3 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable tcmu-runner</span><br><span class="line">systemctl enable rbd-target-api</span><br><span class="line"></span><br><span class="line">systemctl start tcmu-runner</span><br><span class="line">systemctl start rbd-target-api</span><br></pre></td></tr></table></figure>
+
+<h3 id="显示配置信息"><a href="#显示配置信息" class="headerlink" title="显示配置信息"></a>显示配置信息</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gwcli info</span></span><br><span class="line">HTTP mode          : http</span><br><span class="line">Rest API port      : 5000</span><br><span class="line">Local endpoint     : http://localhost:5000/api</span><br><span class="line">Local Ceph Cluster : ceph</span><br><span class="line">2ndary API IP<span class="string">'s    : 10.10.15.60</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Dashboard-添加-iscsi-网关"><a href="#Dashboard-添加-iscsi-网关" class="headerlink" title="Dashboard 添加 iscsi 网关"></a>Dashboard 添加 iscsi 网关</h3><h4 id="查看-dashboard-iSCSI-网关"><a href="#查看-dashboard-iSCSI-网关" class="headerlink" title="查看 dashboard iSCSI 网关"></a>查看 dashboard iSCSI 网关</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ceph dashboard iscsi-gateway-list</span></span><br><span class="line"> ceph dashboard iscsi-gateway-list</span><br><span class="line">&#123;<span class="string">"gateways"</span>: &#123;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加-iSCSI-网关"><a href="#添加-iSCSI-网关" class="headerlink" title="添加 iSCSI 网关"></a>添加 iSCSI 网关</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ceph dashboard iscsi-gateway-add http://admin:admin@10.10.15.60:5000</span></span><br><span class="line"><span class="comment"># ceph dashboard iscsi-gateway-list      </span></span><br><span class="line">&#123;<span class="string">"gateways"</span>: &#123;<span class="string">"localhost.localdomain"</span>: &#123;<span class="string">"service_url"</span>: <span class="string">"http://admin:admin@10.10.15.60:5000"</span>&#125;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">iSCSI网关</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">iSCSI gateway</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/01/10/ceph-iscsi-gateway-config/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-python-pip-usage" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/13/python-pip-usage/">Python pip 命令使用</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/13/python-pip-usage/" class="archive-article-date">
+  	<time datetime="2019-11-13T09:25:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-13</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="安装包"><a href="#安装包" class="headerlink" title="安装包"></a>安装包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install package</span><br></pre></td></tr></table></figure>
+
+<h2 id="卸载包"><a href="#卸载包" class="headerlink" title="卸载包"></a>卸载包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip uninstall package</span><br></pre></td></tr></table></figure>
+
+<h2 id="升级包"><a href="#升级包" class="headerlink" title="升级包"></a>升级包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install -U package</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用本地源"><a href="#使用本地源" class="headerlink" title="使用本地源"></a>使用本地源</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install package -i http://host/simple/ --trusted-host host</span><br></pre></td></tr></table></figure>
+
+<p>以阿里云示例：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install package -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com</span><br></pre></td></tr></table></figure>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">pip</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">使用</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/11/13/python-pip-usage/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-python-create-local-pypi-source" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -202,9 +533,9 @@
 </ol>
 <p>这种情况下，搭建本地pip源就是一个不错的选择。</p>
 <h3 id="搭建步骤"><a href="#搭建步骤" class="headerlink" title="搭建步骤"></a>搭建步骤</h3><ol>
-<li><p>安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```bash</span><br><span class="line">pip install pip2pi</span><br></pre></td></tr></table></figure></p>
+<li><p>安装<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">pip install pip2pi</span><br></pre></td></tr></table></figure></p>
 </li>
-<li><p>创建目录存放要下载的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">```bash</span><br><span class="line">mkdir -p /data/pypi</span><br></pre></td></tr></table></figure></p>
+<li><p>创建目录存放要下载的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir -p /data/pypi</span><br></pre></td></tr></table></figure></p>
 </li>
 <li><p>下载包</p>
 <ul>
@@ -237,8 +568,6 @@
 <p>这里的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">```bash</span><br><span class="line">mkdir ~/.pip/</span><br><span class="line">cat &gt; ~/.pip/pip.conf &lt;&lt; EOF</span><br><span class="line">[global]</span><br><span class="line">trusted-host=10.10.1.8</span><br><span class="line">index-url=http://10.10.1.8/simple/</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure></p>
 <p>安装包</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install Flask</span><br></pre></td></tr></table></figure>
-
-
       
 
       
@@ -316,7 +645,7 @@
 
         
         <a href="/2019/11/04/javascript-split-string/" class="archive-article-date">
-  	<time datetime="2019-11-04T12:24:12.519Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-04</time>
+  	<time datetime="2019-11-04T12:21:59.352Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-04</time>
 </a>
         
       </header>
@@ -401,7 +730,7 @@
 
         
         <a href="/2019/11/04/javascript-disable-input-chinese/" class="archive-article-date">
-  	<time datetime="2019-11-04T11:55:51.738Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-04</time>
+  	<time datetime="2019-11-04T11:53:04.263Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-04</time>
 </a>
         
       </header>
@@ -484,7 +813,7 @@
 
         
         <a href="/2019/10/26/network-ethtool/" class="archive-article-date">
-  	<time datetime="2019-10-26T02:48:43.233Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-26</time>
+  	<time datetime="2019-10-26T02:21:14.553Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-26</time>
 </a>
         
       </header>
@@ -785,259 +1114,6 @@ Push<br>Reference: refs/remotes/origin/*</p>
 
 
   
-    <article id="post-openstack-cinder-dirver-implement" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/09/openstack-cinder-dirver-implement/">openstack cinder 之 driver 实现</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/09/openstack-cinder-dirver-implement/" class="archive-article-date">
-  	<time datetime="2019-10-09T07:29:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>自定义driver 首先按照类型实现实现接口：如下是iSCSI的驱动实现接口：<br>这些接口调用参考VolumeManager，选择所需要的接口重载。</p>
-<figure class="highlight plain"><figcaption><span>NECISCSIDriver(ISCSIDriver):</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br></pre></td><td class="code"><pre><span class="line">    &quot;&quot;&quot;Any initialization the volume driver does while starting.&quot;&quot;&quot;</span><br><span class="line">    def check_for_setup_error(self):</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_volume(self, volume):</span><br><span class="line">        &quot;&quot;&quot;Creates a volume. Can optionally return a Dictionary of</span><br><span class="line">        changes to the volume object to be persisted.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_volume_from_snapshot(self, volume, snapshot):</span><br><span class="line">        &quot;&quot;&quot;Creates a volume from a snapshot.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_cloned_volume(self, volume, src_vref):</span><br><span class="line">        &quot;&quot;&quot;Creates a clone of the specified volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def delete_volume(self, volume):</span><br><span class="line">        &quot;&quot;&quot;Deletes a volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_snapshot(self, snapshot):</span><br><span class="line">        &quot;&quot;&quot;Creates a snapshot.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def delete_snapshot(self, snapshot):</span><br><span class="line">        &quot;&quot;&quot;Deletes a snapshot.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">X    def local_path(self, volume):</span><br><span class="line">		&quot;&quot;&quot;Return the local path for the specified volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def ensure_export(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Synchronously recreates an export for a volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def create_export(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Exports the volume. Can optionally return a Dictionary of changes</span><br><span class="line">        to the volume object to be persisted.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def remove_export(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Removes an export for a volume.&quot;&quot;&quot;</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">X    def initialize_connection(self, volume, connector):</span><br><span class="line">        &quot;&quot;&quot;Allow connection to connector and return connection info.&quot;&quot;&quot;</span><br><span class="line">	#iscsi has defult handler</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line"> </span><br><span class="line">    def terminate_connection(self, volume, connector, **kwargs):</span><br><span class="line">        &quot;&quot;&quot;Disallow connection from connector&quot;&quot;&quot;</span><br><span class="line">	#iscsi has defult handler</span><br><span class="line">        raise NotImplementedError()</span><br><span class="line">    </span><br><span class="line">    def validate_connector(self, connector):</span><br><span class="line">        &quot;&quot;&quot;Fail if connector doesn&apos;t contain all the data needed by driver.&quot;&quot;&quot;</span><br><span class="line">	#iscsi has defult handler</span><br><span class="line">        pass</span><br><span class="line">    </span><br><span class="line"> </span><br><span class="line">X    def attach_volume(self, context, volume, instance_uuid, host_name,</span><br><span class="line">                      mountpoint):</span><br><span class="line">        &quot;&quot;&quot;Callback for volume attached to instance or host.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">X    def detach_volume(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Callback for volume detached.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def get_volume_stats(self, refresh=False):</span><br><span class="line">        &quot;&quot;&quot;Return the current state of the volume service. If &apos;refresh&apos; is</span><br><span class="line">           True, run the update first.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">	#iscsi has default handler</span><br><span class="line">        return None</span><br><span class="line"> </span><br><span class="line">    def do_setup(self, context):</span><br><span class="line">        &quot;&quot;&quot;Any initialization the volume driver does while starting.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def copy_volume_data(self, context, src_vol, dest_vol, remote=None):</span><br><span class="line">        &quot;&quot;&quot;Copy data from src_vol to dest_vol.&quot;&quot;&quot;    </span><br><span class="line">	pass#has default handler</span><br><span class="line"> </span><br><span class="line">    def copy_image_to_volume(self, context, volume, image_service, image_id):</span><br><span class="line">	&quot;&quot;&quot;Fetch the image from image_service and write it to the volume.&quot;&quot;&quot;</span><br><span class="line">	pass#has default handler</span><br><span class="line">    </span><br><span class="line">    def copy_volume_to_image(self, context, volume, image_service, image_meta):</span><br><span class="line">	&quot;&quot;&quot;Copy the volume to the specified image.&quot;&quot;&quot;    </span><br><span class="line">	pass#has default handler</span><br><span class="line"> </span><br><span class="line">    def clone_image(self, volume, image_location, image_id, image_meta):</span><br><span class="line">        &quot;&quot;&quot;Create a volume efficiently from an existing image.</span><br><span class="line">        image_location is a string whose format depends on the</span><br><span class="line">        image service backend in use. The driver should use it</span><br><span class="line">        to determine whether cloning is possible.</span><br><span class="line">        image_id is a string which represents id of the image.</span><br><span class="line">        It can be used by the driver to introspect internal</span><br><span class="line">        stores or registry to do an efficient image clone.</span><br><span class="line">        image_meta is a dictionary that includes &apos;disk_format&apos; (e.g.</span><br><span class="line">        raw, qcow2) and other image attributes that allow drivers to</span><br><span class="line">        decide whether they can clone the image without first requiring</span><br><span class="line">        conversion.</span><br><span class="line">        Returns a dict of volume properties eg. provider_location,</span><br><span class="line">        boolean indicating whether cloning occurred</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return None, False</span><br><span class="line"> </span><br><span class="line">    def backup_volume(self, context, backup, backup_service):</span><br><span class="line">        &quot;&quot;&quot;Create a new backup from an existing volume.&quot;&quot;&quot;</span><br><span class="line">	pass#has default handler</span><br><span class="line"> </span><br><span class="line">    def restore_backup(self, context, backup, volume, backup_service):</span><br><span class="line">        &quot;&quot;&quot;Restore an existing backup to a new or existing volume.&quot;&quot;&quot;</span><br><span class="line">	pass#has default handler</span><br><span class="line">	</span><br><span class="line"> </span><br><span class="line">    def clear_download(self, context, volume):</span><br><span class="line">        &quot;&quot;&quot;Clean up after an interrupted image copy.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def extend_volume(self, volume, new_size):</span><br><span class="line">        msg = _(&quot;Extend volume not implemented&quot;)</span><br><span class="line">        raise NotImplementedError(msg)</span><br><span class="line"> </span><br><span class="line">    def migrate_volume(self, context, volume, host):</span><br><span class="line">        &quot;&quot;&quot;Migrate the volume to the specified host.</span><br><span class="line">        Returns a boolean indicating whether the migration occurred, as well as</span><br><span class="line">        model_update.</span><br><span class="line">        :param ctxt: Context</span><br><span class="line">        :param volume: A dictionary describing the volume to migrate</span><br><span class="line">        :param host: A dictionary describing the host to migrate to, where</span><br><span class="line">                     host[&apos;host&apos;] is its name, and host[&apos;capabilities&apos;] is a</span><br><span class="line">                     dictionary of its reported capabilities.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return (False, None)</span><br><span class="line"> </span><br><span class="line">    def retype(self, context, volume, new_type, diff, host):</span><br><span class="line">        &quot;&quot;&quot;Convert the volume to be of the new type.</span><br><span class="line">        Returns a boolean indicating whether the retype occurred.</span><br><span class="line">        :param ctxt: Context</span><br><span class="line">        :param volume: A dictionary describing the volume to migrate</span><br><span class="line">        :param new_type: A dictionary describing the volume type to convert to</span><br><span class="line">        :param diff: A dictionary with the difference between the two types</span><br><span class="line">        :param host: A dictionary describing the host to migrate to, where</span><br><span class="line">                     host[&apos;host&apos;] is its name, and host[&apos;capabilities&apos;] is a</span><br><span class="line">                     dictionary of its reported capabilities.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        return False</span><br><span class="line"> </span><br><span class="line">    def accept_transfer(self, context, volume, new_user, new_project):</span><br><span class="line">        &quot;&quot;&quot;Accept the transfer of a volume for a new user/project.&quot;&quot;&quot;</span><br><span class="line">        pass</span><br><span class="line"> </span><br><span class="line">    def manage_existing(self, volume, existing_ref):</span><br><span class="line">        &quot;&quot;&quot;Brings an existing backend storage object under Cinder management.</span><br><span class="line">        existing_ref is passed straight through from the API request&apos;s</span><br><span class="line">        manage_existing_ref value, and it is up to the driver how this should</span><br><span class="line">        be interpreted.  It should be sufficient to identify a storage object</span><br><span class="line">        that the driver should somehow associate with the newly-created cinder</span><br><span class="line">        volume structure.</span><br><span class="line">        There are two ways to do this:</span><br><span class="line">        1. Rename the backend storage object so that it matches the,</span><br><span class="line">           volume[&apos;name&apos;] which is how drivers traditionally map between a</span><br><span class="line">           cinder volume and the associated backend storage object.</span><br><span class="line">        2. Place some metadata on the volume, or somewhere in the backend, that</span><br><span class="line">           allows other driver requests (e.g. delete, clone, attach, detach...)</span><br><span class="line">           to locate the backend storage object when required.</span><br><span class="line">        If the existing_ref doesn&apos;t make sense, or doesn&apos;t refer to an existing</span><br><span class="line">        backend storage object, raise a ManageExistingInvalidReference</span><br><span class="line">        exception.</span><br><span class="line">        The volume may have a volume_type, and the driver can inspect that and</span><br><span class="line">        compare against the properties of the referenced backend storage</span><br><span class="line">        object.  If they are incompatible, raise a</span><br><span class="line">        ManageExistingVolumeTypeMismatch, specifying a reason for the failure.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        msg = _(&quot;Manage existing volume not implemented.&quot;)</span><br><span class="line">        raise NotImplementedError(msg)</span><br><span class="line"> </span><br><span class="line">    def manage_existing_get_size(self, volume, existing_ref):</span><br><span class="line">        &quot;&quot;&quot;Return size of volume to be managed by manage_existing.</span><br><span class="line">        When calculating the size, round up to the next GB.</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">        msg = _(&quot;Manage existing volume not implemented.&quot;)</span><br><span class="line">        raise NotImplementedError(msg)</span><br><span class="line"> </span><br><span class="line">    def unmanage(self, volume):</span><br><span class="line">	&quot;&quot;&quot;Removes the specified volume from Cinder management.</span><br><span class="line">	Does not delete the underlying backend storage object.</span><br><span class="line">	For most drivers, this will not need to do anything.  However, some</span><br><span class="line">	drivers might use this call as an opportunity to clean up any</span><br><span class="line">	Cinder-specific configuration that they have associated with the</span><br><span class="line">	backend storage object.</span><br><span class="line">	&quot;&quot;&quot;</span><br><span class="line">	pass	</span><br><span class="line">    </span><br><span class="line">##############################################################################</span><br><span class="line">    def _do_iscsi_discovery(self, volume):</span><br><span class="line">	pass #has default handler</span><br><span class="line">    </span><br><span class="line">    def _get_iscsi_properties(self, volume):</span><br><span class="line">	&quot;&quot;&quot;Gets iscsi configuration</span><br><span class="line">	We ideally get saved information in the volume entity, but fall back</span><br><span class="line">	to discovery if need be. Discovery may be completely removed in future</span><br><span class="line">	The properties are:</span><br><span class="line">	    :target_discovered:    boolean indicating whether discovery was used </span><br><span class="line">	    :target_iqn:    the IQN of the iSCSI target</span><br><span class="line">	    :target_portal:    the portal of the iSCSI target</span><br><span class="line">	    :target_lun:    the lun of the iSCSI target</span><br><span class="line">	    :volume_id:    the id of the volume (currently used by xen)</span><br><span class="line">	    :auth_method:, :auth_username:, :auth_password:</span><br><span class="line">       </span><br><span class="line">	the authentication details. Right now, either auth_method is not</span><br><span class="line">	present meaning no authentication, or auth_method == `CHAP`</span><br><span class="line">	meaning use CHAP with the specified credentials.</span><br><span class="line">       </span><br><span class="line">	    :access_mode:    the volume access mode allow client used</span><br><span class="line">				(&apos;rw&apos; or &apos;ro&apos; currently supported)</span><br><span class="line">	&quot;&quot;&quot;    </span><br><span class="line">	pass #has default handler</span><br><span class="line">    </span><br><span class="line">    def get_target_helper(self, db):</span><br><span class="line">	pass #has default handler</span><br></pre></td></tr></table></figure>
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-implement/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-openstack-cinder-dirver-volume-attach-detach" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">openstack cinder 之 卷挂载/卸载工作流程</a>
-    </h1>
-  
-
-        
-        <a href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/" class="archive-article-date">
-  	<time datetime="2019-10-09T07:07:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-09</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>在Cinder中有六个API调用与卷的挂载/卸载相关联，每个操作有3个调用。</p>
-<h2 id="挂载-卸载操作是有多条命令组成"><a href="#挂载-卸载操作是有多条命令组成" class="headerlink" title="挂载/卸载操作是有多条命令组成"></a>挂载/卸载操作是有多条命令组成</h2><p>在挂载/卸载调用的工作流程中，发生了三类事情<br>1)更新数据库中卷的状态(例如：attaching/detaching状态)<br>对于挂载操作，对应的方法为cinder.volume.api.reserve_volume<br>对于卸载操作，对应的方法为cinder.volume.api.begin_detaching</p>
-<p>2)处理需要在卷上执行的连接操作<br>对于挂载操作,对应的方法为cinder.volume.api.initialize_connection<br>对于卸载操作，对应的方法为cinder.volume.api.terminate_connection</p>
-<p>3)确定卷的状态并释放资源<br>对于挂载操作，对应的方法为cinder.volume.api.attach<br>对于卸载操作，对应的方法为cinder.volume.api.detach</p>
-        
-          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">openstack</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">cinder</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">driver</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/10/09/openstack-cinder-dirver-volume-attach-detach/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-snmp-common-oper" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/09/25/snmp-common-oper/">SNMP通用操作</a>
-    </h1>
-  
-
-        
-        <a href="/2019/09/25/snmp-common-oper/" class="archive-article-date">
-  	<time datetime="2019-09-25T09:16:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-25</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="snmp查看DEBUG信息"><a href="#snmp查看DEBUG信息" class="headerlink" title="snmp查看DEBUG信息"></a>snmp查看DEBUG信息</h2><p>snmpd -f -Lo -Ducd-snmp/pass</p>
-<h2 id="snmptrap查看DEBUG信息"><a href="#snmptrap查看DEBUG信息" class="headerlink" title="snmptrap查看DEBUG信息"></a>snmptrap查看DEBUG信息</h2><p>snmptrapd -d -f -Lo</p>
-<h2 id="查看mib信息"><a href="#查看mib信息" class="headerlink" title="查看mib信息"></a>查看mib信息</h2><p>snmptranslate -Tp -IR hacking</p>
-<h2 id="获取信息"><a href="#获取信息" class="headerlink" title="获取信息"></a>获取信息</h2><h2 id="系统相关"><a href="#系统相关" class="headerlink" title="系统相关"></a>系统相关</h2><h3 id="获取操作系统"><a href="#获取操作系统" class="headerlink" title="获取操作系统"></a>获取操作系统</h3><p>snmpwalk -v2c -c public 10.10.10.15 1.3.6.1.2.1.1.1</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@node1 ~]<span class="comment"># snmpwalk -v 2c -c public 10.10.10.15 1.3.6.1.2.1.1.1</span></span><br><span class="line">SNMPv2-SMI::mib-2.1.1.0 = STRING: <span class="string">"Linux controller-1 4.4.163 #2 SMP Fri Aug 9 14:25:35 CST 2019 aarch64"</span></span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/09/25/snmp-common-oper/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">snmp</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/09/25/snmp-common-oper/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -1052,7 +1128,7 @@ Push<br>Reference: refs/remotes/origin/*</p>
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 liangtianyou
+    		&copy; 2020 liangtianyou
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1135,15 +1211,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+                <a href="javascript:void(0)" class="js-tag color3">iSCSI网关</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">string</a>
+                <a href="javascript:void(0)" class="js-tag color4">iSCSI gateway</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">对象网关</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">object gateway</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1159,19 +1243,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1187,7 +1259,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">string</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1211,22 +1291,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">input</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">分割</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
               </li>
              
@@ -1240,6 +1304,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1263,10 +1339,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -1275,11 +1347,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1291,15 +1371,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1327,15 +1407,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">使用</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">源</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">本地</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1352,14 +1440,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1380,6 +1460,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">input</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
               </li>
             
             <div class="clearfix"></div>

@@ -176,6 +176,278 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-vue-elementui-table" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/15/vue-elementui-table/">Vue ElementUI Table相关</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/15/vue-elementui-table/" class="archive-article-date">
+  	<time datetime="2019-08-15T06:47:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="多选，批量处理"><a href="#多选，批量处理" class="headerlink" title="多选，批量处理"></a>多选，批量处理</h2><p><strong>需求</strong>: 选择多行，批量删除<br>传入的数据源是数组，单个删除时使用的是slice()方法，增加多选后，通过@selection-change传入的row对象的index参数是选中项的索引，并非其在整个数组内的索引，这样一来无法使用slice()方法，需要遍历数组来实现删除。<br><strong>解决办法</strong>:
+在el-table中加入:row-class-name=”tableRowClassName”[^1]，利用tableRowClassName方法将rowIndex赋值给row对象。</p>
+<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"app"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"el-row"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-button</span> <span class="attr">class</span>=<span class="string">"el-icon-delete"</span> @<span class="attr">click</span>=<span class="string">"batchDeletePerson"</span>&gt;</span>批量删除<span class="tag">&lt;/<span class="name">el-button</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">el-table</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">border</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">:data</span>=<span class="string">"people"</span> </span></span><br><span class="line"><span class="tag">        <span class="attr">class</span>=<span class="string">"addrss-book"</span> </span></span><br><span class="line"><span class="tag">        @<span class="attr">selection-change</span>=<span class="string">"handleSelectionChange"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">:row-class-name</span>=<span class="string">"tableRowClassName"</span></span></span><br><span class="line"><span class="tag">    &gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">type</span>=<span class="string">"selection"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">prop</span>=<span class="string">"name"</span> <span class="attr">label</span>=<span class="string">"姓名"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">prop</span>=<span class="string">"phone"</span> <span class="attr">label</span>=<span class="string">"手机"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">prop</span>=<span class="string">"email"</span> <span class="attr">label</span>=<span class="string">"邮箱"</span>&gt;</span><span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">el-table-column</span> <span class="attr">label</span>=<span class="string">"操作"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">template</span> <span class="attr">slot-scope</span>=<span class="string">"scope"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">el-button</span> <span class="attr">size</span>=<span class="string">"mini"</span> @<span class="attr">click</span>=<span class="string">"deletePerson(scope.$index,scope.row)"</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">el-button</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">template</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">el-table-column</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">el-table</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Javascript"><a href="#Javascript" class="headerlink" title="Javascript"></a>Javascript</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> store = &#123;</span><br><span class="line">    save(key,value)&#123;</span><br><span class="line">        <span class="built_in">window</span>.localStorage.setItem(key,<span class="built_in">JSON</span>.stringify(value));</span><br><span class="line">    &#125;,</span><br><span class="line">    fetch(key)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">JSON</span>.parse(<span class="built_in">window</span>.localStorage.getItem(key))||[];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;    </span><br><span class="line"><span class="keyword">var</span> storeKey = <span class="string">"addressBook"</span>;</span><br><span class="line"><span class="keyword">var</span> people = store.fetch(storeKey);</span><br><span class="line"><span class="keyword">var</span> vm = <span class="keyword">new</span> Vue(&#123;</span><br><span class="line">    el: <span class="string">'#app'</span>,</span><br><span class="line">    data: &#123;</span><br><span class="line">        people,</span><br><span class="line">        userSelection: []</span><br><span class="line">    &#125;,</span><br><span class="line">    watch:&#123;</span><br><span class="line">        people:&#123;</span><br><span class="line">            handler:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">                store.save(storeKey,<span class="keyword">this</span>.people);</span><br><span class="line">            &#125;,</span><br><span class="line">            deep:<span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    methods:&#123;</span><br><span class="line">        deletePerson: <span class="function"><span class="keyword">function</span>(<span class="params">index,row</span>)</span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.$confirm(<span class="string">`此操作将删除通讯录 “<span class="subst">$&#123;row.name&#125;</span>”，是否继续?`</span>, <span class="string">'提示'</span>, &#123;</span><br><span class="line">                confirmButtonText: <span class="string">'确定'</span>,</span><br><span class="line">                cancelButtonText: <span class="string">'取消'</span>,</span><br><span class="line">                type: <span class="string">'warning'</span></span><br><span class="line">            &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.people.splice(index,<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                    type: <span class="string">'success'</span>,</span><br><span class="line">                    message: <span class="string">'删除成功!'</span></span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                    type: <span class="string">'info'</span>,</span><br><span class="line">                    message: <span class="string">'已取消删除'</span></span><br><span class="line">                &#125;);          </span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;,</span><br><span class="line">        tableRowClassName(row)&#123;</span><br><span class="line">            row.row.index = row.rowIndex;</span><br><span class="line">        &#125;,</span><br><span class="line">        handleSelectionChange(val) &#123;</span><br><span class="line">            <span class="keyword">this</span>.userSelection = val;</span><br><span class="line">        &#125;,</span><br><span class="line">        batchDeletePerson: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>.userSelection.length)&#123;</span><br><span class="line">                <span class="keyword">this</span>.$confirm(<span class="string">'此操作将删除选中的通讯录，是否继续?'</span>, <span class="string">'提示'</span>, &#123;</span><br><span class="line">                    confirmButtonText: <span class="string">'确定'</span>,</span><br><span class="line">                    cancelButtonText: <span class="string">'取消'</span>,</span><br><span class="line">                    type: <span class="string">'warning'</span></span><br><span class="line">                &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                    <span class="keyword">let</span> selectionIndexs = [];</span><br><span class="line">                    <span class="keyword">this</span>.userSelection.forEach(<span class="function">(<span class="params">item</span>) =&gt;</span> &#123;</span><br><span class="line">                        selectionIndexs.push(<span class="built_in">parseInt</span>(item.index))</span><br><span class="line">                    &#125;);</span><br><span class="line">                    <span class="comment">//纯数字数组排序</span></span><br><span class="line">                    selectionIndexs.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">                        <span class="keyword">return</span> a-b;</span><br><span class="line">                    &#125;);</span><br><span class="line">                    <span class="comment">//从大到小删，否则异常</span></span><br><span class="line">                    selectionIndexs.reverse();</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">let</span> selectionIndex <span class="keyword">of</span> selectionIndexs)&#123;</span><br><span class="line">                        <span class="keyword">this</span>.people.splice(selectionIndex,<span class="number">1</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                        type: <span class="string">'success'</span>,</span><br><span class="line">                        message: <span class="string">'删除成功!'</span></span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                    <span class="keyword">this</span>.$message(&#123;</span><br><span class="line">                        type: <span class="string">'info'</span>,</span><br><span class="line">                        message: <span class="string">'已取消删除'</span></span><br><span class="line">                    &#125;);          </span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>[^1] <a href="https://www.im050.com/posts/410" target="_blank" rel="noopener">!ElementUI Selection Table 中获取被勾选的index</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Vue.js</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">ElementUI</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Table</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/15/vue-elementui-table/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-javascript-array" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/15/javascript-array/">Javascript 数组相关</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/15/javascript-array/" class="archive-article-date">
+  	<time datetime="2019-08-15T06:05:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-15</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="1-indexOf-方法"><a href="#1-indexOf-方法" class="headerlink" title="1. indexOf() 方法"></a>1. indexOf() 方法</h2><p><strong>功能</strong>: 在数组中查找某个元素<br><strong>浏览器支持</strong>: 所有主要浏览器都支持 indexOf() 方法，但是 Internet Explorer 8 及 更早IE版本不支持该方法。<br><strong>IE8以下版本Hack</strong>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(!<span class="built_in">Array</span>.prototype.indexOf)&#123;</span><br><span class="line">    <span class="built_in">Array</span>.prototype.indexOf=<span class="function"><span class="keyword">function</span>(<span class="params">item,i</span>)</span>&#123;</span><br><span class="line">        i || (i=<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">var</span> length=<span class="keyword">this</span>.length;</span><br><span class="line">        <span class="keyword">if</span>(i&lt;<span class="number">0</span>)&#123;</span><br><span class="line">            i = length;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(;i&lt;length;i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>[i] === item)&#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-纯数字排序错误"><a href="#2-纯数字排序错误" class="headerlink" title="2. 纯数字排序错误"></a>2. 纯数字排序错误</h2><p>在js中对纯数字的的数组用sort()函数排序时，会发现的他的排序是错误的，这是因为它采用的unicode编码导致的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">arr = [<span class="number">1</span>,<span class="number">11</span>,<span class="number">22</span>,<span class="number">2</span>]</span><br><span class="line">arr.sort()</span><br><span class="line"><span class="built_in">console</span>.log(arr)</span><br><span class="line">[ <span class="number">1</span>, <span class="number">11</span>, <span class="number">2</span>, <span class="number">22</span> ]</span><br></pre></td></tr></table></figure>
+
+<p><strong>解决方法</strong>:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">arr.sort(<span class="function"><span class="keyword">function</span> (<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a-b;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(arr);</span><br><span class="line">[ <span class="number">1</span>, <span class="number">2</span>, <span class="number">11</span>, <span class="number">22</span> ]</span><br></pre></td></tr></table></figure>
+
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Javascript</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Array</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">数组</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/15/javascript-array/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-ubuntu18.04-install-wps" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/12/ubuntu18.04-install-wps/">Ubuntu 18.04 安装WPS For Linux</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/12/ubuntu18.04-install-wps/" class="archive-article-date">
+  	<time datetime="2019-08-12T03:43:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="到官网下载WPS-For-Linux"><a href="#到官网下载WPS-For-Linux" class="headerlink" title="到官网下载WPS For Linux"></a>到官网下载WPS For Linux</h3><p><a href="http://community.wps.cn/download/" target="_blank" rel="noopener">WPS For Linux 官网</a></p>
+<h3 id="安装WPS-For-Linux"><a href="#安装WPS-For-Linux" class="headerlink" title="安装WPS For Linux"></a>安装WPS For Linux</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i wps-office_10.1.0.6757_amd64</span><br></pre></td></tr></table></figure>
+
+<h3 id="安装缺失字体"><a href="#安装缺失字体" class="headerlink" title="安装缺失字体"></a>安装缺失字体</h3><ul>
+<li><p>下载缺失字体<br><a href="/assets/blogFile/wps_symbol_fonts.zip">WPS For Linux缺失字体</a></p>
+</li>
+<li><p>建立字体文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /usr/share/fonts/wps-office</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把字体解压拷贝到/usr/share/fonts/wps-office，如果还有缺失，去Windows下面拷过来。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp * /usr/share/fonts/wps-office</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>消除一下缓存和生成新的缓存</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /usr/share/fonts/wps-office</span><br><span class="line">sudo mkfontscale</span><br><span class="line">sudo mkfontdir</span><br><span class="line">sudo <span class="built_in">fc</span>-cache</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">Ubuntu 18.04</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">WPS</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/08/12/ubuntu18.04-install-wps/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-awk-string" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -693,15 +965,15 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">CentOS</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Ceph</a>
         		</li>
       		
 		</ul>
@@ -909,260 +1181,6 @@
 
 
   
-    <article id="post-mysql-config" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/04/mysql-config/">MySQL 配置</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/04/mysql-config/" class="archive-article-date">
-  	<time datetime="2019-07-04T14:12:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-04</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）"><a href="#MySQL执行“select-into”时报“1045”错误（mysql-error-1045-outfile’-MYSQL-into-outfile-“access-denied”-but-my-user-has-“ALL”-access）" class="headerlink" title="MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）"></a>MySQL执行“select into”时报“1045”错误（mysql-error-1045 outfile’ - MYSQL into outfile “access denied”-but my user has “ALL” access）</h2><h3 id="问题-执行如下命令时报“1045”错误"><a href="#问题-执行如下命令时报“1045”错误" class="headerlink" title="问题: 执行如下命令时报“1045”错误"></a>问题: 执行如下命令时报“1045”错误</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">INTO</span> <span class="keyword">OUTFILE</span> <span class="string">'/tmp/out.csv'</span> </span><br><span class="line"><span class="keyword">FIELDS</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">','</span> <span class="keyword">OPTIONALLY</span> <span class="keyword">ENCLOSED</span> <span class="keyword">BY</span> <span class="string">'*'</span></span><br><span class="line"><span class="keyword">LINES</span> <span class="keyword">TERMINATED</span> <span class="keyword">BY</span> <span class="string">'\n'</span></span><br><span class="line"><span class="keyword">FROM</span> ODSP.operationlog;</span><br></pre></td></tr></table></figure>
-
-<p>报如下错误</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Access denied <span class="keyword">for</span> user <span class="string">'perabytes'</span>@<span class="string">'localhost'</span> (using password: YES)</span><br></pre></td></tr></table></figure>
-        
-          <a class="article-more-a" href="/2019/07/04/mysql-config/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">MySQL</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">1045</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/04/mysql-config/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-live-broadcast-united-nation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/02/live-broadcast-united-nation/">直播联合国</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/02/live-broadcast-united-nation/" class="archive-article-date">
-  	<time datetime="2019-07-02T06:45:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-02</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>100个故事，100种表达。每个故事里，都有一个不一样的联合国。《直播联合国》独家探秘联合国的每一个“角度”，带你走近这个看似遥远，又与你息息相关的国际组织。</p>
-        
-          <a class="article-more-a" href="/2019/07/02/live-broadcast-united-nation/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">联合国</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">趣谈</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/02/live-broadcast-united-nation/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-install-configure-ntp-server-ntp-client-in-linux" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/">如何在 Linux 上安装、配置 NTP 服务器和客户端？</a>
-    </h1>
-  
-
-        
-        <a href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/" class="archive-article-date">
-  	<time datetime="2019-07-01T07:01:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-07-01</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>你也许听说过这个词很多次或者你可能已经在使用它了。在这篇文章中我将会清晰的告诉你 NTP 服务器和客户端的安装。</p>
-<h2 id="什么是-NTP-服务"><a href="#什么是-NTP-服务" class="headerlink" title="什么是 NTP 服务?"></a>什么是 NTP 服务?</h2><pre><code>NTP 意即网络时间协议。它是通过网络在计算机系统之间进行时钟同步的网络协议。换言之，它可以让那些通过 NTP 或者 Chrony 客户端连接到 NTP 服务器的系统保持时间上的一致（它能保持一个精确的时间）。    
-NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的精度，并在理想条件下，它能在局域网下达到低于一毫秒的延迟精度。
-它使用用户数据报协议（UDP）在端口 123 上发送和接受时间戳。它是个 C/S 架构的应用程序。</code></pre><h2 id="NTP-客户端"><a href="#NTP-客户端" class="headerlink" title="NTP 客户端"></a>NTP 客户端</h2><pre><code>NTP 客户端将其时钟与网络时间服务器同步。</code></pre><h2 id="Chrony-客户端"><a href="#Chrony-客户端" class="headerlink" title="Chrony 客户端"></a>Chrony 客户端</h2><pre><code>Chrony 是 NTP 客户端的替代品。它能以更精确的时间更快的同步系统时钟，并且它对于那些不总是在线的系统很有用。</code></pre>
-        
-          <a class="article-more-a" href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Linux</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">NTP</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">NTP客户端</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2019/07/01/install-configure-ntp-server-ntp-client-in-linux/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
@@ -1177,7 +1195,7 @@ NTP 在公共互联网上通常能够保持时间延迟在几十毫秒以内的�
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 liangtianyou
+    		&copy; 2020 liangtianyou
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
@@ -1260,15 +1278,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+                <a href="javascript:void(0)" class="js-tag color3">iSCSI网关</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">string</a>
+                <a href="javascript:void(0)" class="js-tag color4">iSCSI gateway</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">对象网关</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">object gateway</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1284,19 +1310,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">repo</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color2">source</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">Ceph</a>
+                <a href="javascript:void(0)" class="js-tag color3">Network</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1312,7 +1326,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Network</a>
+                <a href="javascript:void(0)" class="js-tag color1">shell</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">awk</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">string</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1336,22 +1358,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">input</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">分割</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">井陉县</a>
               </li>
              
@@ -1365,6 +1371,18 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Layout</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">rpm</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">repo</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">source</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1388,10 +1406,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">运维</a>
-              </li>
-             
-              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">联合国</a>
               </li>
              
@@ -1400,11 +1414,19 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">运维</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">MySQL</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+                <a href="javascript:void(0)" class="js-tag color4">字符串</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">分割</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1416,15 +1438,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">1045</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">NOT NULL</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">NOT REGEXP</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1452,15 +1474,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">使用</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">ethtool</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">源</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color3">本地</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color1">Samba</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1477,14 +1507,6 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">Text</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -1505,6 +1527,22 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Apache</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">Ubuntu 18.04</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">WPS</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color1">input</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">禁止中文</a>
               </li>
             
             <div class="clearfix"></div>
